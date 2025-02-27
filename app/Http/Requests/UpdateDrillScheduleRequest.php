@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\DrillSchedule;
+use Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Response;
+
+class UpdateDrillScheduleRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        /** @disregard P1013 */
+        return auth()->user()->can('drill_schedule_edit');
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules()
+    {
+        return [
+            'name' => [
+                'string',
+                'nullable',
+            ],
+            'site_id' => [
+                'required',
+                'integer',
+            ],
+            'type_drill_id' => [
+                'required',
+                'integer',
+            ],
+            'period' => [
+                'required',
+            ],
+            'active_date' => [
+                'required',
+                'date_format:' . config('panel.date_format'),
+            ],
+            'assigned_to_id' => [
+                'required',
+                'integer',
+            ],
+            'drill_id' => [
+                'required',
+                'integer',
+            ],
+        ];
+    }
+}

@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\Inspection;
+use Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Response;
+
+class UpdateInspectionRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        /** @disregard P1013 */
+        return true; // auth()->user()->can('inspection_edit');
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules()
+    {
+        return [];
+        // return [
+        //     'inspection_schedule_id' => [
+        //         'required',
+        //         'integer',
+        //     ],
+        //     'due_date' => [
+        //         'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+        //         'nullable',
+        //     ],
+        //     'complete_date' => [
+        //         'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+        //         'nullable',
+        //     ],
+        // ];
+    }
+}

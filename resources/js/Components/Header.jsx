@@ -1,0 +1,184 @@
+import React, { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { url } = usePage(); // Get the current URL
+
+  const navLinks = [
+    { name: 'Staff Management', route: 'users.index' },
+    { name: 'Inspection Management', route: 'inspections.index' },
+    { name: 'PPE Management', route: 'inspections.index' },
+    { name: 'Safety Management', route: 'drills.index' },
+    { name: 'Incident Management', route: 'incidents.index' },
+    { name: 'Complaint Management', route: 'post-incidents.index' },
+    { name: 'Site Management', route: 'sites.index' },
+  ];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //alert('logout');
+    document.getElementById('logoutform').submit();
+    //post(route("logout"));
+
+    };
+
+  return (
+    <header className="bg-white w-[95%] ml-[50px] mt-[23px] mb-[23px] mr-[50px] h-[60px] flex items-center justify-between px-10">
+      {/* Left Section: Logo */}
+
+      <div className="flex items-center space-x-2">
+      <Link href="/">
+        <img className="w-[62px] h-[47px]" src="./images/logo.png" alt="Chimp&Zee Logo" />
+      </Link>
+      </div>
+
+      {/* Hamburger Menu for Mobile */}
+      <button
+        className="lg:hidden text-gray-700 focus:outline-none"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16m-7 6h7"
+          />
+        </svg>
+      </button>
+
+      {/* Center Section: Navigation Links */}
+      {isMenuOpen ? <NavMenu isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} /> : <NavTop isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} />}
+
+      {/* Right Section: Icons */}
+      <div className="hidden lg:flex items-center space-x-4">
+        <button onClick={handleSubmit} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
+          <img src="./images/logout-icon.svg" alt="Logout" className="w-[20px] h-[20px] rounded-full" />
+        </button>
+        <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+          <img src="./images/user-icon.svg" alt="User Icon" className="w-45 h-45" />
+        </button>
+        <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+          <img src="./images/notification-icon.svg" alt="Notification Icon" className="w-45 h-45" />
+        </button>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+
+const NavTop = ({isMenuOpen, navLinks, url}) => {
+  return (
+    <nav
+      className={`${
+        isMenuOpen ? 'block' : 'hidden'
+      } absolute top-[60px] left-0 w-full bg-white shadow-lg lg:static lg:block lg:shadow-none`}
+    >
+      <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
+        {navLinks.map((link) => (
+          <li key={link.name} className="header-links">
+            <Link
+              href={route(link.route)}
+              className={`hover:text-blue-500 cursor-pointer ${
+                url === link.route ? 'text-blue-500 font-bold' : ''
+              }`}
+            >
+              {link.name.split(' ').map((word, index) => (
+                <React.Fragment key={index}>
+                  {word}
+                  <br />
+                </React.Fragment>
+              ))}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+
+}
+
+const NavTop1 = ({isMenuOpen}) => {
+  return (
+      <nav
+        className={`${
+          isMenuOpen ? 'block' : 'hidden'
+        } absolute top-[60px] left-0 w-full bg-white shadow-lg lg:static lg:block lg:shadow-none`}
+      >
+        <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Staff <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Inspection <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            PPE <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Safety <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Incident <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Complaint <br/>Management
+          </li>
+          <li className="header-links hover:text-blue-500 cursor-pointer">
+            Site <br/>Management
+          </li>
+        </ul>
+      </nav>
+  );
+
+}
+
+const NavMenu = ({isMenuOpen}) => {
+  return (
+      <nav
+        className={`${
+          isMenuOpen ? 'block' : 'hidden'
+        } absolute top-[60px] pt-2 pl-10 left-0 w-full bg-white shadow-lg lg:static lg:block lg:shadow-none`}
+      >
+        <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Staff Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Inspection Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            PPE Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Safety Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Incident Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Complaint Management
+          </li>
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Site Management
+          </li>
+          <hr className="border-gray-200 my-2" />
+          <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Profile Management
+          </li>
+          <li className="header-links my-2 hover:text-blue-500 cursor-pointer">
+            Message Management
+          </li>
+        </ul>
+      </nav>
+  );
+
+}

@@ -1,3 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&family=Manrope:wght@400;700&family=Anton&family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+  .react-date-picker__wrapper {
+    display: flex !important;
+    flex-grow: 1 !important;
+    flex-shrink: 0 !important;
+    border: thin solid rgb(255, 255, 255) !important;
+  }
+
+/* Customize the background color of the calendar popup */
+.react-date-picker__calendar {
+    background-color: white !important;  /* Makes the background transparent */
+    box-shadow: none !important;  /* Optionally remove box shadow */
+    border: 1px solid #ddd !important;  /* Optionally add a border */
+  }
+  
+  /* Optional: Customize the background color for selected dates (to make them more visible or not) */
+  .react-date-picker__tile--active {
+    background-color: white !important;
+    color: inherit !important;
+  }
+  
+  /* Optional: Adjust the appearance of other elements to ensure they are less visible */
+  .react-date-picker__tile {
+    background-color: white !important;
+    border: 1px solid transparent !important;
+    color: rgba(0, 0, 0, 0.5) !important;  /* Lighten the color for less visibility */
+  }
+  
+  .react-date-picker__calendar-button {
+    background-color: white !important;
+  }
+  .react-date-picker__clear-button {
+    display: none; /* This will hide the close button */
+  }
+  .react-date-picker__button {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 4px 16px 4px 6px !important;
+  }
+
+  .react-time-picker__wrapper {
+    border: 1px solid #ccc !important;
+    padding: 8px;
+    border-radius: 6px;
+  }
+  .react-time-picker__inputGroup {
+    font-size: 16px !important;
+  }

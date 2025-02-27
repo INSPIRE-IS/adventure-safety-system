@@ -33,6 +33,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        // Set the team_id in the session
+        // session(['team_id' => auth()->user()->currentTeam->id]); // Adjust based on your team logic
+
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

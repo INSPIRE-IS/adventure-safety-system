@@ -7,12 +7,23 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * Define the application's command schedule.
-     */
+
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+
+        // $schedule->command('tasks:create-scheduled')->everyMinute()->withoutOverlapping();
+
+
+        // $schedule->command('tasks:create-scheduled')->everyFiveMinutes()->withoutOverlapping(10);
+        // // $schedule->command('inspire')->hourly();
+
+        // if (env('APP_ENV') == 'production') {
+        //     $schedule->command('tasks:create-scheduled')->lastDayOfMonth('00:00')->hourly()->withoutOverlapping();
+        // }
+
+        $schedule->command('tasks:create-inspection-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        $schedule->command('tasks:create-drill-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        $schedule->command('tasks:create-post-incident-scheduled')->dailyAt('06:00')->withoutOverlapping();
     }
 
     /**
@@ -20,7 +31,8 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
+
 
         require base_path('routes/console.php');
     }

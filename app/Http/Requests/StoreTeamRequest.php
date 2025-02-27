@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\Team;
+use Gate;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Response;
+
+
+class StoreTeamRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        /** @disregard P1013 */
+        return auth()->user()->can('site_create');
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules()
+    {
+        return [
+            'location' => [
+                'string',
+                'nullable',
+            ],
+            'color_primary' => [
+                'string',
+                'nullable',
+            ],
+            'color_secondary' => [
+                'string',
+                'nullable',
+            ],
+            'color_other' => [
+                'string',
+                'nullable',
+            ],
+            'name' => [
+                'string',
+                'required',
+            ],
+        ];
+    }
+}

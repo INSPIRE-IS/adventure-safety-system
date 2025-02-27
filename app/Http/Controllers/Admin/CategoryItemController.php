@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MassDestroyCategoryItemRequest;
+use App\Http\Requests\StoreCategoryItemRequest;
+use App\Http\Requests\UpdateCategoryItemRequest;
+use App\Models\CategoryItem;
+use App\Models\File;
+use App\Models\Team;
+use App\Models\Site;
+use App\Models\TypeBool;
+use App\Models\TypeInspection;
+use Gate;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
+
+class CategoryItemController extends Controller
+{
+    public function index(Request $request)
+    {
+
+        /** @disregard P1013 */
+        abort_if(!auth()->user()->can('category_item_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $type_inspections = TypeInspection::select('name as label', 'id as value')->get();
+        $teams = Team::select('name as label', 'id as value')->get();
+        $type_bools = TypeBool::select('name as label', 'id as value')->get();
+        $searchTerm = $request->get('search', '');
+        $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
+        $sortDirection = $request->get('direction', 'asc');
+        $categoryItems = CategoryItem::with(['site', 'type', 'certificate_recieved', 'certificate_file'])
+            ->where('name', 'like', '%' . $searchTerm . '%')
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(25);
+
+        /** @disregard P1013 */
+        return Inertia::render('CategoryItem/Index', [
+            'categoryItems' => $categoryItems,
+            'type_inspections' => $type_inspections,
+            'teams' => $teams,
+            'type_bools' => $type_bools,
+            'can' => [
+                'category_item_show' => auth()->user()->can('category_item_show'),
+                'category_item_edit' => auth()->user()->can('category_item_edit'),
+                'category_item_delete' => auth()->user()->can('category_item_delete'),
+                'category_item_create' => auth()->user()->can('category_item_create'),
+            ],
+        ]);
+    }
+
+
+    public function store(StoreCategoryItemRequest $request)
+    {
+        $saveImage = false;
+        if ($request->hasFile('image')) {
+
+            $request->validate([
+                'image' => 'required|file|image',
+            ]);
+            $saveImage = true;
+        }
+        $categoryItem = CategoryItem::create($request->all());
+        if ($saveImage) {
+            $image_file = $request->file('image');
+
+            $fileName = time() . '_' . $image_file->getClientOriginalName();
+            $directoryPath = 'uploads/certification/' . $categoryItem->id;
+
+            $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
+            $file = File::create([
+                'site_id'   => $categoryItem->site_id,
+                'table_name' => 'category_items',
+                'file_name' => $fileName,
+                'type_file_id' => 8, // certificate
+                'row' => $categoryItem->id,
+                'path' => $filePath,
+            ]);
+
+            $categoryItem->certificate_file_id = $file->id;
+            $categoryItem->save();
+        }
+
+
+        return redirect()->route('category-items.index');
+    }
+
+
+    public function update(UpdateCategoryItemRequest $request, CategoryItem $categoryItem)
+    {
+        $saveImage = false;
+        if ($request->hasFile('image')) {
+
+            $request->validate([
+                'image' => 'required|file|image',
+            ]);
+            $saveImage = true;
+        }
+
+        $categoryItem->update($request->all());
+
+        if ($saveImage) {
+            $image_file = $request->file('image');
+
+            $fileName = time() . '_' . $image_file->getClientOriginalName();
+            $directoryPath = 'uploads/certification/' . $categoryItem->id;
+
+            $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
+            $file = File::create([
+                'site_id'   => $categoryItem->site_id,
+                'table_name' => 'category_items',
+                'file_name' => $fileName,
+                'type_file_id' => 8, // certificate
+                'row' => $categoryItem->id,
+                'path' => $filePath,
+            ]);
+            $categoryItem->certificate_file_id = $file->id;
+            $categoryItem->save();
+        }
+
+        return redirect()->route('category-items.index');
+    }
+
+    public function show(CategoryItem $categoryItem)
+    {
+        //abort_if(Gate::denies('category_item_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $categoryItem->load('site', 'type', 'certificate_file');
+
+        return view('categoryItems.show', compact('categoryItem'));
+    }
+
+    public function destroy(CategoryItem $categoryItem)
+    {
+        //abort_if(Gate::denies('category_item_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $categoryItem->delete();
+
+        return back();
+    }
+}

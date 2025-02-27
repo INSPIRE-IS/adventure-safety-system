@@ -2,8 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -29,11 +35,102 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
+        // Retrieve the logged-in user
+        $user = $request->user();
+        Log::info('Inertia Request');
+        Log::info('Request method: ' . $request->method());
+        //$team_id = $user->currentTeam()->get();
+
+        // okay so basically we get the user and team then we set the permission based on the team
+        // or we need to check in this array if the user has permission to access the team
+        // for now we just hard coding the admin and team 
+        //$user = User::find(1);
+        //dd($request->user());
+
+        //dd($user);
+        //$permissions = $user->getAllPermissions()->pluck('name');
+        //dd($permissions);
+        //$roles = $user->getRoleNames()->pluck('name');
+        //dd($roles);
+        // Logic for filtering teams
+
+        if ($user) {
+            Log::info('User: ' . $user->id);
+            //$team_id = Session::get('team_id');
+            $team_id = session()->get('team_id');
+            if ($team_id == null) {
+                // $team = Team::find($teamId);
+                Log::info('update team id inertia: ' . $team_id);
+                $team_id = optional($user)->teams->first()->id ?? 0;
+                setPermissionsTeamId($team_id);
+            }
+            Log::info('team_id: ' . $team_id);
+            //session(['team_id' => $team_id]);
+            setPermissionsTeamId($team_id);
+
+            //$user->teams;
+            //$user->permissions;
+            // $user->roles;
+            $teams = $user->getAllTeamNames(); //->pluck('name', 'id')->toArray();
+            // $items = collect($teams)->map(function ($name, $id) {
+            //     return (object)[
+            //         'id' => $id,
+            //         'name' => $name
+            //     ];
+            // });
+            //$teams = Team::all()->pluck('id', 'name');
+            //dd($teams);
+            $permissions = $user->getAllPermissions()->pluck('name');
+            $roles = $user->getRoleNames()->pluck('name');
+            $team = Team::find($team_id);
+            //dd($team);
+            if ($user->isAdminOfTeam(1) || $user->id === 2) {
+                //setPermissionsTeamId(2);
+                //setPermissionsTeamId(null);
+
+                // Admin of Team 1 or user ID 2: Show all teams
+                // $teams = Team::all(); // Assuming you have a Team model
+                // //$permissions = Permission::all(); // Should list your permissions
+                // //$roles = Role::all();       // Should list your roles
+                // //$teams = $user->getAllTeamNames()->pluck('name');
+                // $permissions = $user->getAllPermissions()->pluck('name');
+                // $roles = $user->getRoleNames()->pluck('name'); // Assuming you have a Team model
+            } else {
+                // Filter teams the user is linked to
+                // Log::info('User: no user');
+                // $teams = $user->teams; // Assuming a "teams" relationship exists on the User model
+                // dd($teams);
+                // //$permissions = $user->getAllPermissions()->pluck('name'); // Assuming a "teams" relationship exists on the User model
+                // $permissions = $user->getAllPermissions()->pluck('name');
+                // $roles = $user->getRoleNames()->pluck('name'); // Assuming you have a Team model
+            }
+        }
+        //dd(method_exists($user, 'can'));
+        //dd($user->can('show_permission'));
+
+        //dd($permissions);
+        // return [
+        //     ...parent::share($request),
+        //     'auth' => [
+        //         'user' => $user,
+        //         'team' => $team ?? null,
+        //         'teams' => $teams  ?? [],
+        //         'permissions' => $permissions ?? [],
+        //         'roles' => $roles ?? [],
+        //     ],
+        // ];
+
+        return array_merge(parent::share($request), [
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
+                'team' => $team ?? null,
+                'teams' => $teams  ?? [],
+                'permissions' => $permissions ?? [],
+                'roles' => $roles ?? [],
             ],
-        ];
+            'flash' => [
+                'message' => fn() => $request->session()->get('message'),
+            ],
+        ]);
     }
 }
