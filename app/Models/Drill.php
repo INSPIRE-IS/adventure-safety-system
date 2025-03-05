@@ -79,6 +79,11 @@ class Drill extends Model
         return $this->hasMany(DrillDetail::class, 'drill_id');
     }
 
+    // public function type_drill()
+    // {
+    //     return $this->belongsTo(TypeDrill::class, 'id', 'type_drill_id');
+    // }
+
     public function assigned_to()
     {
         return $this->belongsTo(User::class, 'assigned_to_id');

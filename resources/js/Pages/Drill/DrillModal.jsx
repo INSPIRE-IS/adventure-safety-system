@@ -1,51 +1,82 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
 import CustomSelect1 from "@/Components/CustomSelect1";
+//import { format } from 'date-fns';
+import CustomDatePicker from "@/Components/CustomDatepicker";
+import MultiSelect from "@/Components/MultiSelect";
 
-const DrillModal = ({ isOpen, onClose, mode, drill = null, sites, typeDrills,categoryItems, periods, actives, users }) => {
+const DrillModal = ({ auth, isOpen, onClose, mode, drillSchedule = null, typeDrills, periods, users }) => {
     console.log("mode", mode);
-    console.log("drill", drill);
+    console.log("users", auth);
+    const [filteredCategoryItems, setFilteredCategoryItems] = useState([]);
 
     const { data, setData, post, put, errors, reset, processing } = useForm({
-        name: "",
-        category_item_id: "",
-        type_drill_id: "",
-        site_id: "",
+        name: users?.[0]?.teams?.[0]?.type_activities?.[0]?.name,
+        type_activity_id: users?.[0]?.teams?.[0]?.type_activities?.[0]?.id,
+        site_id: auth?.team?.id,        
+        type_drill_id: "",   
+       //category_items: [],
         period_id: "",
-        user_id: "",
-        active_id: "",
+        active_date: "",
+        assigned_by_id: auth?.user?.id,
+        assigned_to_id: users?.[0]?.id,
+
     });
     useEffect(() => {
-        if (drill && mode !== "create") {
+        if (drillSchedule && mode !== "create") {
             setData({
-                name: drill.name || "",
-                category_item_id: drill.category_item_id || "",
-                type_drill_id: drill.type_drill_id || "",
-                site_id: drill.site_id || "",
-                period_id: drill.period_id || "",
-                user_id: drill.user_id || "",
-                active_id: drill.active_id || "",
+                name: drillSchedule.name || "",
+                type_activity_id: drillSchedule.type_activity_id || "",
+                //category_item_id: drillSchedule.category_item_id || "",
+                //category_items: drillSchedule.category_items.map((category_item) => category_item.id) || [], //drillSchedule.category_items.map((category_item) => category_item.id),
+                type_drill_id: drillSchedule.type_drill_id || "",
+                site_id: drillSchedule.site_id || "",
+                period_id: drillSchedule.period_id || "",
+                assigned_to_id: drillSchedule.assigned_to_id || "",
+                active_date: drillSchedule.active_date || "",
             });
         } else if (mode === "create") {
             reset(); // Clear form for create mode
+            // setData({
+            //     name: auth?.team?.name || "",
+            // });
         }
-    }, [mode,drill]);
+    }, [mode,drillSchedule]);
+
+
+    function formatDate(isoDate) {
+        const date = new Date(isoDate);
+        //console.log('date', date); return;
+        const day = String(date.getDate()).padStart(2, '0');   // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, '0');  // Get month (months are 0-indexed, so add 1) and pad
+        const year = date.getFullYear();   // Get full year
+    
+        return `${day}-${month}-${year}`;  // Return formatted date as DD-MM-YYYY
+    }
 
     const handleChange = (target, value) => {
-        setData(target, value);
+        //const formattedValue = target === 'active_date' ? format(value, 'dd-MM-yyyy') : value;
+        console.log(value);
+        //console.log(formattedValue);
+        //setData(target, formattedValue);
+        setData({ ...data, [target]: value });
+        console.log("data", data);
         //setData("name", e.target.value);
     };
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("data", data);
         if (mode === "create") {
-            post(route("drills.store"), {
+            post(route("drill-schedules.store"), {
 
                 onSuccess: () => {reset();onClose()},
             });
         } else if (mode === "edit") {
-            put(route("drills.update", drill.id), {
+            put(route("drill-schedules.update", drillSchedule.id), {
                 onSuccess: () => {reset();onClose()},
             });
         }
@@ -57,37 +88,20 @@ const DrillModal = ({ isOpen, onClose, mode, drill = null, sites, typeDrills,cat
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                 <h2 className="text-xl font-bold mb-4">
-                    {mode === "create" && "Create Drill"}
-                    {mode === "edit" && "Edit Drill"}
-                    {mode === "view" && "View Drill"}
+                    {mode === "create" && "Create Drill Schedule"}
+                    {mode === "edit" && "Edit Drill Schedule"}
+                    {mode === "view" && "View Drill Schedule"}
                 </h2>
-                <form onSubmit={handleSubmit}>
-                    <InputText
-                        title="Name"
-                        field="name"
-                        value={data.name}
-                        mode={mode}
-                        handleChange={handleChange}
-                        errors={errors}
-                    />
-                    <CustomSelect1
-                        label="Site"
-                        name="site_id"
-                        value={data?.site_id}
-                        mode={mode}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.site_id}
-                        options={sites}
-                    />
-                    <CustomSelect1
-                        label="Category"
-                        name="category_item_id"
-                        value={data?.category_item_id}
-                        mode={mode}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.category_item_id}
-                        options={categoryItems}
-                    />        
+                <form onSubmit={handleSubmit}>               
+                    <label className="block text-lg font-semibold mb-4">
+                    Project: {auth?.team?.name}
+                    </label>
+                    <label className="block text-lg font-semibold mb-4">
+                    Activity: {users?.[0]?.teams?.[0]?.type_activities?.[0]?.name}
+                    </label>
+                    <label className="block text-lg font-semibold mb-4">
+                    Assigned To: {users?.[0]?.name}
+                    </label>
                     <CustomSelect1
                         label="Type Drill"
                         name="type_drill_id"
@@ -96,9 +110,9 @@ const DrillModal = ({ isOpen, onClose, mode, drill = null, sites, typeDrills,cat
                         onChange={(e) => handleChange(e.target.name, e.target.value)}
                         error={errors.type_drill_id}
                         options={typeDrills}
-                    />                     
+                    />
                     <CustomSelect1
-                        label="Assessment Period"
+                        label="Recurring Period (set to none to stop the cron job)"
                         name="period_id"
                         value={data?.period_id}
                         mode={mode}
@@ -106,24 +120,23 @@ const DrillModal = ({ isOpen, onClose, mode, drill = null, sites, typeDrills,cat
                         error={errors.period_id}
                         options={periods}
                     /> 
-                    <CustomSelect1
-                        label="Active"
-                        name="active_id"
-                        value={data?.active_id}
+                    <CustomDatePicker 
+                        label="Start Drill Date (cron job runs from this date by recurring period)"
+                        name="active_date"
+                        value={data?.active_date}
                         mode={mode}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.active_id}
-                        options={actives}
-                    /> 
-                    <CustomSelect1
+                        onChange={handleChange}
+                        error={errors.active_date}  
+                        />
+                    {/* <CustomSelect1
                         label="User"
-                        name="user_id"
-                        value={data?.user_id}
+                        name="assigned_to_id"
+                        value={data?.assigned_to_id}
                         mode={mode}
                         onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.user_id}
+                        error={errors.assigned_to_id}
                         options={users}
-                    />
+                    />  */}
                     <div className="flex justify-end space-x-2">
                         <button
                             type="button"

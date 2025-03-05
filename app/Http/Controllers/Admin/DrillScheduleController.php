@@ -16,6 +16,7 @@ use App\Models\TypeDrill;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Session;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,9 +100,17 @@ class DrillScheduleController extends Controller
 
     public function store(StoreDrillScheduleRequest $request)
     {
-        $drillSchedule = DrillSchedule::create($request->all());
-
-        return redirect()->route('drill-schedules.index');
+        //dd($request);
+        try {
+            $drillSchedule = DrillSchedule::create($request->all());
+            return redirect()->back()->with('success', 'Drill Schedule added successfully.');
+        } catch (\Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with('error', 'Error adding Drill Schedule.');
+        }
+        //$drillSchedule = DrillSchedule::create($request->all());
+        //return redirect()->back()->with('success', 'Equipment item added successfully.');
+        //return redirect()->route('drill-schedules.index');
     }
 
     public function update(UpdateDrillScheduleRequest $request, DrillSchedule $drillSchedule)

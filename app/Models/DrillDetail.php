@@ -33,7 +33,7 @@ class DrillDetail extends Model
         'complete_date',
         'signature_file_id',
         'competent',
-        'type_drill_id',
+        'drill_id',
         'created_at',
         'updated_at',
         'deleted_at',

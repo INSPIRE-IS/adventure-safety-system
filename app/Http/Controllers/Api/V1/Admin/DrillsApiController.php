@@ -39,7 +39,15 @@ class DrillsApiController extends Controller
 
     public function store(StoreDrillRequest $request)
     {
-        $drill = Drill::create($request->all());
+        $drill = Drill::updateOrCreate(
+            [
+                'site_id' => $request->site_id,
+                'drill_schedule_id' => $request->drill_schedule_id,
+            ],
+            [
+                'complete_date' => $request->complete_date,
+            ]
+        );
 
         return (new DrillResource($drill))
             ->response()

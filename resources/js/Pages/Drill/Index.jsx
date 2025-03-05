@@ -8,25 +8,8 @@ import AddButton from '@/Components/AddButton';
 import EditButton from '@/Components/EditButton';
 import CustomSelect2 from '@/Components/CustomSelect2';
 
-const periods = [
-    { value: "1", label: "Last 30 Days" },
-    { value: "2", label: "Last 60 Days" },
-    { value: "3", label: "Last 90 Days" },
-  ];
-  const months = [
-    { value: "1", label: "Jan 2025" },
-    { value: "2", label: "Dec 2024" },
-    { value: "3", label: "Nov 2024" },
-    { value: "4", label: "Oct 2024" },
-  ];
-  const shows = [
-    { value: "1", label: "All" },
-    { value: "2", label: "10" },
-    { value: "3", label: "25" },
-    { value: "4", label: "50" },
-  ];
 
-const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, typeDrills, categoryItems, users }) => {
+const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, typeDrills, users, periods, actives }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on drill ', auth);
@@ -105,55 +88,25 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
 
             {/* Drills Table */}
             <div className=" pl-[32px] rounded-3xl bg-white">
-                <div className="pt-[49px]  pb-[32px] ">               
-                    <h3 className="label-header-3">Drills History</h3>                    
-                </div>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-start gap-4 mb-6">
-                    <CustomSelect2
-                        label="Period"
-                        name="period"
-                        value={period}
-                        onChange={(e) => setPeriod(e.target.value)}
-                        mode="create"
-                        options={periods}
-                    />
-                    <CustomSelect2
-                        label="Month"
-                        name="month"
-                        value={month}
-                        onChange={(e) => setMonth(e.target.value)}
-                        mode="create"
-                        options={months}
-                    />
-                    <CustomSelect2
-                        label="Show"
-                        name="show"
-                        value={show}
-                        onChange={(e) => setShow(e.target.value)}
-                        mode="create"
-                        options={shows}
-                    />
-                </div>
+
                 <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-white ">
                         <tr className="w-[100%]">
                             <th className="px-6 py-3 table-header2 uppercase tracking-wider w-[10%]">	
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <rect x="1" y="1" width="18" height="18" rx="3" stroke="#E4E4E4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
+
                             </th>
                             <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
-                            Equipment
+                            User Name
+                            </th>
+                            {/* <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
+                            Drill Name
+                            </th> */}
+                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            Last Safety Drill
                             </th>
                             <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
-                            Assigned to
-                            </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
-                            Status
-                            </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
-                            Date Processed
+                            Next Drill
                             </th>
                             <th className="px-6 py-3 uppercase tracking-wider  w-[30%]">
                                 
@@ -163,61 +116,43 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                     <tbody className="bg-white divide-y divide-gray-200">
                         {drills?.data.map((drill) => {
                             console.log("drill", drill);
-                            let due_date = new Date(drill.due_date);
-                            let status = due_date > new Date() ? "Upcoming" : "Overdue";
-                            if (drill.complete_date != null) {
-                                status = "Complete"; // drill.complete_date > new Date() ? "complete" : "incomplete";
+                            let formattedDate = ''
+                            if(drill?.complete_date != null){
+                                let next_date = new Date(drill.complete_date);
+                                next_date.setFullYear(next_date.getFullYear() + 1);
+                                next_date = new Date();
+                                formattedDate =next_date.toISOString().split("T")[0];
                             }
+
 
 
                         return(
                             <tr key={drill.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <rect x="1" y="1" width="18" height="18" rx="3" stroke="#E4E4E4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                                
+                                <div className='bg-[#8A94A6] w-[43px] h-[43px] rounded-full flex items-center justify-center hover:bg-gray-200'>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.9739 11.3187L11.9919 6.68343C11.6309 5.83489 11.0927 5.35363 10.4784 5.32196C9.87052 5.2903 9.28161 5.71457 8.83201 6.52512L7.62885 8.68447C7.37556 9.1404 7.01461 9.41269 6.622 9.44436C6.22306 9.48235 5.82412 9.27338 5.50117 8.86178L5.36185 8.68447C4.91225 8.12089 4.355 7.84859 3.78509 7.90558C3.21517 7.96258 2.72757 8.35518 2.40462 8.99476L1.30912 11.1794C0.916508 11.971 0.954503 12.8892 1.41677 13.6364C1.87903 14.3836 2.68325 14.8332 3.56345 14.8332H11.6436C12.4921 14.8332 13.2837 14.409 13.7523 13.6997C14.2335 12.9905 14.3095 12.0976 13.9739 11.3187Z" fill="white"/>
+                                        <path d="M4.44406 5.97455C5.62615 5.97455 6.58441 5.01628 6.58441 3.8342C6.58441 2.65212 5.62615 1.69385 4.44406 1.69385C3.26198 1.69385 2.30371 2.65212 2.30371 3.8342C2.30371 5.01628 3.26198 5.97455 4.44406 5.97455Z" fill="white"/>
+                                    </svg>
+                                </div>
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
                                     
                                     <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill.drill_schedule.name}</div>
-                                        <div className="w-full text-[#808191] text-[11px] font-normal font-['Manrope'] leading-[18px]">Description</div>                              
+                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill.assigned_to.name}</div>                             
                                     </div>
                                         {/* <div className="w-[50px] h-[0px] origin-top-left -rotate-90 border border-[#cecece]"></div>  */}
                                 </td>
+
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
 
                                     <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill.assigned_to.name}</div>                                        
+                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill?.complete_date?.split(" ")[0]}</div>                                        
                                     </div>
                                      
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center ">
-
-                                    {/* {status == "Overdue" && <h5 className="bg-[#F00] text-pill-box py-[3px] px-4 gap-[10px] rounded-[4px] w-[89px] h-6 text-center">Overdue</h5>}
-                                    {status == "Upcoming" && 
-                                    <div className="h-6 px-4 py-[3px] bg-[#eba535] rounded justify-start items-center gap-2.5 inline-flex">
-                                    <div className="text-center text-white text-sm font-semibold font-['Manrope'] leading-[18px]">Upcoming</div>
-                                    </div>}
-                                    {status == "Complete" && <h5 className="bg-[#7FBA7A] text-pill-box py-[3px] px-4 gap-[10px] rounded-[4px] w-[89px] h-6 text-center">Complete</h5>} */}
-                                    <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                        <span
-                                            className={`px-2 py-1 rounded-[4px] text-pill-box  ${
-                                                status === 'Upcoming'
-                                                    ? 'bg-[#eba535]'
-                                                    : status === 'Overdue'
-                                                    ? 'bg-[#F00]'
-                                                    : 'bg-[#7FBA7A]'
-                                            }`}
-                                        >
-                                            {status}
-                                        </span>                                        
-                                    </div>
-
-                                </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-center table-text3 ">
-                                    {drill.created_at.split(" ")[0]}
+                                <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{formattedDate}</div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-start ">
                                     {can.drill_show && (
@@ -261,13 +196,15 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
             </div>            
             {/* Modal */}
             <DrillModal
+                auth={auth}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 mode={modalMode}
                 drill={selectedDrill}
                 sites={sites}
                 typeDrills={typeDrills}
-                categoryItems={categoryItems}
+                periods={periods}
+                actives={actives}
                 users={users}
             />
             </div>

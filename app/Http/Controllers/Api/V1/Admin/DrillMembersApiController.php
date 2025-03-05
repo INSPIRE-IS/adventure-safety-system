@@ -22,7 +22,18 @@ class DrillMembersApiController extends Controller
 
     public function store(StoreDrillMemberRequest $request)
     {
-        $drillMember = DrillMember::create($request->all());
+        $drillMember = DrillMember::updateOrCreate(
+            [
+                'site_id' => $request->site_id,
+                'drill_id' => $request->drill_id,
+                'user_id' => $request->user_id,
+                'uuid' => $request->id,
+            ],
+            [
+                'member_name' => $request->member_name,
+                'competent' => $request->competent,
+            ]
+        );
 
         return (new DrillMemberResource($drillMember))
             ->response()

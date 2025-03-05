@@ -27,13 +27,14 @@ class DrillMember extends Model
 
     protected $fillable = [
         'site_id',
-        'drill_detail_id',
+        'drill_id',
         'member_name',
         'user_id',
         'competent',
         'created_at',
         'updated_at',
         'deleted_at',
+        'uuid', // mobile id update irrelevant after mobile cleared required for updates
     ];
 
     protected function serializeDate(DateTimeInterface $date)
