@@ -82,12 +82,11 @@ class HandleInertiaRequests extends Middleware
             //dd($teams);
             $permissions = $user->getAllPermissions()->pluck('name');
             $roles = $user->getRoleNames()->pluck('name');
-            $team = Team::find($team_id);
+            $team = Team::find($team_id); // with('type_activities')->
             //dd($team);
             if ($user->isAdminOfTeam(1) || $user->id === 2) {
                 //setPermissionsTeamId(2);
                 //setPermissionsTeamId(null);
-
                 // Admin of Team 1 or user ID 2: Show all teams
                 // $teams = Team::all(); // Assuming you have a Team model
                 // //$permissions = Permission::all(); // Should list your permissions

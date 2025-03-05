@@ -16,7 +16,7 @@ class StoreCategoryItemRequest extends FormRequest
     {
         //return Gate::allows('category_item_create');
         /** @disregard P1013 */
-        return auth()->user()->can('category_item_create');
+        return true; //auth()->user()->can('category_item_create');
     }
 
     /**
@@ -31,17 +31,17 @@ class StoreCategoryItemRequest extends FormRequest
                 'string',
                 'required',
             ],
-            'in_use_date' => [
-                'string',
-                'nullable',
-            ],
-            'out_use_date' => [
-                'string',
-                'nullable',
-            ],
-            'certificate_recieved_id' => [
-                'required',
-            ],
+            // 'in_use_date' => [
+            //     'string',
+            //     'nullable',
+            // ],
+            // 'out_use_date' => [
+            //     'string',
+            //     'nullable',
+            // ],
+            // 'certificate_recieved_id' => [
+            //     'required',
+            // ],
         ];
     }
 }

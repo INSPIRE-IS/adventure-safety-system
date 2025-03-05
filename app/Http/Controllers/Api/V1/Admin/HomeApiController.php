@@ -50,7 +50,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            ->where('assigned_to_id', $userId)
+            //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
@@ -72,7 +72,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            ->where('assigned_to_id', $userId)
+            //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
@@ -95,7 +95,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            ->where('assigned_to_id', $userId)
+            //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
@@ -113,7 +113,7 @@ class HomeApiController extends Controller
                 'report_file:id,path,type_file_id,row',
                 'post_incident_details'
             ])
-            ->where('assigned_to_id', $userId)
+            //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('post_incidents.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
@@ -129,7 +129,7 @@ class HomeApiController extends Controller
                 'signature_file:id,path,type_file_id,row',
                 'drill_details'
             ])
-            ->where('assigned_to_id', $userId)
+            //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('drills.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
@@ -152,8 +152,8 @@ class HomeApiController extends Controller
         $teamId = auth('api')->user()->teams->first()->id;
         $typeInspectionId = 1;
 
-        $safety_inspection_item_details = CategoryItem::select('id', 'name', 'in_use_date', 'out_use_date', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,quantity,category_item_id')
+        $safety_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
+            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();
@@ -161,8 +161,8 @@ class HomeApiController extends Controller
 
         $typeInspectionId = 2;
 
-        $annual_safety_inspection_item_details = CategoryItem::select('id', 'name', 'in_use_date', 'out_use_date', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,quantity,category_item_id')
+        $annual_safety_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
+            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();
@@ -170,20 +170,20 @@ class HomeApiController extends Controller
 
         $typeInspectionId = 3;
 
-        $equipment_inspection_item_details = CategoryItem::select('id', 'name', 'in_use_date', 'out_use_date', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,quantity,category_item_id')
+        $equipment_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
+            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();
 
 
         $post_incident_details = PostIncidentDetail::select('id', 'answer', 'post_incident_id', 'question_id', 'user_id')
-            ->with('question:id,question,answer,user_id')
+            ->with('question:id,name')
             ->get();
 
 
         $drill_details = DrillDetail::select('id', 'complete_date', 'drill_id', 'competent', 'site_id', 'instructor_id')->get();
-        $drill_members = DrillMember::select('id', 'member_name', 'drill_detail_id', 'competent', 'site_id', 'user_id')->get();
+        $drill_members = DrillMember::select('id', 'member_name', 'drill_id', 'competent', 'site_id', 'user_id', 'uuid')->get();
         $type_bools = TypeBool::select('id', 'name', 'updated_at')->get();
         $type_drills = TypeDrill::select('id', 'name', 'updated_at')->get();
         $type_activities = TypeActivity::select('id', 'name', 'updated_at')->get();
@@ -220,12 +220,4 @@ class HomeApiController extends Controller
             'colleagues'
         ));
     }
-
-    public function getAnnualInspectionDetails(Request $request) {}
-
-    public function getEquipmentInspectionDetails(Request $request) {}
-
-    public function getDrillDetails(Request $request) {}
-
-    public function getPostIncidentDetails(Request $request) {}
 }

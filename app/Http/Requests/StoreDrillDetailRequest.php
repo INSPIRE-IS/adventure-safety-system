@@ -12,7 +12,7 @@ class StoreDrillDetailRequest extends FormRequest
     public function authorize(): bool
     {
         /** @disregard P1013 */
-        return auth()->user()->can('drill_detail_create');
+        return true; // auth()->user()->can('drill_detail_create');
     }
 
     /**
@@ -35,14 +35,14 @@ class StoreDrillDetailRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.date_format'),
             ],
-            'signature_file_id' => [
-                'required',
-                'integer',
-            ],
+            // 'signature_file_id' => [
+            //     'required',
+            //     'integer',
+            // ],
             'competent' => [
                 'required',
             ],
-            'type_drill_id' => [
+            'drill_id' => [
                 'required',
                 'integer',
             ],

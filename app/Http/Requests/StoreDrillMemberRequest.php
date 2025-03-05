@@ -16,7 +16,7 @@ class StoreDrillMemberRequest extends FormRequest
     {
         //return Gate::allows('drill_member_create');
         /** @disregard P1013 */
-        return auth()->user()->can('drill_member_create');
+        return true; // auth()->user()->can('drill_member_create');
     }
 
     /**
@@ -31,7 +31,7 @@ class StoreDrillMemberRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'drill_detail_id' => [
+            'drill_id' => [
                 'required',
                 'integer',
             ],
@@ -43,10 +43,12 @@ class StoreDrillMemberRequest extends FormRequest
                 'nullable',
                 'integer',
             ],
-            'compitent' => [
+            'competent' => [
                 'required',
             ],
-
+            'id' => [
+                'required',
+            ],
         ];
     }
 }

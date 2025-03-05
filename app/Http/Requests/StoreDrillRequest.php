@@ -16,7 +16,7 @@ class StoreDrillRequest extends FormRequest
     {
         // return Gate::allows('drill_create');
         /** @disregard P1013 */
-        return auth()->user()->can('drill_create');
+        return true; // auth()->user()->can('drill_create');
     }
 
     /**
@@ -39,7 +39,7 @@ class StoreDrillRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'signature_file_id' => [
+            'site_id' => [
                 'required',
                 'integer',
             ],

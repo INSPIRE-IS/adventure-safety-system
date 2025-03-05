@@ -37,8 +37,12 @@ class UserController extends Controller
             ->whereHas('teams', function ($query) use ($teamId) {
                 $query->where('team_id', $teamId);
             })
+            // ->when(!$user->hasAnyRole(['admin', 'super']), function ($query) use ($teamId) {
+            //     $query->whereHas('teams', function ($subQuery) use ($teamId) {
+            //         $subQuery->where('team_id', $teamId);
+            //     });
+            // })
             ->orderBy($sortColumn, $sortDirection)
-            // ->get();
             ->paginate(10);
         //dd(DB::getQueryLog());
         $roles = Role::select('name', 'id')->get(); //->pluck('name', 'id');

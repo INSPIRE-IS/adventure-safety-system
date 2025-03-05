@@ -21,11 +21,30 @@ use Illuminate\Support\Facades\Log;
 
 class SiteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('site_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $sites  = Team::with(['type_activities:id,name'])->paginate(10);
+
+        $searchTerm = $request->get('search', '');
+        $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
+        $sortDirection = $request->get('direction', 'asc');
+
+        $user = auth()->user();
+        //dd($user->hasAnyRole(['admin', 'super']));
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+
+        $sites  = Team::with(['type_activities:id,name'])
+            ->where('name', 'like', '%' . $searchTerm . '%')
+            ->where('id', $teamId)
+            // ->when(!$user->hasAnyRole(['admin', 'super']), function ($query) use ($teamId) {
+            //     $query->whereHas('teams', function ($subQuery) use ($teamId) {
+            //         $subQuery->where('id', $teamId);
+            //     });
+            // })
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10);
+
         $typeActivities = TypeActivity::select('name', 'id')->get();
         //dd($typeActivities);
         //$site  = Team::where('owner_id', auth()->user()->id)->first();
