@@ -457,47 +457,63 @@ class DatabaseSeeder extends Seeder
         $user13->assignRole('inspector'); // Assign 'user' role for Team 3 
         $user14->assignRole('instructor'); // Assign 'user' role for Team 3 
 
-        CategoryItem::create(['name' => 'Launch Platform 1', 'type_inspection_id' => 1, 'site_id' => 2, 'in_use_date' => '2023-01-01', 'out_use_date' => '', 'certificate_recieved_id' => 2]);
-        CategoryItem::create(['name' => 'Element 1', 'type_inspection_id' => 1, 'site_id' => 2, 'in_use_date' => '2023-01-01', 'out_use_date' => '', 'certificate_recieved_id' => 2]);
-        CategoryItem::create(['name' => 'Launch Platform 2', 'type_inspection_id' => 1, 'site_id' => 2, 'in_use_date' => '2023-01-01', 'out_use_date' => '', 'certificate_recieved_id' => 2]);
-        CategoryItem::create(['name' => 'Element 2', 'type_inspection_id' => 1, 'site_id' => 2, 'in_use_date' => '2023-01-01', 'out_use_date' => '', 'certificate_recieved_id' => 2]);
-        CategoryItem::create(['name' => 'PPE Maintenance Check', 'type_inspection_id' => 3, 'site_id' => 2, 'in_use_date' => '2023-01-01', 'out_use_date' => '', 'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Launch Platform 1', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Element 1', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Launch Platform 2', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Element 2', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Trolleys', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Lanyards', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Carabiners', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Harnesses', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Maillons', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
 
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Concrete Stay Blocks']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Stay Cables and Rigging']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Gumpole Posts']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Steel Brackets']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Platform Timber Frame']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Platform Decking']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Zipline and Safety Cable and Rigging']);
-        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Fixings and Fastenings']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Concrete Stay Blocks', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Stay Cables and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Gumpole Posts', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Steel Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Platform Timber Frame', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Platform Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Zipline and Safety Cable and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 1, 'name' => 'Fixings and Fastenings', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
-        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Combi Rope']);
-        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Support & Belay Cables']);
-        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Spreader Bars and Brackets']);
-        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Timber and Poles']);
-        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Decking']);
+        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Combi Rope', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Support & Belay Cables', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Spreader Bars and Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Timber and Poles', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 2, 'name' => 'Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Concrete Stay Blocks']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Stay Cables and Rigging']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Gumpole Posts']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Steel Brackets']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Platform Timber Frame']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Platform Decking']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Zipline and Safety Cable and Rigging']);
-        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Fixings and Fastenings']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Concrete Stay Blocks', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Stay Cables and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Gumpole Posts', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Steel Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Platform Timber Frame', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Platform Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Zipline and Safety Cable and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 3, 'name' => 'Fixings and Fastenings', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
-        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Combi Rope']);
-        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Support & Belay Cables']);
-        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Spreader Bars and Brackets']);
-        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Timber and Poles']);
-        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Decking']);
+        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Combi Rope', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Support & Belay Cables', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Spreader Bars and Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Timber and Poles', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 4, 'name' => 'Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
-        CategoryDetail::create(['category_item_id' => 5, 'name' => 'Trolleys', 'quantity' => 2]);
-        CategoryDetail::create(['category_item_id' => 5, 'name' => 'Lanyards', 'quantity' => 3]);
-        CategoryDetail::create(['category_item_id' => 5, 'name' => 'Carabiners', 'quantity' => 3]);
-        CategoryDetail::create(['category_item_id' => 5, 'name' => 'Harnesses', 'quantity' => 4]);
-        CategoryDetail::create(['category_item_id' => 5, 'name' => 'Maillons', 'quantity' => 2]);
+        CategoryDetail::create(['category_item_id' => 5, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 5, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 6, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 6, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 6, 'name' => '#003', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 7, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 7, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 7, 'name' => '#003', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 7, 'name' => '#004', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 8, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 8, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 8, 'name' => '#003', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 8, 'name' => '#004', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 8, 'name' => '#005', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 9, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 9, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
         // period 1 none,2 3month,3 4 month,4 6 month,5 12 month 
         InspectionSchedule::create(['name' => 'Rock climbing', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         InspectionSchedule::create(['name' => 'Rope climbing', 'site_id' => $team2->id, 'type_inspection_id' => 2, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);

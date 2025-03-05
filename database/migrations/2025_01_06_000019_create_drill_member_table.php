@@ -15,11 +15,12 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('member_name')->nullable();
             $table->string('competent');
+            $table->string('uuid')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreignId('site_id')->nullable()->constrained('teams');
-            $table->foreignId('drill_detail_id')->nullable()->constrained('drill_details');
+            $table->foreignId('drill_id')->nullable()->constrained('drills');
             $table->foreignId('user_id')->nullable()->constrained('users');
         });
     }

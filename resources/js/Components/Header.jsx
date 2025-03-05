@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,20 +8,16 @@ const Header = () => {
   const navLinks = [
     { name: 'Staff Management', route: 'users.index' },
     { name: 'Inspection Management', route: 'inspections.index' },
-    { name: 'PPE Management', route: 'inspections.index' },
+    { name: 'PPE Management', route: 'equipments.index' },
     { name: 'Safety Management', route: 'drills.index' },
     { name: 'Incident Management', route: 'incidents.index' },
     { name: 'Complaint Management', route: 'post-incidents.index' },
     { name: 'Site Management', route: 'sites.index' },
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    //alert('logout');
-    document.getElementById('logoutform').submit();
-    //post(route("logout"));
-
-    };
+  const handleLogout = () => {
+    router.post(route('logout'));
+};
 
   return (
     <header className="bg-white w-[95%] ml-[50px] mt-[23px] mb-[23px] mr-[50px] h-[60px] flex items-center justify-between px-10">
@@ -59,7 +55,7 @@ const Header = () => {
 
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
-        <button onClick={handleSubmit} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
+        <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
           <img src="./images/logout-icon.svg" alt="Logout" className="w-[20px] h-[20px] rounded-full" />
         </button>
         <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">

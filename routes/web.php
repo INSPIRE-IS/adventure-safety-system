@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\PostIncidentController;
 use App\Http\Controllers\Admin\PostIncidentScheduleController;
 use App\Http\Controllers\Admin\DrillController;
 use App\Http\Controllers\Admin\DrillDetailController;
+use App\Http\Controllers\Admin\EquipmentController;
 use App\Http\Controllers\Admin\PostIncidentDetailController;
 use App\Http\Controllers\Admin\SystemCalendarController;
 use Illuminate\Foundation\Application;
@@ -113,7 +114,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('category-details', CategoryDetailController::class)->except(['create', 'edit']);
 
     // Inspections
+    Route::post('inspections/manage', [InspectionController::class, 'manage'])->name('inspections.manage');
     Route::resource('inspections', InspectionController::class)->except(['create', 'edit']);
+    Route::resource('equipments', EquipmentController::class)->except(['create', 'edit']);
 
     // Inspection Schedule
     Route::resource('inspection-schedules', InspectionScheduleController::class)->except(['create', 'edit']);

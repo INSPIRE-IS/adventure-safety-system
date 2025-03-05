@@ -21,12 +21,10 @@ class CategoryItemController extends Controller
 {
     public function index(Request $request)
     {
-
+        //dd($request->get('data', ''));
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('category_item_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $type_inspections = TypeInspection::select('name as label', 'id as value')->get();
-        $teams = Team::select('name as label', 'id as value')->get();
-        $type_bools = TypeBool::select('name as label', 'id as value')->get();
+
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
@@ -35,10 +33,15 @@ class CategoryItemController extends Controller
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
 
+        $type_inspections = TypeInspection::select('name as label', 'id as value')->get();
+        $teams = Team::select('name as label', 'id as value')->get();
+        $type_bools = TypeBool::select('name as label', 'id as value')->get();
+
         /** @disregard P1013 */
         return Inertia::render('CategoryItem/Index', [
             'categoryItems' => $categoryItems,
             'type_inspections' => $type_inspections,
+            'data' => $request->get('data', ''),
             'teams' => $teams,
             'type_bools' => $type_bools,
             'can' => [
@@ -53,37 +56,55 @@ class CategoryItemController extends Controller
 
     public function store(StoreCategoryItemRequest $request)
     {
-        $saveImage = false;
-        if ($request->hasFile('image')) {
 
-            $request->validate([
-                'image' => 'required|file|image',
-            ]);
-            $saveImage = true;
+        //dd($request);
+        if ($request->type_inspection_id == 3) {
+            $categoryItem = CategoryItem::create($request->all());
+            //$categoryItem = CategoryItem::create($validated);
+
+            if (!empty($request->identifications)) {
+                $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
+                foreach ($request->identifications as $identification) {
+                    //dd($identification);
+                    $categoryItem->categoryDetails()->create([
+                        'name' => $identification,
+                        'in_use_date' =>  $in_use_date,
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Equipment item added successfully.');
+        } else {
+            $saveImage = false;
+            if ($request->hasFile('image')) {
+
+                $request->validate([
+                    'image' => 'required|file|image',
+                ]);
+                $saveImage = true;
+            }
+            $categoryItem = CategoryItem::create($request->all());
+            if ($saveImage) {
+                $image_file = $request->file('image');
+
+                $fileName = time() . '_' . $image_file->getClientOriginalName();
+                $directoryPath = 'uploads/certification/' . $categoryItem->id;
+
+                $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
+                $file = File::create([
+                    'site_id'   => $categoryItem->site_id,
+                    'table_name' => 'category_items',
+                    'file_name' => $fileName,
+                    'type_file_id' => 8, // certificate
+                    'row' => $categoryItem->id,
+                    'path' => $filePath,
+                ]);
+
+                $categoryItem->certificate_file_id = $file->id;
+                $categoryItem->save();
+            }
+            return redirect()->route('category-items.index');
         }
-        $categoryItem = CategoryItem::create($request->all());
-        if ($saveImage) {
-            $image_file = $request->file('image');
-
-            $fileName = time() . '_' . $image_file->getClientOriginalName();
-            $directoryPath = 'uploads/certification/' . $categoryItem->id;
-
-            $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
-            $file = File::create([
-                'site_id'   => $categoryItem->site_id,
-                'table_name' => 'category_items',
-                'file_name' => $fileName,
-                'type_file_id' => 8, // certificate
-                'row' => $categoryItem->id,
-                'path' => $filePath,
-            ]);
-
-            $categoryItem->certificate_file_id = $file->id;
-            $categoryItem->save();
-        }
-
-
-        return redirect()->route('category-items.index');
     }
 
 

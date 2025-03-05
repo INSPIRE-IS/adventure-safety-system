@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Admin\HomeApiController;
 use App\Http\Controllers\Api\V1\Admin\IncidentApiController;
 use App\Http\Controllers\Api\V1\Admin\InspectionsApiController;
 use App\Http\Controllers\Api\V1\Admin\PostIncidentApiController;
+use App\Http\Controllers\Api\V1\Admin\PostIncidentDetailApiController;
 use App\Http\Controllers\Api\V1\Admin\SafetyInspectionDetailApiController;
 use App\Http\Controllers\Api\V1\Admin\TeamApiController;
 use App\Http\Controllers\Api\V1\Admin\TypeBoolApiController;
@@ -32,7 +33,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', function () {
+Route::get('/v1/test', function () {
     return response()->json(['message' => 'Test route working!']);
 });
 
@@ -102,6 +103,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Post Incident
     Route::apiResource('post-incidents', PostIncidentApiController::class)->except(['create', 'edit']);
+
+    Route::apiResource('post-incident-details', PostIncidentDetailApiController::class)->except(['create', 'edit']);
 
     // Type Files
     Route::apiResource('type-files', TypeFilesApiController::class)->except(['create', 'edit']);

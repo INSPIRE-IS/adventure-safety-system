@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('category_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->mediumInteger('quantity')->default(1);
+            $table->string('in_use_date')->nullable();
+            $table->string('out_use_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

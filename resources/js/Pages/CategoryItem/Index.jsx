@@ -6,7 +6,7 @@ import CategoryItemModal from './CategoryItemModal';
 import SearchBar from '@/Components/SearchBar';
 import AddButton from '@/Components/AddButton';
 
-const CategoryItemsIndex = ({auth, categoryItems, type_inspections, teams, type_bools, can, searchTerm, sortColumn, sortDirection }) => {	
+const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, type_bools, can, searchTerm, sortColumn, sortDirection }) => {	
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on categoryitem ', auth);
@@ -39,6 +39,7 @@ const CategoryItemsIndex = ({auth, categoryItems, type_inspections, teams, type_
         // Redirect to the route with search query and other parameters
         console.log('search ', search);
         window.location.href = route('category-items.index', {
+            data: data,
             search,
             sort: sortColumn,
             direction: sortDirection
@@ -89,6 +90,7 @@ const CategoryItemsIndex = ({auth, categoryItems, type_inspections, teams, type_
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('category-items.index', { 
+                                    data: data,
                                     sort: 'site_id', 
                                     direction: sortColumn === 'site_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 

@@ -73,6 +73,16 @@ class User extends Authenticatable
     //     });
     // }
 
+    // public function hasAnyRole(array $roles)
+    // {
+    //     return $this->getRoleNames()->intersect($roles)->isNotEmpty();
+    // }
+
+    public function hasAnyRole(array $roles, $teamId = null): bool
+    {
+        return $this->hasRole($roles, $teamId);
+    }
+
     public function userUserAlerts()
     {
         return $this->belongsToMany(UserAlert::class);

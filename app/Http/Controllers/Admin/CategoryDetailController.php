@@ -19,7 +19,7 @@ class CategoryDetailController extends Controller
     {
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('category_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $categoryItems = CategoryItem::select('name as label', 'id as value')->get();
+
 
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'category_item_id'); // Default to 'name' if no sort is provided
@@ -32,6 +32,8 @@ class CategoryDetailController extends Controller
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(500);
         //dd($categoryDetails);
+        $categoryItems = CategoryItem::select('name as label', 'id as value')->get();
+
         /** @disregard P1013 */
         return Inertia::render('CategoryDetail/Index', [
             'categoryItems' => $categoryItems,

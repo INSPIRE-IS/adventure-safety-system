@@ -30,8 +30,6 @@ class CategoryItem extends Model
         'site_id',
         'type_inspection_id',
         'name',
-        'in_use_date',
-        'out_use_date',
         'certificate_recieved_id',
         'certificate_file_id',
         'created_at',

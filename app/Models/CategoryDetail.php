@@ -22,7 +22,8 @@ class CategoryDetail extends Model
     protected $fillable = [
         'category_item_id',
         'name',
-        'quantity',
+        'in_use_date',
+        'out_use_date',
         'created_at',
         'updated_at',
         'deleted_at',

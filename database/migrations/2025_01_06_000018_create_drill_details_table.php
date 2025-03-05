@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->foreignId('site_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('signature_file_id')->constrained('files')->onDelete('cascade');
+            $table->foreignId('signature_file_id')->nullable()->constrained('files')->onDelete('cascade');
             $table->foreignId('drill_id')->constrained('drills')->onDelete('cascade');
         });
     }
