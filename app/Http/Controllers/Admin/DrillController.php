@@ -40,9 +40,6 @@ class DrillController extends Controller
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(15);
 
-        //dd($drills);
-
-
         $sites = Team::select('name as label', 'id as value')->get();
         $drill_schedules = DrillSchedule::select('name as label', 'id as value')->get();
         $typeDrills = TypeDrill::select('name as label', 'id as value')->get();
@@ -88,9 +85,6 @@ class DrillController extends Controller
             ]
         );
 
-        //$photo_files = File::select('name as label', 'id as value')->get();
-
-        //$signature_files = File::select('name as label', 'id as value')->get();
 
         /** @disregard P1013 */
         return Inertia::render('Drill/Index', [
@@ -134,11 +128,34 @@ class DrillController extends Controller
 
     public function show(Drill $drill)
     {
+        //dd($drill);
         // abort_if(Gate::denies('drill_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $user = auth()->user();
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
 
-        $drill->load('site', 'drill', 'instructor', 'signature_file');
+        $drill->load('drill_details', 'drill_schedule', 'assigned_to', 'drill_members', 'type_drill');
 
-        return view('admin.drills.show', compact('drill'));
+        setPermissionsTeamId($teamId);
+        $users = User::whereHas('teams', function ($query) use ($teamId) {
+            $query->where('team_id', $teamId);
+        })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['manager', 'inspector']);
+            })
+            ->select('name as label', 'id as value')->get();
+        return Inertia::render('Drill/Show', [
+            'drill' => $drill,
+            'drill_id' => $drill->id,
+            'category_id' => $drill->type_drill->id,
+            'users' => $users,
+            //'signature_files' => $signature_files,
+            //'photoFiles' => $photo_files,
+            'can' => [
+                'drill_edit_reminder' => true, //auth()->user()->can('drill_create'),
+                'drill_edit_inspector' => true, //auth()->user()->can('drill_create'),
+                'drill_edit_date' => true, //auth()->user()->can('drill_create'),
+            ],
+        ]);
     }
 
     public function destroy(Drill $drill)

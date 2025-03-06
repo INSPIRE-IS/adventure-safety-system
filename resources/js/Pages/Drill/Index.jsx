@@ -123,9 +123,6 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                                 next_date = new Date();
                                 formattedDate =next_date.toISOString().split("T")[0];
                             }
-
-
-
                         return(
                             <tr key={drill.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
@@ -136,10 +133,10 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                                     </svg>
                                 </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center ">
                                     
                                     <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill.assigned_to.name}</div>                             
+                                        <div className="w-full table-text1 ">{drill.assigned_to.name}</div>                             
                                     </div>
                                         {/* <div className="w-[50px] h-[0px] origin-top-left -rotate-90 border border-[#cecece]"></div>  */}
                                 </td>
@@ -147,7 +144,7 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
 
                                     <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{drill?.complete_date?.split(" ")[0]}</div>                                        
+                                            <div className="w-full table-text1 ">{drill?.complete_date?.split(" ")[0]}</div>                                        
                                     </div>
                                      
                                 </td>
@@ -162,7 +159,8 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                                         // >
                                         //     <img src="./images/view-icon.svg" alt="View" width={48} height={48} />
                                         // </button>  
-                                        <div className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                                        <div onClick={() => router.get(route('drills.show', drill.id))}
+                                        className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex hover:bg-gray-200">
                                             <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
                                         </div>                                      
                                     )}
