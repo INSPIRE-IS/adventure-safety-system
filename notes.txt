@@ -93,6 +93,7 @@ php artisan make:Request UpdateInspectionUserAssignedRequest
 
 php artisan make:model Inspection --migration
 php artisan make:controller Admin/InspectionController -r -mInspection
+php artisan make:controller Admin/EquipmentController -r -mInspection
 
 php artisan make:Request StoreInspectionRequest
 php artisan make:Request UpdateInspectionRequest
@@ -296,3 +297,6 @@ php artisan make:resource Admin/TypeQuestionResource
 
 php artisan make:controller Api/V1/Admin/HomeApiController
 php artisan make:resource Admin/HomeResource
+
+php artisan make:controller Api/V1/Admin/PostIncidentDetailApiController  --resource
+php artisan make:resource Admin/PostIncidentDetailResource

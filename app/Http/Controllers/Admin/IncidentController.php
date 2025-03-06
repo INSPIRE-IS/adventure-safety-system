@@ -10,6 +10,7 @@ use App\Models\File;
 use App\Models\Incident;
 use App\Models\Team;
 use App\Models\TypeIncident;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -100,11 +101,33 @@ class IncidentController extends Controller
 
     public function show(Incident $incident)
     {
+        //dd($incident);
         //abort_if(Gate::denies('incident_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $user = auth()->user();
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());, 'incidentIncidentInstructors'
+        $incident->load('site', 'type_incident', 'signature_file', 'files');
 
-        $incident->load('site', 'type_incident', 'signature_file', 'incident_file', 'team', 'incidentIncidentInstructors');
+        setPermissionsTeamId($teamId);
+        $users = User::whereHas('teams', function ($query) use ($teamId) {
+            $query->where('team_id', $teamId);
+        })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['manager', 'inspector']);
+            })
+            ->select('name as label', 'id as value')->get();
+        /** @disregard P1013 */
+        return Inertia::render('Incident/Show', [
+            'incident' => $incident,
+            'users' => $users,
+            'incident_id' => $incident->id,
+            'category_id' => $incident->type_incident->id,
 
-        return view('admin.incidents.show', compact('incident'));
+            'can' => [
+                'drill_edit_reminder' => true, //auth()->user()->can('drill_create'),
+                'drill_edit_inspector' => true, //auth()->user()->can('drill_create'),
+                'drill_edit_date' => true, //auth()->user()->can('drill_create'),
+            ],
+        ]);
     }
 
     public function destroy(Incident $incident)

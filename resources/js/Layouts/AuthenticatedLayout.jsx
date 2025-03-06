@@ -23,7 +23,7 @@ export default function Authenticated({ user, header, children }) {
         <div className="lg:flex lg:flex-1 lg:overflow-hidden bg-[#F8F8F8]">
             {/* Sidebar */}
             <Sidebar />
-            <div className="w-[22px] bg-white"></div>
+            <div className="w-[22px] bg-[#F8F8F8]"></div>
             {/* Main Content */}
             <FlashMessage />
             <main className="lg:flex-1 lg:overflow-auto mr-[72px] ">

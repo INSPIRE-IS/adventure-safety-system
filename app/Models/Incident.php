@@ -8,11 +8,9 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-//use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Incident extends Model //implements HasMediaInteractsWithMedia,
+
+class Incident extends Model
 {
     use SoftDeletes, Auditable, HasFactory;
 
@@ -81,8 +79,9 @@ class Incident extends Model //implements HasMediaInteractsWithMedia,
         return $this->belongsTo(File::class, 'incident_file_id');
     }
 
-    public function team()
+    public function files()
     {
-        return $this->belongsTo(Team::class, 'team_id');
+        return $this->hasMany(File::class, 'table_row_id', 'id')
+            ->where('table_name', 'incidents');
     }
 }

@@ -89,7 +89,7 @@ const handleCloseModal = () => {
                         </div>
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-start gap-4 mb-6">
                         <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
-                        <EditButton title='Esculate Issue' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
+                        <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
                         </div>                        
                     </div>
 
