@@ -4,7 +4,7 @@ const CustomInput1 = ({ label, type = "text", name, value, onChange, error, plac
   return (
     <div className="w-full mb-4">
       {label && (
-        <label className="block text-main mb-[14px]">
+        <label className="block input-header mb-[14px]">
           {label}
         </label>
       )}
@@ -15,7 +15,7 @@ const CustomInput1 = ({ label, type = "text", name, value, onChange, error, plac
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full pl-[19px] pt-[11px] pb-[12px] bg-[#FBF9F7] border rounded-full focus:outline-none focus:ring-2 ${
+        className={`w-full pl-[19px] pt-[6px] pb-[6px] bg-[#FFFFFF] border rounded-xl focus:outline-none focus:ring-2 ${
           error
             ? "border-red-500 focus:ring-red-300 text-red-700"
             : "border-gray-300 focus:ring-blue-300 text-main2"
