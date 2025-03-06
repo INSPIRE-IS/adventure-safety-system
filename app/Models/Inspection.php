@@ -87,11 +87,11 @@ class Inspection extends Model
 
     public function safety_inspection_details()
     {
-        return $this->belongsTo(SafetyInspectionDetail::class, 'safety_inspection_detail_id');
+        return $this->hasMany(SafetyInspectionDetail::class, 'inspection_id');
     }
 
     public function equipment_inspection_details()
     {
-        return $this->belongsTo(EquipmentInspectionDetail::class, 'equipment_inspection_detail_id');
+        return $this->belongsTo(EquipmentInspectionDetail::class, 'inspection_id');
     }
 }

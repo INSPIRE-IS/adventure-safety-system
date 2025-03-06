@@ -62,4 +62,10 @@ class SafetyInspectionDetail extends Model
     {
         return $this->belongsTo(CategoryDetail::class, 'category_detail_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'table_row_id', 'id')
+            ->where('table_name', 'safety_inspection_details');
+    }
 }

@@ -85,10 +85,16 @@ class InspectionSchedule extends Model
         return $this->belongsTo(User::class, 'assigned_by_id');
     }
 
+    // public function category_items()
+    // {
+    //     return $this->belongsToMany(CategoryItem::class);
+    // }
+
     public function category_items()
     {
-        return $this->belongsToMany(CategoryItem::class);
+        return $this->hasMany(CategoryItem::class, 'type_inspection_id', 'type_inspection_id');
     }
+
 
     public function inspections()
     {
