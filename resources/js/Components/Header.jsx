@@ -12,7 +12,7 @@ const Header = () => {
     { name: 'Safety Management', route: 'drills.index' },
     { name: 'Incident Management', route: 'incidents.index' },
     { name: 'Complaint Management', route: 'post-incidents.index' },
-    { name: 'Site Management', route: 'sites.index' },
+    { name: 'Site Management', route: 'files.index' },
   ];
 
   const handleLogout = () => {
