@@ -23,7 +23,22 @@ class IncidentApiController extends Controller
 
     public function store(StoreIncidentRequest $request)
     {
-        $incident = Incident::create($request->all());
+        $incident = Incident::updateOrCreate(
+            [
+                'site_id' => $request->site_id,
+                'user_id' => $request->user_id,
+                'type_incident_id' => $request->type_incident_id,
+                'uuid' => $request->id,
+            ],
+            [
+                'incident_date' => $request->incident_date,
+                'instructor_one_name' => $request->instructor_one_name,
+                'instructor_two_name' => $request->instructor_two_name,
+                'description' => $request->description,
+                // 'incident_file_id' => $request->incident_file_id,
+                // 'signature_file_id' => $request->signature_file_id,
+            ]
+        );
 
         return (new IncidentResource($incident))
             ->response()

@@ -26,10 +26,14 @@ class Incident extends Model //implements HasMediaInteractsWithMedia,
     ];
 
     protected $fillable = [
-        'site_id',
         'type_incident_id',
         'incident_date',
+        'instructor_one_name',
+        'instructor_two_name',
         'description',
+        'site_id',
+        'user_id',
+        'uuid', // unique id created on mobile incase of update
         'signature_file_id',
         'incident_file_id',
         'created_at',

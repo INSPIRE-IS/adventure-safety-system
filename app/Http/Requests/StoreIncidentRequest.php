@@ -16,7 +16,7 @@ class StoreIncidentRequest extends FormRequest
     {
         // return Gate::allows('incident_create');
         /** @disregard P1013 */
-        return auth()->user()->can('incident_create');
+        return true; // auth()->user()->can('incident_create');
     }
 
     /**
@@ -38,10 +38,10 @@ class StoreIncidentRequest extends FormRequest
             'description' => [
                 'required',
             ],
-            'signature_file_id' => [
-                'required',
-                'integer',
-            ],
+            // 'signature_file_id' => [
+            //     'required',
+            //     'integer',
+            // ],
         ];
     }
 }

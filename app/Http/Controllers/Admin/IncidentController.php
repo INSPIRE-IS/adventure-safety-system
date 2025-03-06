@@ -13,18 +13,28 @@ use App\Models\TypeIncident;
 use Gate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class IncidentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
-
-
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('incident_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $incidents  = Incident::with(['site', 'type_incident', 'signature_file', 'incident_file'])->paginate(10);
+        $searchTerm = $request->get('search', '');
+        $sortColumn = $request->get('sort', 'description'); // Default to 'name' if no sort is provided
+        $sortDirection = $request->get('direction', 'asc');
+
+        $user = auth()->user();
+        //dd($user->hasAnyRole(['admin', 'super']));
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+
+        $incidents  = Incident::with(['site', 'type_incident', 'signature_file', 'incident_file'])
+            ->where('description', 'like', '%' . $searchTerm . '%')
+            ->orderBy($sortColumn, $sortDirection)
+            ->where('site_id', $teamId)
+            ->paginate(10);
 
         $sites = Team::select('name as label', 'id as value')->get();
 
@@ -37,9 +47,9 @@ class IncidentController extends Controller
             'typeIncidents' => $typeIncidents,
             'can' => [
                 'incident_show' => auth()->user()->can('incident_show'),
-                'incident_create' => auth()->user()->can('incident_create'),
-                'incident_edit' => auth()->user()->can('incident_edit'),
-                'incident_delete' => auth()->user()->can('incident_delete'),
+                'incident_create' => false, // auth()->user()->can('incident_create'),
+                'incident_edit' => false, //  auth()->user()->can('incident_edit'),
+                'incident_delete' => false, //  auth()->user()->can('incident_delete'),
 
             ],
         ]);
