@@ -16,7 +16,7 @@ class StorePostIncidentRequest extends FormRequest
     {
         // return Gate::allows('post_incident_create');
         /** @disregard P1013 */
-        return auth()->user()->can('post_incident_create');
+        return true; // auth()->user()->can('post_incident_create');
     }
 
     /**
@@ -26,6 +26,7 @@ class StorePostIncidentRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'post_incident_schedule_id' => [
                 'required',
@@ -40,6 +41,9 @@ class StorePostIncidentRequest extends FormRequest
                 'integer',
             ],
             'due_date' => [
+                'required',
+            ],
+            'complete_date' => [
                 'required',
             ],
         ];

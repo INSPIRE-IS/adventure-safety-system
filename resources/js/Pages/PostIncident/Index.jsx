@@ -76,8 +76,7 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">
-                    <h3 className="view-sub-header">{auth?.team?.name ?? 'Site Name'}</h3>               
-                    <h1 className="view-header">Post Incidents</h1>                    
+                    <h1 className="view-header">{auth?.team?.name ?? 'Site Name'}</h1> 
                 </div>
             </header>
 
@@ -86,26 +85,43 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
+                        <th className="px-6 py-3 table-header uppercase tracking-wider">
+                        </th>
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('post-incidents.index', { 
-                                    sort: 'due_date', 
-                                    direction: sortColumn === 'due_date' && sortDirection === 'asc' ? 'desc' : 'asc' 
+                                    sort: 'post_incident_schedule_id', 
+                                    direction: sortColumn === 'post_incident_schedule_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
                                 className="flex flex-row justify-center items-center"
                             >
-                                Due Date
+                                Subject
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
-                            <th className="px-6 py-3 table-header uppercase tracking-wider text-start justify-center">
-                            Complet Date
+                            <th className="px-6 py-3 table-header uppercase tracking-wider">
+                            <Link 
+                                href={route('post-incidents.index', { 
+                                    sort: 'assigned_to_id', 
+                                    direction: sortColumn === 'assigned_to_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
+                                })} 
+                                className="flex flex-row justify-center items-center"
+                            >
+                                Subitted By
+                                <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
+                            </Link>
                             </th>
-                            <th className="px-6 py-3 table-header uppercase tracking-wider text-start justify-center">
-                            Incident
-                            </th>
-                            <th className="px-6 py-3 table-header uppercase tracking-wider text-start justify-center">
-                            assigned_to_id
+                            <th className="px-6 py-3 table-header uppercase tracking-wider">
+                            <Link 
+                                href={route('post-incidents.index', { 
+                                    sort: 'complete_date', 
+                                    direction: sortColumn === 'complete_date' && sortDirection === 'asc' ? 'desc' : 'asc' 
+                                })} 
+                                className="flex flex-row justify-center items-center"
+                            >
+                                Time Submitted
+                                <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
+                            </Link>
                             </th>
                             <th className="px-6 py-3 uppercase tracking-wider">
                                 
@@ -116,18 +132,29 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
                         {postIncidents?.data.map((postIncident) => {
                             return(
                             <tr key={postIncident.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {postIncident.due_date}
+                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
+                                    <div className='bg-[#8A94A6] w-[43px] h-[43px] rounded-full flex items-center justify-center hover:bg-gray-200'>
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M13.9739 11.3187L11.9919 6.68343C11.6309 5.83489 11.0927 5.35363 10.4784 5.32196C9.87052 5.2903 9.28161 5.71457 8.83201 6.52512L7.62885 8.68447C7.37556 9.1404 7.01461 9.41269 6.622 9.44436C6.22306 9.48235 5.82412 9.27338 5.50117 8.86178L5.36185 8.68447C4.91225 8.12089 4.355 7.84859 3.78509 7.90558C3.21517 7.96258 2.72757 8.35518 2.40462 8.99476L1.30912 11.1794C0.916508 11.971 0.954503 12.8892 1.41677 13.6364C1.87903 14.3836 2.68325 14.8332 3.56345 14.8332H11.6436C12.4921 14.8332 13.2837 14.409 13.7523 13.6997C14.2335 12.9905 14.3095 12.0976 13.9739 11.3187Z" fill="white"/>
+                                            <path d="M4.44406 5.97455C5.62615 5.97455 6.58441 5.01628 6.58441 3.8342C6.58441 2.65212 5.62615 1.69385 4.44406 1.69385C3.26198 1.69385 2.30371 2.65212 2.30371 3.8342C2.30371 5.01628 3.26198 5.97455 4.44406 5.97455Z" fill="white"/>
+                                        </svg>
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {postIncident.complete_date}
+                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
+                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{postIncident.post_incident_schedule.name}</div>                                        
+                                </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {postIncident.post_incident_schedule.name}
-                                </td>  
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {postIncident.assigned_to.name}
-                                </td>                                
+                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
+                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{postIncident.assigned_to.name}</div>                                        
+                                </div>
+                                </td>
+                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
+                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{postIncident.complete_date}</div>                                        
+                                </div>
+                                </td>                              
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.post_incident_show && (
                                         <button
@@ -138,12 +165,16 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
                                         </button>                                        
                                     )}
                                     {can.post_incident_edit && (
-                                        <button
-                                            onClick={() => handleOpenModal("edit",postIncident)}
-                                            className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 mr-3"
-                                        >
-                                            <img src="./images/edit-icon.svg" alt="Edit" width={45} height={45} />
-                                        </button>
+                                        // <button
+                                        //     onClick={() => handleOpenModal("edit",postIncident)}
+                                        //     className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 mr-3"
+                                        // >
+                                        //     <img src="./images/edit-icon.svg" alt="Edit" width={45} height={45} />
+                                        // </button>
+                                        <div onClick={() => router.get(route('post-incidents.show', inspection.id))}
+                                            className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                                            <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
+                                        </div>  
                                     )}
                                     {can.post_incident_delete && (
                                         <button

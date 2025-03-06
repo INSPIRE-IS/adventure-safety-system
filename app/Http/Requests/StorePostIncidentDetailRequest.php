@@ -12,7 +12,7 @@ class StorePostIncidentDetailRequest extends FormRequest
     public function authorize(): bool
     {
         /** @disregard P1013 */
-        return auth()->user()->can('post_incident_detail_create');
+        return true; // auth()->user()->can('post_incident_detail_create');
     }
 
     /**

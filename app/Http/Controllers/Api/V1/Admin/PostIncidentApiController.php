@@ -38,7 +38,16 @@ class PostIncidentApiController extends Controller
 
     public function store(StorePostIncidentRequest $request)
     {
-        $postIncident = PostIncident::create($request->all());
+        $postIncident = PostIncident::updateOrCreate(
+            [
+                'site_id' => $request->site_id,
+                'id' => $request->id,
+                'post_incident_schedule_id' => $request->post_incident_schedule_id,
+            ],
+            [
+                'complete_date' => $request->complete_date,
+            ]
+        );
 
         return (new PostIncidentResource($postIncident))
             ->response()

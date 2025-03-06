@@ -13,6 +13,7 @@ use App\Models\TypeQuestion;
 use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,8 +26,14 @@ class PostIncidentController extends Controller
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'due_date'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
+
+        $user = auth()->user();
+        //dd($user->hasAnyRole(['admin', 'super']));
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+
         $postIncidents = PostIncident::with(['post_incident_schedule.incident', 'report_file', 'assigned_to']) // 'site',
             ->where('due_date', 'like', '%' . $searchTerm . '%')
+            ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
 
