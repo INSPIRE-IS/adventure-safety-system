@@ -182,59 +182,11 @@ class InspectionController extends Controller
 
     public function show(Inspection $inspection)
     {
+        //abort_if(Gate::denies('inspection_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $category = request('category');
-        //dd($category);
         $user = auth()->user();
-        //dd($user->hasAnyRole(['admin', 'super']));
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
-
-        // $inspections = Inspection::where('id', $inspection->id)
-        //     ->where('site_id', $teamId)
-        //     ->whereHas('safety_inspection_details', function ($query) use ($category) {
-        //         $query->where('category_item_id', '=', $category);
-        //     });
-
-        // dd($inspections->toSql(), $inspections->getBindings());
-
-        // $inspections = Inspection::where('id', $inspection->id)  // Move this up
-        //     ->where('site_id', $teamId)
-        //     ->whereHas('safety_inspection_details', function ($query) use ($category) {
-        //         $query->where('category_item_id', '=', 1);
-        //     })
-        //     ->with([
-        //         'safety_inspection_details',
-        //         'assigned_to:id,name,surname',
-        //     ])
-        //     ->get();
-        // $inspection_details = SafetyInspectionDetail::where('inspection_id', $inspection->id)
-        //     ->where('safety_inspection_details.site_id', $teamId)
-        //     ->whereHas('category_item', function ($query) use ($category) {
-        //         $query->where('category_item_id', '=', $category);
-        //     })
-        //     // ->whereHas('files', function ($query) {
-        //     //     $query->where('table_name', '=', 'safety_inspection_details');
-        //     // })
-        //     // ->join('files', function ($join) {
-        //     //     $join->on('safety_inspection_details.id', '=', 'files.table_row_id')
-        //     //         ->where('files.table_name', '=', 'safety_inspection_details');
-        //     // })
-        //     ->with([
-        //         'inspection',
-        //         'inspection.assigned_to:id,name,surname',
-        //         'files',
-        //         'category_item:id,name',
-        //         'category_detail:id,name',
-        //     ])
-        //     ->get();
-        // $files = File::where('table_name', '=', 'safety_inspection_details')
-        //     ->where('table_row_id', $inspection->id)
-        //     ->get();
         $inspection = Inspection::where('id', $inspection->id)->with('assigned_to:id,name,surname')->first();
-        // ->where('site_id', $teamId)
-        // ->whereHas('safety_inspection_details', function ($query) use ($category) {
-        //     $query->where('category_item_id', '=', $category);
-        // })->with('safety_inspection_details')
-
         $inspection_details = SafetyInspectionDetail::where('inspection_id', $inspection->id)
             ->where('category_item_id', $category)
             ->with([
@@ -269,11 +221,6 @@ class InspectionController extends Controller
                 'inspection_edit_date' => true, //auth()->user()->can('inspection_create'),
             ],
         ]);
-        //abort_if(Gate::denies('inspection_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        // $inspection->load('inspection_schedule', 'assigned_to');
-
-        // return view('admin.inspections.show', compact('inspection'));
     }
 
     public function destroy(Inspection $inspection)

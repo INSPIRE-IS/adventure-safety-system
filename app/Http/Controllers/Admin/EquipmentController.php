@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyInspectionRequest;
 use App\Http\Requests\StoreInspectionRequest;
 use App\Http\Requests\UpdateInspectionRequest;
 use App\Models\CategoryItem;
+use App\Models\EquipmentInspectionDetail;
 use App\Models\Inspection;
 use App\Models\InspectionSchedule;
 use App\Models\Team;
@@ -49,38 +50,7 @@ class EquipmentController extends Controller
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
-        // ->through(
-        //     fn($inspection) =>
-        //     collect($inspection->inspection_schedule->category_items)->map(fn($item) => [
-        //         'id' => $inspection->id,
-        //         'due_date' => $inspection->due_date,
-        //         'complete_date' => $inspection->complete_date,
-        //         'closing_comment' => $inspection->closing_comment,
-        //         'inspector' => $inspection->assigned_to->name,
-        //         'category_item' => $item->name, // Now correctly mapped
-        //     ])
-        // )->flatMap(fn($data) => $data);
-        // $transformedData = $inspections->flatMap(function ($inspection) {
-        //     return $inspection->inspection_schedule->category_items->map(function ($item) use ($inspection) {
-        //         return [
-        // 'id' => $item->id,
-        // 'due_date' => $inspection->due_date,
-        // 'complete_date' => $inspection->complete_date,
-        // 'closing_comment' => $inspection->closing_comment,
-        // 'inspector' => $inspection->assigned_to->name,
-        // 'category_item' => $item->name
-        //         ];
-        //     });
-        // });
 
-
-        //dd($inspections);
-        // $inspection_schedules = InspectionSchedule::select('name as label', 'id as value')->get();
-
-        // $assigned_tos = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        //$photo_files = File::pluck('path', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        //$signature_files = File::pluck('path', 'id')->prepend(trans('global.pleaseSelect'), '');
         $flattenedData = collect();
 
         foreach ($inspections as $inspection) {
@@ -112,9 +82,13 @@ class EquipmentController extends Controller
         $sites = Team::select('name as label', 'id as value')->get();
         $typeInspections = TypeInspection::select('name as label', 'id as value')->get();
         $categoryItems = CategoryItem::select('name as label', 'id as value')->get();
+        setPermissionsTeamId($teamId);
         $users = User::whereHas('teams', function ($query) use ($teamId) {
-            $query->where('team_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
+            $query->where('team_id', $teamId);
         })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['manager', 'inspector']);
+            })
             ->select('name as label', 'id as value')->get();
 
         $periodSelects = InspectionSchedule::PERIOD_SELECT;
@@ -172,23 +146,62 @@ class EquipmentController extends Controller
     {
         $inspection = Inspection::create($request->all());
 
-        return redirect()->route('admin.inspections.index');
+        return redirect()->route('admin.equipments.index');
     }
 
     public function update(UpdateInspectionRequest $request, Inspection $inspection)
     {
         $inspection->update($request->all());
 
-        return redirect()->route('admin.inspections.index');
+        return redirect()->route('admin.equipments.index');
     }
 
     public function show(Inspection $inspection)
     {
         //abort_if(Gate::denies('inspection_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $inspection->load('inspection_schedule', 'assigned_to');
+        $inspection_id = request('inspection_id');
+        //dd($inspection_id);
+        $category_id = request('category_id');
+        $user = auth()->user();
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+        $inspection = Inspection::where('id', $inspection_id)->with('assigned_to:id,name,surname')->first();
+        $category_item = CategoryItem::where('id', $category_id)->first();
+        //dd($category_item);
+        $inspection_details = EquipmentInspectionDetail::where('inspection_id', $inspection_id)
+            ->where('category_item_id', $category_id)
+            ->with([
+                'category_item:id,name',
+                'category_detail'
+            ])->get();
+        // dd($inspection_details);
+        setPermissionsTeamId($teamId);
+        $users = User::whereHas('teams', function ($query) use ($teamId) {
+            $query->where('team_id', $teamId);
+        })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['manager', 'inspector']);
+            })
+            ->select('name as label', 'id as value')->get();
 
-        return view('admin.inspections.show', compact('inspection'));
+        /** @disregard P1013 */
+        return Inertia::render('Equipment/Show', [
+            'inspection' => $inspection,
+            'inspection_details' => $inspection_details,
+            'category_item' => $category_item,
+            'users' => $users,
+            'category_id' => $category_id,
+            'inspection_id' => $inspection_id,
+            'can' => [
+                'inspection_show' => auth()->user()->can('inspection_show'),
+                'inspection_edit' => false, //auth()->user()->can('inspection_edit'),
+                'inspection_delete' => false, //auth()->user()->can('inspection_delete'),
+                'inspection_create' => false, //auth()->user()->can('inspection_create'),
+                'inspection_edit_reminder' => true, //auth()->user()->can('inspection_create'),
+                'inspection_edit_inspector' => true, //auth()->user()->can('inspection_create'),
+                'inspection_edit_date' => true, //auth()->user()->can('inspection_create'),
+            ],
+        ]);
     }
 
     public function destroy(Inspection $inspection)

@@ -319,7 +319,8 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                                         // >
                                         //     <img src="./images/view-icon.svg" alt="View" width={48} height={48} />
                                         // </button>  
-                                        <div className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                                        <div onClick={() => router.get(route('equipments.show', inspection.inspection_id), {inspection_id:inspection.inspection_id,category_id: inspection.category_id})}
+                                        className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
                                             <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
                                         </div>                                      
                                     )}

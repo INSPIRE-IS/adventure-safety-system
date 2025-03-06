@@ -25,7 +25,7 @@ const Header = () => {
 
       <div className="flex items-center space-x-2">
       <Link href="/">
-        <img className="w-[62px] h-[47px]" src="./images/logo.png" alt="Chimp&Zee Logo" />
+        <img className="w-[62px] h-auto" src="./images/logo.png" alt="Chimp&Zee Logo" />
       </Link>
       </div>
 

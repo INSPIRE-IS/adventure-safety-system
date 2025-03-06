@@ -46,4 +46,20 @@ class EquipmentInspectionDetail extends Model
     {
         return $this->belongsTo(Team::class, 'site_id');
     }
+
+    public function category_item()
+    {
+        return $this->belongsTo(CategoryItem::class, 'category_item_id');
+    }
+
+    public function category_detail()
+    {
+        return $this->belongsTo(CategoryDetail::class, 'category_detail_id');
+    }
+
+    // public function files()
+    // {
+    //     return $this->hasMany(File::class, 'table_row_id', 'id')
+    //         ->where('table_name', 'equipment_inspection_details');
+    // }
 }

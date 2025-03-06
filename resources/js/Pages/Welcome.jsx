@@ -30,12 +30,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     Log in
                                 </Link>
 
-                                <Link
+                                {/* <Link
                                     href={route('register')}
                                     className="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                                 >
                                     Register
-                                </Link>
+                                </Link> */}
                             </>
                         )}
                     </div>
@@ -48,7 +48,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <div className="flex justify-center mt-16 px-6 sm:items-center sm:justify-between">
                             <div className="text-center text-sm sm:text-start">&nbsp;</div>
                             <div className="flex flex-col items-center justify-center sm:justify-end text-sm text-gray-500 dark:text-gray-400 sm:ms-0">
-                                <img src="/images/chimp-zee-logo.png" alt="Logo" className="h-44 w-44 me-2" />
+                                <img src="/images/chimp-zee-logo.png" alt="Logo" className="h-auto w-44 me-2" />
                                 <span className='text-center text-sm sm:text-start text-yellow-500'>Laravel v{laravelVersion} (PHP v{phpVersion})</span>
                             </div>
                         </div>
