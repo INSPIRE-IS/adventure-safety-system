@@ -7,6 +7,8 @@ import SearchBar from '@/Components/SearchBar';
 import AddButton from '@/Components/AddButton';
 import EditButton from '@/Components/EditButton';
 import CustomSelect2 from '@/Components/CustomSelect2';
+import ManageModal from '@/Components/ManageModal';
+import ElementModal from './ElementModal';
 
 const periods = [
     { value: "1", label: "Last 30 Days" },
@@ -26,7 +28,7 @@ const periods = [
     { value: "4", label: "50" },
   ];
 
-const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, typeInspections, categoryItems, users }) => {
+const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, typeInspections, categoryItems, users, typeBools }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on inspection ', auth);
@@ -36,8 +38,11 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
     const [month, setMonth] = useState(searchMonth);
     const [show, setShow] = useState(searchShow);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isManageModalOpen, setIsManageModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
     const [selectedInspection, setSelectedInspection] = useState(null);
+    const [selectedElementItem, setSelectedElementItem] = useState(null);
+    const [checkedState, setCheckedState] = useState([]);
 
     const handleOpenModal = (mode, inspection = null) => {
         console.log('mode ', mode);
@@ -47,9 +52,20 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
         setIsModalOpen(true);
     };
 
+    const handleOpenManageModal = (mode) => {
+        if(checkedState.length == 0){
+            alert("Please select at least one inspection");
+            return;
+        }
+        setModalMode(mode);
+        setIsManageModalOpen(true);
+    };
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedInspection(null);
+        setSelectedElementItem(null);
+        setIsManageModalOpen(false);
     };
 
     const handleSearchChange = (e) => {
@@ -68,12 +84,66 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
         });
     };
 
+    const handleFilterSubmit = (e, filter) => {
+        e.preventDefault();
+        // Redirect to the route with search query and other parameters
+        console.log('filter ', filter);
+        if(filter == "period"){setPeriod(e.target.value);
+}
+        if(filter == "month"){setMonth(e.target.value);
+        }
+        if(filter == "show"){setShow(e.target.value);}
+        window.location.href = route('inspections.index', {
+            filter,
+            value: e.target.value
+        });
+    };
+
     const handleDelete = (inspection) => {
         if (confirm("Are you sure you want to delete this inspection?")) {
             //post(route("inspections.destroy", inspection), { _method: "DELETE",});
             router.delete(route('inspections.destroy', inspection), {preserveScroll: true});
         }
     };
+
+        // Handle individual checkbox toggle
+        const handleChecked = (inspection_id, category_id) => {
+            const isChecked = checkedState.some(
+                (item) => item.inspection_id === inspection_id && item.category_id === category_id
+            );
+            
+            if (isChecked) {
+                // Uncheck the item
+                setCheckedState(checkedState.filter(
+                    (item) => item.inspection_id !== inspection_id || item.category_id !== category_id
+                ));
+            } else {
+                // Check the item
+                setCheckedState([...checkedState, { inspection_id, category_id }]);
+            }
+        };
+    
+        // Handle "check all" toggle
+        const handleCheckAll = () => {
+            if (checkedState.length === inspections?.data.length) {
+                // Uncheck all items
+                setCheckedState([]);
+            } else {
+                // Check all items
+                const allItems = inspections?.data.map((inspection) => ({
+                    inspection_id: inspection.inspection_id,
+                    category_id: inspection.category_id,
+                }));
+                setCheckedState(allItems);
+            }
+        };
+    
+        // Check if a specific inspection item is checked
+        const isChecked = (inspection_id, category_id) => {
+            return checkedState.some(
+                (item) => item.inspection_id === inspection_id && item.category_id === category_id
+            );
+        };
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -92,13 +162,13 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                     {can.inspection_edit_reminder && (
-                    <EditButton title='Send Reminder' width="w-[214px]" height="h-[52px]" icon="./images/add-alert-clock-icon.svg" onClick={() => handleOpenModal("create")} />
+                    <EditButton title='Send Reminder' width="w-[214px]" height="h-[52px]" icon="./images/add-alert-clock-icon.svg" onClick={() => handleOpenManageModal("reminder")} />
                     )}
                     {can.inspection_edit_inspector && (
-                    <EditButton title='Assign New Inspector' width="w-[244px]" height="h-[52px]" icon="./images/add-user-icon-2.svg" onClick={() => handleOpenModal("create")} />
+                    <EditButton title='Assign New Inspector' width="w-[244px]" height="h-[52px]" icon="./images/add-user-icon-2.svg" onClick={() => handleOpenManageModal("assign")} />
                     )}
                     {can.inspection_edit_date && (
-                    <EditButton title='Update Inspection Date' width="w-[254px]" height="h-[52px]" icon="./images/clock-setting-gear-icon.svg" onClick={() => handleOpenModal("create")} />
+                    <EditButton title='Update Inspection Date' width="w-[254px]" height="h-[52px]" icon="./images/clock-setting-gear-icon.svg" onClick={() => handleOpenManageModal("change")} />
                     )}
                 </div>
             </header>
@@ -113,7 +183,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         label="Period"
                         name="period"
                         value={period}
-                        onChange={(e) => setPeriod(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'period')}
                         mode="create"
                         options={periods}
                     />
@@ -121,7 +191,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         label="Month"
                         name="month"
                         value={month}
-                        onChange={(e) => setMonth(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'month')}
                         mode="create"
                         options={months}
                     />
@@ -129,7 +199,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         label="Show"
                         name="show"
                         value={show}
-                        onChange={(e) => setShow(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'show')}
                         mode="create"
                         options={shows}
                     />
@@ -139,9 +209,12 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                 <thead className="bg-white ">
                         <tr className="w-[100%]">
                             <th className="px-6 py-3 table-header2 uppercase tracking-wider w-[10%]">	
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                     <rect x="1" y="1" width="18" height="18" rx="3" stroke="#E4E4E4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
+                                </svg> */}
+                                <button onClick={handleCheckAll}>
+                                    {checkedState.length === inspections.length ? 'Uncheck All' : 'Check All'}
+                                </button>
                             </th>
                             <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Equipment
@@ -161,7 +234,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {inspections?.data.map((inspection) => {
+                    {inspections?.data.map((inspection) => {
                             console.log("inspection", inspection);
                             let due_date = new Date(inspection.due_date);
                             let status = due_date > new Date() ? "Upcoming" : "Overdue";
@@ -171,17 +244,43 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
 
 
                         return(
-                            <tr key={inspection.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
+                            <tr key={inspection.inspection_id + "-" + inspection.category_id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <rect x="1" y="1" width="18" height="18" rx="3" stroke="#E4E4E4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
+                                <svg
+                            onClick={() => handleChecked(inspection.inspection_id, inspection.category_id)}
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                        >
+                            <rect
+                                x="1"
+                                y="1"
+                                width="18"
+                                height="18"
+                                rx="3"
+                                stroke="#E4E4E4"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            {isChecked(inspection.inspection_id, inspection.category_id) && (
+                                <path
+                                    d="M5 10l3 3l7-7"
+                                    stroke="green"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            )}
+                        </svg>
                                 
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
                                     
                                     <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.inspection_schedule.name}</div>
+                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.category_item}</div>
                                         <div className="w-full text-[#808191] text-[11px] font-normal font-['Manrope'] leading-[18px]">Description</div>                              
                                     </div>
                                         {/* <div className="w-[50px] h-[0px] origin-top-left -rotate-90 border border-[#cecece]"></div>  */}
@@ -189,10 +288,11 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
 
                                     <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.assigned_to.name}</div>                                        
+                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.inspector}</div>                                        
                                     </div>
                                      
                                 </td>
+
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center ">
 
                                     {/* {status == "Overdue" && <h5 className="bg-[#F00] text-pill-box py-[3px] px-4 gap-[10px] rounded-[4px] w-[89px] h-6 text-center">Overdue</h5>}
@@ -217,7 +317,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
 
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-center table-text3 ">
-                                    {inspection.created_at.split(" ")[0]}
+                                    {inspection.complete_date?.split(" ")[0]}
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-start ">
                                     {can.inspection_show && (
@@ -227,9 +327,9 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                                         // >
                                         //     <img src="./images/view-icon.svg" alt="View" width={48} height={48} />
                                         // </button>  
-                                        <div className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
-                                            <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
-                                        </div>                                      
+                                        <button onClick={() => router.get(route('inspections.show', inspection.inspection_id), {category: inspection.category_id})} className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                                            <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Job Card</div>
+                                        </button>                                      
                                     )}
                                     {can.inspection_edit && (
                                         <button
@@ -260,7 +360,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                 <Pagination links={inspections?.links} />
             </div>            
             {/* Modal */}
-            <InspectionModal
+            {/* <InspectionModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 mode={modalMode}
@@ -269,6 +369,24 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                 typeInspections={typeInspections}
                 categoryItems={categoryItems}
                 users={users}
+            /> */}
+            <ElementModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                mode={modalMode}
+                elementItem={setSelectedElementItem}
+                type_inspections={typeInspections}
+                teams={sites}
+                type_bools={typeBools}
+                team={auth?.team}
+            />
+            <ManageModal
+                isOpen={isManageModalOpen}
+                onClose={handleCloseModal}
+                checkedState={checkedState}
+                mode={modalMode}
+                users={users}
+
             />
             </div>
 
