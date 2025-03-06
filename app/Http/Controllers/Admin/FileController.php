@@ -12,6 +12,7 @@ use App\Models\Team;
 use App\Models\TypeFile;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,27 +23,33 @@ class FileController extends Controller
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('file_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $searchTerm = $request->get('search', '');
-        $sortColumn = $request->get('sort', 'path'); // Default to 'name' if no sort is provided
+        $sortColumn = $request->get('sort', 'file_name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
+
+        $user = auth()->user();
+        //dd($user->hasAnyRole(['admin', 'super']));
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+
         $Files = File::with(['site', 'type_file'])
-            ->where('path', 'like', '%' . $searchTerm . '%')
+            ->where('file_name', 'like', '%' . $searchTerm . '%')
             ->orderBy($sortColumn, $sortDirection)
+            ->where('site_id', $teamId)
             ->paginate(25);
 
-        //$sites = Team::select('name as label', 'id as value')->get();
+        $sites = Team::select('name as label', 'id as value')->get();
 
-        //$type_files = TypeFile::select('name as label', 'id as value')->get();
+        $type_files = TypeFile::select('name as label', 'id as value')->get();
 
         /** @disregard P1013 */
         return Inertia::render('File/Index', [
             'Files' => $Files,
-            //'sites' => $sites,
-            //'type_files' => $type_files,
+            'sites' => $sites,
+            'typeFiles' => $type_files,
             'can' => [
-                'file_show' => false, // auth()->user()->can('file_show'),
-                'file_create' => false, // auth()->user()->can('file_create'),
+                'file_show' => true, // auth()->user()->can('file_show'),
+                'file_create' => true, // auth()->user()->can('file_create'),
                 'file_edit' => false, // auth()->user()->can('file_edit'),
-                'file_delete' => auth()->user()->can('file_delete'),
+                'file_delete' =>  false, // auth()->user()->can('file_delete'),
 
             ],
         ]);
@@ -53,15 +60,20 @@ class FileController extends Controller
 
         $image_file = $request->file('image');
         $fileName = time() . '_' . $image_file->getClientOriginalName();
-        $directoryPath = 'uploads/certification/' . $request->row;
+        $type_file = TypeFile::find($request->type_file_id);
+        $folder_name = $type_file ? $type_file->name : 'general';
+        $directoryPath = 'uploads/' . $folder_name . '/' . $request->table_row_id;
+
 
         $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
         $file = File::create([
             'site_id'   => $request->site_id,
-            'table_name' => 'category_items',
+            'table_name' => $request->table_name,
+            'category_items',
             'file_name' => $fileName,
+            'file_type' => $request->file_type, // certificate
             'type_file_id' => $request->type_file_id, // certificate
-            'row' => $request->row,
+            'table_row_id' => $request->table_row_id,
             'path' => $filePath,
         ]);
 

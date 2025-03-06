@@ -1,18 +1,28 @@
 import React, { useEffect } from "react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
+import ImageUpload from "@/Components/ImageUpload";
+import CustomSelect1 from "@/Components/CustomSelect1";
+import CustomInput1 from "@/Components/CustomInput1";
 
-const FileModal = ({ isOpen, onClose, mode, file = null, roles, teams }) => {
+const FileModal = ({ isOpen, onClose, mode, file = null, typeFiles, teams, auth }) => {
     console.log("mode", mode);
     console.log("file", file);
-    console.log("roles", roles);
+    console.log("teams", teams);
+    console.log("auth", auth);
+
+
+    const currentImage = file?.path; 
+
     const { data, setData, post, put, errors, reset, processing } = useForm({
-        name: "",
+        expirey: "",
+        type_file_id: 0,
     });
     useEffect(() => {
         if (file && mode !== "create") {
             setData({
-                name: file.name || "",
+                type_file_id: file.type_file_id || "",
+                expirey: file.expirey || "",
             });
         } else if (mode === "create") {
             reset(); // Clear form for create mode
@@ -20,22 +30,62 @@ const FileModal = ({ isOpen, onClose, mode, file = null, roles, teams }) => {
     }, [mode,file]);
 
     const handleChange = (target, value) => {
+        console.log("handleChange", target, value);
         setData(target, value);
         //setData("name", e.target.value);
     };
+    const handleImageUpload = (file) => {
+        //const files = event.target.files || event.dataTransfer.files;
+        //const file = files[0];
 
+        //console.log("profile photo", file);
+        if(data.type_file_id == 0 || data.type_file_id == undefined){
+            alert("Please select a file type");
+            return;
+        }
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('File size must be less than 10MB.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("site_id", auth?.team.id);
+        formData.append("table_name", "sites");	
+        formData.append("file_name", file.name);
+        formData.append("file_type", file.type);
+        formData.append("type_file_id", data.type_file_id);
+        formData.append("table_row_id", auth?.team.id);
+        formData.append("path", file.path);
+
+        router.post(route("files.store"), formData, {
+          onSuccess: () => {
+            console.log('Success');
+            onClose();
+          },
+          onError: (errors) => {
+            console.log('Errors:', errors);
+          },
+          onFinish: () => {
+            // Always called after success or error
+            console.log('Request finished');
+          },
+          preserveScroll: true,  // This will preserve scroll position after the request
+        } );
+    };
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (mode === "create") {
-            post(route("files.store"), {
+        // if (mode === "create") {
+        //     post(route("files.store"), {
 
-                onSuccess: () => {reset();onClose()},
-            });
-        } else if (mode === "edit") {
-            put(route("files.update", file.id), {
-                onSuccess: () => {reset();onClose()},
-            });
-        }
+        //         onSuccess: () => {reset();onClose()},
+        //     });
+        // } else if (mode === "edit") {
+        //     put(route("files.update", file.id), {
+        //         onSuccess: () => {reset();onClose()},
+        //     });
+        // }
     };
 
     if (!isOpen) return null;
@@ -49,14 +99,30 @@ const FileModal = ({ isOpen, onClose, mode, file = null, roles, teams }) => {
                     {mode === "view" && "View File "}
                 </h2>
                 <form onSubmit={handleSubmit}>
-                    <InputText
-                        title="Name"
-                        field="name"
-                        value={data.name}
+                    <CustomSelect1
+                        label="Type File"
+                        name="type_file_id"
+                        value={data?.type_file_id}
                         mode={mode}
-                        handleChange={handleChange}
-                        errors={errors}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        error={errors.type_file_id}
+                        options={typeFiles}
                     />
+                    <CustomInput1 
+                        label="Expiry (empty for no expiry)"
+                        type="date"
+                        name="expirey"
+                        value={data?.expirey}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                    />
+                    <div className="flex justify-start">
+                        <ImageUpload
+                        mode={mode}
+                        currentImage={currentImage}
+                        onUpload={handleImageUpload}
+                        />
+                    </div>
+
                     <div className="flex justify-end space-x-2">
                         <button
                             type="button"

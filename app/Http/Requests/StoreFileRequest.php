@@ -27,26 +27,23 @@ class StoreFileRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'site_id' => [
-            //     'required',
-            //     'integer',
-            // ],
-            // 'table_name' => [
-            //     'string',
-            //     'required',
-            // ],
-            // 'file_name' => [
-            //     'string',
-            //     'required',
-            // ],
-            // 'row' => [
-            //     'string',
-            //     'required',
-            // ],
-            // 'file_base64' => [
-            //     'string',
-            //     'required',
-            // ],
+            'site_id' => [
+                'required',
+                'integer',
+            ],
+            'table_name' => [
+                'string',
+            ],
+            'file_name' => [
+                'string',
+                'required',
+            ],
+            'table_row_id' => [
+                'integer',
+            ],
+            'type_file_id' => [
+                'string',
+            ],
         ];
     }
 }
