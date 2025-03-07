@@ -19,6 +19,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreignId('post_incident_schedule_id')->nullable()->constrained('post_incident_schedules');
+            $table->foreignId('type_incident_id')->nullable()->constrained('type_incidents');
             $table->foreignId('report_file_id')->nullable()->constrained('files');
             $table->foreignId('site_id')->nullable()->constrained('teams');
             $table->foreignId('assigned_to_id')->nullable()->constrained('users');

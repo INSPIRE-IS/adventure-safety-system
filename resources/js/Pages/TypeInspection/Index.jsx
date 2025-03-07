@@ -52,7 +52,7 @@ const TypeInspectionsIndex = ({auth, typeInspections, roles, teams, can, searchT
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Inspection Types" />
             <div className="container mx-auto py-6">
             {/* Header */}

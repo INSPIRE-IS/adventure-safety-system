@@ -64,7 +64,7 @@ const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, s
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Inspection Schedules" />
             <div className="container mx-auto py-6">
             {/* Header */}

@@ -52,7 +52,7 @@ const TypeBoolsIndex = ({auth, typeBools, roles, teams, can, searchTerm, sortCol
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Certification Types" />
             <div className="container mx-auto py-6">
             {/* Header */}

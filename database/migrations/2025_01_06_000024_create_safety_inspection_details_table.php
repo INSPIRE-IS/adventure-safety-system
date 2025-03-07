@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('safety_inspection_details', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('condition')->nullable();
+            $table->integer('resolved')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

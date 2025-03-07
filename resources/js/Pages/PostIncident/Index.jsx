@@ -64,7 +64,7 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Post Incidents" />
             <div className="container mx-auto py-6">
             {/* Header */}
@@ -171,7 +171,7 @@ const PostIncidentsIndex = ({auth, postIncidents,sites,users,post_incident_sched
                                         // >
                                         //     <img src="./images/edit-icon.svg" alt="Edit" width={45} height={45} />
                                         // </button>
-                                        <div onClick={() => router.get(route('post-incidents.show', inspection.id))}
+                                        <div onClick={() => router.get(route('post-incidents.show', postIncident.id))}
                                             className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
                                             <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
                                         </div>  

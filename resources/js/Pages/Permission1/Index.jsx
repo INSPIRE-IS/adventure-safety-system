@@ -33,7 +33,7 @@ const PermissionsIndex = ({auth, permissions, can }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Permissions" />
             <div className="container mx-auto py-6">
             {/* Header */}

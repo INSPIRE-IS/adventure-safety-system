@@ -20,6 +20,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreignId('inspection_schedule_id')->nullable()->constrained('inspection_schedules');
+            $table->foreignId('type_inspection_id')->nullable()->constrained('type_inspections');
             $table->foreignId('assigned_to_id')->nullable()->constrained('users');
             $table->foreignId('photo_file_id')->nullable()->constrained('files');
             $table->foreignId('signature_file_id')->nullable()->constrained('files');

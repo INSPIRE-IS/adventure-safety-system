@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->date('due_date')->nullable();
             $table->date('complete_date')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 

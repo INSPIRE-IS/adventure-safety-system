@@ -53,7 +53,7 @@ class HandleInertiaRequests extends Middleware
         //$roles = $user->getRoleNames()->pluck('name');
         //dd($roles);
         // Logic for filtering teams
-
+        $is_admin = false;
         if ($user) {
             Log::info('User: ' . $user->id);
             //$team_id = Session::get('team_id');
@@ -83,6 +83,7 @@ class HandleInertiaRequests extends Middleware
             $permissions = $user->getAllPermissions()->pluck('name');
             $roles = $user->getRoleNames()->pluck('name');
             $team = Team::find($team_id); // with('type_activities')->
+            $is_admin = $user->hasAnyRole(['admin', 'super']);
             //dd($team);
             if ($user->isAdminOfTeam(1) || $user->id === 2) {
                 //setPermissionsTeamId(2);
@@ -126,6 +127,7 @@ class HandleInertiaRequests extends Middleware
                 'teams' => $teams  ?? [],
                 'permissions' => $permissions ?? [],
                 'roles' => $roles ?? [],
+                'is_admin' => $is_admin,
             ],
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),

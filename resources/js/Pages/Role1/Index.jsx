@@ -31,7 +31,7 @@ const RolesIndex = ({ roles, permissions, can }) => {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Roles" />
             <div className="container mx-auto py-6">
                 {/* Header */}

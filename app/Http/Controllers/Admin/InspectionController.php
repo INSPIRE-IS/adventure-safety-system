@@ -32,7 +32,7 @@ class InspectionController extends Controller
         $user = auth()->user();
         //dd($user->hasAnyRole(['admin', 'super']));
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
-        $searchTerm = $request->get('search', '');
+
         if ($request->get('filter', '') == 'period') {
             $searchPeriod = $request->get('value', '');
         }

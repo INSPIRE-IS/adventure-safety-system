@@ -64,7 +64,7 @@ const PostIncidentSchedulesIndex = ({auth, postIncidentSchedules,type_incident,i
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Post_incident Schedules" />
             <div className="container mx-auto py-6">
             {/* Header */}

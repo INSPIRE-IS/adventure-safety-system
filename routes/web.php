@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\TypeFileController;
 use App\Http\Controllers\Admin\CategoryItemController;
 use App\Http\Controllers\Admin\CategoryDetailController;
+use App\Http\Controllers\Admin\ComplaintController;
 use App\Http\Controllers\Admin\SafetyInspectionDetailController;
 use App\Http\Controllers\Admin\InspectionController;
 use App\Http\Controllers\Admin\InspectionScheduleController;
@@ -32,8 +33,10 @@ use App\Http\Controllers\Admin\PostIncidentScheduleController;
 use App\Http\Controllers\Admin\DrillController;
 use App\Http\Controllers\Admin\DrillDetailController;
 use App\Http\Controllers\Admin\EquipmentController;
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PostIncidentDetailController;
 use App\Http\Controllers\Admin\SystemCalendarController;
+use App\Http\Controllers\Admin\TypeDegradationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -58,9 +61,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Route::middleware('auth')->group(function () {
 
@@ -77,6 +80,7 @@ Route::middleware('auth')->group(function () {
 
     // Route::get('/', 'HomeController@index')->name('home');
     // Permissions
+    Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::resource('permissions', PermissionController::class);
 
     // Roles
@@ -129,9 +133,11 @@ Route::middleware('auth')->group(function () {
 
     // Safety Inspection Detail
     Route::resource('safety-inspection-details', SafetyInspectionDetailController::class)->except(['create', 'edit']);
+    // TypeDegradation
+    Route::resource('type-degradations', TypeDegradationController::class)->except(['create', 'edit']);
 
-
-
+    // Complaints
+    Route::resource('complaints', ComplaintController::class)->except(['create', 'edit']);
     // Type Drills
     Route::resource('type-drills', TypeDrillController::class)->except(['create', 'edit']);
 

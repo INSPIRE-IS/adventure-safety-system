@@ -26,6 +26,7 @@ class Drill extends Model
     protected $fillable = [
         'due_date',
         'complete_date',
+        'type_activity_id',
         'assigned_to_id',
         'photo_file_id',
         'signature_file_id',
@@ -77,6 +78,11 @@ class Drill extends Model
     public function type_drill()
     {
         return $this->belongsTo(TypeDrill::class, 'type_drill_id');
+    }
+
+    public function type_activity()
+    {
+        return $this->belongsTo(TypeActivity::class, 'type_activity_id');
     }
 
     public function drill_details()

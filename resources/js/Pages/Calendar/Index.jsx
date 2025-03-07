@@ -59,7 +59,7 @@ const CalendarIndex = ({auth,events}) => {
     //     };
     // }, []);
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Calendar" />
             <div className="container mx-auto py-6 h-[400px]">
             {/* Header */}

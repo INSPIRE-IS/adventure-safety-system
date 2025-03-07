@@ -64,7 +64,7 @@ const DrillSchedulesIndex = ({auth, drillSchedules,typeActivities, can, searchTe
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Drill Schedules" />
             <div className="container mx-auto py-6">
             {/* Header */}

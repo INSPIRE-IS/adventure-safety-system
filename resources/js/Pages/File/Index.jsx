@@ -52,7 +52,7 @@ const FilesIndex = ({auth, Files, roles, teams, can, searchTerm, sortColumn, sor
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Files" />
             <div className="container mx-auto py-6">
             {/* Header */}

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_degradation', function (Blueprint $table) {
+        Schema::create('type_degradations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->timestamps();

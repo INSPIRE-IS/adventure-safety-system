@@ -24,6 +24,7 @@ class PostIncident extends Model
     protected $fillable = [
         'due_date',
         'complete_date',
+        'type_incident_id',
         'post_incident_schedule_id',
         'report_file_id',
         'site_id',
@@ -77,6 +78,11 @@ class PostIncident extends Model
     public function site()
     {
         return $this->belongsTo(Team::class, 'id', 'site_id');
+    }
+
+    public function type_incident()
+    {
+        return $this->belongsTo(TypeIncident::class, 'type_incident_id');
     }
 
     public function assigned_to()

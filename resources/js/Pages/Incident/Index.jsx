@@ -52,7 +52,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Incidents" />
             <div className="container mx-auto py-6">
             {/* Header */}

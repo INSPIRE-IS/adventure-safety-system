@@ -59,7 +59,7 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Drills" />
             <div className="container mx-auto py-6">
             {/* Header */}

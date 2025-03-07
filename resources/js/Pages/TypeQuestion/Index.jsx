@@ -52,7 +52,7 @@ const TypeQuestionsIndex = ({auth, typeQuestions, roles, teams, can, searchTerm,
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Question Types" />
             <div className="container mx-auto py-6">
             {/* Header */}

@@ -52,7 +52,7 @@ const AuditLogsIndex = ({auth, auditLogs, can, searchTerm, sortColumn, sortDirec
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="AuditLogs" />
             <div className="container mx-auto py-6">
             {/* Header */}

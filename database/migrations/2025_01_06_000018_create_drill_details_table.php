@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->date('complete_date');
             $table->string('competent');
+            $table->string('comment')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

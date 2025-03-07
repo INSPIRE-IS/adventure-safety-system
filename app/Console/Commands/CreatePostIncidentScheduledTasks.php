@@ -77,6 +77,7 @@ class CreatePostIncidentScheduledTasks extends Command
             // If no postincident exists, create a new one
             if (!$postincident) {
                 $postincident = new PostIncident();
+                $postincident->type_incident_id = $postincidentSchedule->type_incident_id;
                 $postincident->post_incident_schedule_id = $postincidentSchedule->id;
                 $postincident->assigned_to_id = $postincidentSchedule->assigned_to_id;
                 $postincident->due_date = $dueDate;

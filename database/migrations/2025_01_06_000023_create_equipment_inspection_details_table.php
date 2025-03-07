@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->integer('condition')->default(0);
             $table->string('identity')->nullable();
+            $table->integer('resolved')->default(0);
             $table->timestamps();
             $table->softDeletes();
 
@@ -22,7 +23,6 @@ return new class extends Migration
             $table->foreignId('inspection_id')->nullable()->constrained('inspections');
             $table->foreignId('category_item_id')->nullable()->constrained('category_items');
             $table->foreignId('category_detail_id')->nullable()->constrained('category_details');
-            //$table->foreignId('quantity_id')->nullable()->constrained('quantity');
         });
     }
 

@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\CategoryDetail;
 use App\Models\CategoryItem;
+use App\Models\Complaint;
 use App\Models\DrillSchedule;
 use App\Models\Incident;
 use App\Models\InspectionSchedule;
@@ -13,6 +14,7 @@ use App\Models\PostIncidentSchedule;
 use App\Models\Team;
 use App\Models\TypeActivity;
 use App\Models\TypeBool;
+use App\Models\TypeDegradation;
 use App\Models\TypeDrill;
 use App\Models\TypeFile;
 use App\Models\TypeIncident;
@@ -153,6 +155,9 @@ class DatabaseSeeder extends Seeder
             'inspection_create',
             'inspection_edit',
             'inspection_delete',
+            'inspection_edit_reminder',
+            'inspection_edit_inspector',
+            'inspection_edit_date',
 
             // Inspection Schedule Permissions
             'inspection_schedule_access',
@@ -162,11 +167,28 @@ class DatabaseSeeder extends Seeder
             'inspection_schedule_delete',
 
             // Equipment Inspection Permissions
+            'equipment_inspection_access',
+            'equipment_inspection_show',
+            'equipment_inspection_create',
+            'equipment_inspection_edit',
+            'equipment_inspection_delete',
+            'equipment_inspection_edit_reminder',
+            'equipment_inspection_edit_inspector',
+            'equipment_inspection_edit_date',
+
+            // Equipment Inspection Permissions
             'equipment_inspection_detail_access',
             'equipment_inspection_detail_show',
             'equipment_inspection_detail_create',
             'equipment_inspection_detail_edit',
             'equipment_inspection_detail_delete',
+
+            // Type degradation
+            'type_degradation_access',
+            'type_degradation_show',
+            'type_degradation_create',
+            'type_degradation_edit',
+            'type_degradation_delete',
 
             // Type Drill Permissions
             'type_drill_access',
@@ -188,6 +210,9 @@ class DatabaseSeeder extends Seeder
             'drill_create',
             'drill_edit',
             'drill_delete',
+            'drill_edit_reminder',
+            'drill_edit_inspector',
+            'drill_edit_date',
 
             // Drill Permissions
             'drill_detail_access',
@@ -216,6 +241,9 @@ class DatabaseSeeder extends Seeder
             'incident_create',
             'incident_edit',
             'incident_delete',
+            'incident_edit_reminder',
+            'incident_edit_inspector',
+            'incident_edit_date',
 
             // post Indident Schedule Permissions
             'post_incident_schedule_access',
@@ -237,6 +265,16 @@ class DatabaseSeeder extends Seeder
             'post_incident_detail_create',
             'post_incident_detail_edit',
             'post_incident_detail_delete',
+
+            // Post Incident Detail Permissions
+            'complaint_access',
+            'complaint_show',
+            'complaint_create',
+            'complaint_edit',
+            'complaint_delete',
+            'complaint_edit_reminder',
+            'complaint_edit_inspector',
+            'complaint_edit_date',
 
             // System Calendar Permissions
             'system_calendar_access',
@@ -277,43 +315,51 @@ class DatabaseSeeder extends Seeder
         $adminRole->givePermissionTo(['role_access', 'role_show', 'role_create', 'role_edit']);
         $adminRole->givePermissionTo(['user_access', 'user_show', 'user_create', 'user_edit']);
         $adminRole->givePermissionTo(['inspection_access', 'inspection_show', 'inspection_create', 'inspection_edit']);
+        $adminRole->givePermissionTo(['equipment_inspection_access', 'equipment_inspection_show', 'equipment_inspection_create', 'equipment_inspection_edit']);
         $adminRole->givePermissionTo(['drill_access', 'drill_show', 'drill_create', 'drill_edit']);
-        $adminRole->givePermissionTo(['type_incident_access', 'type_incident_show', 'type_incident_create', 'type_incident_edit']);
+        $adminRole->givePermissionTo(['type_drill_access', 'type_drill_show', 'type_drill_create', 'type_drill_edit']);
         $adminRole->givePermissionTo(['incident_access', 'incident_show', 'incident_create', 'incident_edit']);
+        $adminRole->givePermissionTo(['type_incident_access', 'type_incident_show', 'type_incident_create', 'type_incident_edit']);
+        $adminRole->givePermissionTo(['complaint_access', 'complaint_show', 'complaint_create', 'complaint_edit']);
         $adminRole->givePermissionTo(['post_incident_access', 'post_incident_show', 'post_incident_create', 'post_incident_edit']);
         $adminRole->givePermissionTo(['site_access', 'site_show', 'site_create', 'site_edit']);
+        $adminRole->givePermissionTo(['file_access', 'file_show', 'file_create', 'file_edit']);
+        $adminRole->givePermissionTo(['type_bool_access', 'type_bool_show']);
+        $adminRole->givePermissionTo(['type_inspection_access', 'type_inspection_show']);
+        $adminRole->givePermissionTo(['type_file_access', 'type_file_show']);
+        $adminRole->givePermissionTo(['type_drill_access', 'type_drill_show']);
+        $adminRole->givePermissionTo(['type_incident_access', 'type_incident_show']);
+
+
 
         $ceoRole->givePermissionTo(['header_panel_show', 'site_panel_show', 'staff_panel_show', 'equipment_panel_show', 'safety_panel_show', 'incident_panel_show', 'files_panel_show']);
         $ceoRole->givePermissionTo(['permission_access', 'permission_show', 'permission_create', 'permission_edit']);
         $ceoRole->givePermissionTo(['role_access', 'role_show', 'role_create', 'role_edit']);
         $ceoRole->givePermissionTo(['user_access', 'user_show', 'user_create', 'user_edit']);
         $ceoRole->givePermissionTo(['inspection_access', 'inspection_show', 'inspection_create', 'inspection_edit']);
+        $ceoRole->givePermissionTo(['equipment_inspection_access', 'equipment_inspection_show', 'equipment_inspection_create', 'equipment_inspection_edit']);
         $ceoRole->givePermissionTo(['drill_access', 'drill_show', 'drill_create', 'drill_edit']);
-        $ceoRole->givePermissionTo(['type_incident_access', 'type_incident_show', 'type_incident_create', 'type_incident_edit']);
+        $ceoRole->givePermissionTo(['type_drill_access', 'type_drill_show', 'type_drill_create', 'type_drill_edit']);
         $ceoRole->givePermissionTo(['incident_access', 'incident_show', 'incident_create', 'incident_edit']);
+        $ceoRole->givePermissionTo(['type_incident_access', 'type_incident_show', 'type_incident_create', 'type_incident_edit']);
+        $ceoRole->givePermissionTo(['complaint_access', 'complaint_show', 'complaint_create', 'complaint_edit']);
         $ceoRole->givePermissionTo(['post_incident_access', 'post_incident_show', 'post_incident_create', 'post_incident_edit']);
         $ceoRole->givePermissionTo(['site_access', 'site_show', 'site_create', 'site_edit']);
+        $ceoRole->givePermissionTo(['file_access', 'file_show', 'file_create', 'file_edit']);
 
         $managerRole->givePermissionTo(['header_panel_show', 'site_panel_show', 'staff_panel_show', 'equipment_panel_show', 'safety_panel_show', 'incident_panel_show', 'files_panel_show']);
-        $managerRole->givePermissionTo(['permission_access', 'permission_show', 'permission_create', 'permission_edit']);
-        $managerRole->givePermissionTo(['role_access', 'role_show', 'role_create', 'role_edit']);
         $managerRole->givePermissionTo(['user_access', 'user_show', 'user_create', 'user_edit']);
         $managerRole->givePermissionTo(['inspection_access', 'inspection_show', 'inspection_create', 'inspection_edit']);
+        $managerRole->givePermissionTo(['equipment_inspection_access', 'equipment_inspection_show', 'equipment_inspection_create', 'equipment_inspection_edit']);
         $managerRole->givePermissionTo(['drill_access', 'drill_show', 'drill_create', 'drill_edit']);
-        $managerRole->givePermissionTo(['type_incident_access', 'type_incident_show', 'type_incident_create', 'type_incident_edit']);
         $managerRole->givePermissionTo(['incident_access', 'incident_show', 'incident_create', 'incident_edit']);
-        $managerRole->givePermissionTo(['post_incident_access', 'post_incident_show', 'post_incident_create', 'post_incident_edit']);
-        $managerRole->givePermissionTo(['site_access', 'site_show', 'site_create', 'site_edit']);
+        $managerRole->givePermissionTo(['complaint_access', 'complaint_show', 'complaint_create', 'complaint_edit']);
+        $managerRole->givePermissionTo(['site_access']);
 
         $inspectorRole->givePermissionTo(['header_panel_show', 'site_panel_show']);
         $inspectorRole->givePermissionTo(['site_access', 'site_show']);
-        $inspectorRole->givePermissionTo(['type_bool_access', 'type_bool_show']);
-        $inspectorRole->givePermissionTo(['type_inspection_access', 'type_inspection_show']);
-        $inspectorRole->givePermissionTo(['type_file_access', 'type_file_show']);
-        $inspectorRole->givePermissionTo(['type_drill_access', 'type_drill_show']);
-        $inspectorRole->givePermissionTo(['type_incident_access', 'type_incident_show']);
         $inspectorRole->givePermissionTo(['inspection_access', 'inspection_show']);
-        $inspectorRole->givePermissionTo(['file_access', 'file_create', 'file_edit', 'file_show']);
+        $inspectorRole->givePermissionTo(['file_access', 'file_create']);
         $inspectorRole->givePermissionTo(['inspection_access', 'inspection_show', 'inspection_create']);
         $inspectorRole->givePermissionTo(['drill_access', 'drill_show']);
         $inspectorRole->givePermissionTo(['safety_inspection_detail_access', 'safety_inspection_detail_create', 'safety_inspection_detail_edit', 'safety_inspection_detail_show']);
@@ -325,14 +371,7 @@ class DatabaseSeeder extends Seeder
 
         $instructorRole->givePermissionTo(['header_panel_show', 'site_panel_show']);
         $instructorRole->givePermissionTo(['site_access', 'site_show']);
-        $instructorRole->givePermissionTo(['type_bool_access', 'type_bool_show']);
-        $instructorRole->givePermissionTo(['type_inspection_access', 'type_inspection_show']);
-        $instructorRole->givePermissionTo(['type_file_access', 'type_file_show']);
-        $instructorRole->givePermissionTo(['type_drill_access', 'type_drill_show']);
-        $instructorRole->givePermissionTo(['type_incident_access', 'type_incident_show']);
         $instructorRole->givePermissionTo(['inspection_access', 'inspection_show']);
-        $instructorRole->givePermissionTo(['file_access', 'file_create', 'file_edit', 'file_show']);
-        $instructorRole->givePermissionTo(['inspection_access', 'inspection_show', 'inspection_create']);
         $instructorRole->givePermissionTo(['drill_access', 'drill_show']);
         $instructorRole->givePermissionTo(['safety_inspection_detail_access', 'safety_inspection_detail_create', 'safety_inspection_detail_edit', 'safety_inspection_detail_show']);
         $instructorRole->givePermissionTo(['equipment_inspection_detail_access', 'equipment_inspection_detail_create', 'equipment_inspection_detail_edit', 'equipment_inspection_detail_show']);
@@ -367,6 +406,9 @@ class DatabaseSeeder extends Seeder
         TypeIncident::create(['name' => 'Near Miss']);
         TypeIncident::create(['name' => 'Minor Injury']);
         TypeIncident::create(['name' => 'Major Injury']);
+
+        TypeDegradation::create(['name' => 'Worn but OK']);
+        TypeDegradation::create(['name' => 'Failed and Removed']);
 
         TypeQuestion::create(['name' => 'Why/How did we allow the accident to happen?']);
         TypeQuestion::create(['name' => 'What lessons can be learnt?']);
@@ -545,5 +587,13 @@ class DatabaseSeeder extends Seeder
         PostIncidentSchedule::create(['name' => 'Incident 2', 'site_id' => 2, 'type_incident_id' => 2, 'incident_id' => 2, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user6->id, 'assigned_by_id' => $user4->id,]);
         PostIncidentSchedule::create(['name' => 'Incident 3', 'site_id' => 3, 'type_incident_id' => 2, 'incident_id' => 3, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user10->id, 'assigned_by_id' => $user8->id,]);
         PostIncidentSchedule::create(['name' => 'Incident 4', 'site_id' => 3, 'type_incident_id' => 3, 'incident_id' => 4, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user10->id, 'assigned_by_id' => $user8->id,]);
+
+
+        // complaints
+        Complaint::create(['name' => 'John Doe', 'phone' => '123-456-7890', 'email' => 'john@doe.com', 'complaint_date' => now(), 'complaint' => 'The food was cold', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Jane Doe', 'phone' => '123-456-7890', 'email' => 'jane@doe.com', 'complaint_date' => now(), 'complaint' => 'The walk way is slipper after it rained', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'John Smith', 'phone' => '123-456-7890', 'email' => 'john@smith.com', 'complaint_date' => now(), 'complaint' => 'The toilet is broken', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Jane Smith', 'phone' => '123-456-7890', 'email' => 'jane@smith.com', 'complaint_date' => now(), 'complaint' => 'The cart is broken', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Denver Doe', 'phone' => '123-456-7890', 'email' => 'denver@doe.com', 'complaint_date' => now(), 'complaint' => 'The bedding was wet', 'user_id' => 1, 'site_id' => 3,]);
     }
 }

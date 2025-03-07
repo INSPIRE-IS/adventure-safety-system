@@ -33,7 +33,7 @@ const AuditLogs = ({ auth, auditLogs, can}) => {
         }
     };
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Audit Logs" />
             <div className="container mx-auto py-6">
                 {/* Page Header */}

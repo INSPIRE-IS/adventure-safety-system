@@ -87,6 +87,7 @@ class CreateInspectionScheduledTasks extends Command
             if (!$inspection) {
                 $inspection = new Inspection();
                 $inspection->inspection_schedule_id = $inspectionSchedule->id;
+                $inspection->type_inspection_id = $inspectionSchedule->type_inspection_id;
                 $inspection->assigned_to_id = $inspectionSchedule->assigned_to_id;
                 $inspection->due_date = $dueDate;
                 $inspection->site_id = $inspectionSchedule->site_id;

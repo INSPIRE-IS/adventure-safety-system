@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('file_name');
             $table->string('file_type');
             $table->string('path');
+            $table->string('expiry')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('site_id')->constrained('teams');

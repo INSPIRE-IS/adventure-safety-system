@@ -52,7 +52,7 @@ const TypeDrillsIndex = ({auth,typeDrills, can, searchTerm, sortColumn, sortDire
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="TypeDrills" />
             <div className="container mx-auto py-6">
             {/* Header */}

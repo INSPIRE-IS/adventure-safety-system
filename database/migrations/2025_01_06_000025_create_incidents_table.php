@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('instructor_two_name')->nullable();
             $table->string('uuid')->nullable();
             $table->longText('description');
+            $table->integer('resolved')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

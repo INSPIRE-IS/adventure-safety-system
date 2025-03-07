@@ -52,6 +52,21 @@ class Team extends Model
     //     return $this->belongsTo(User::class, 'owner_id');
     // }
 
+    public function inspections()
+    {
+        return $this->hasMany(Inspection::class, 'site_id', 'id');
+    }
+
+    public function drills()
+    {
+        return $this->hasMany(Drill::class, 'site_id', 'id');
+    }
+
+    public function post_incidents()
+    {
+        return $this->hasMany(PostIncident::class, 'site_id', 'id');
+    }
+
     public function siteFiles()
     {
         return $this->hasMany(File::class, 'site_id', 'id');

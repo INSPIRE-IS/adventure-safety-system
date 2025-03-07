@@ -25,6 +25,7 @@ class Inspection extends Model
         'inspection_schedule_id',
         'assigned_to_id',
         'due_date',
+        'type_inspection_id',
         'complete_date',
         'closing_comment',
         'photo_file_id',
@@ -83,6 +84,11 @@ class Inspection extends Model
     public function site()
     {
         return $this->belongsTo(Team::class, 'id', 'site_id');
+    }
+
+    public function type_inspection()
+    {
+        return $this->belongsTo(TypeInspection::class, 'type_inspection_id');
     }
 
     public function safety_inspection_details()

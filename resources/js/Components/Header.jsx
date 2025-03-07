@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 
 const Header = () => {
+  const { auth } = usePage().props;
+  console.log('auth header', auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { url } = usePage(); // Get the current URL
 
   const navLinks = [
-    { name: 'Staff Management', route: 'users.index' },
-    { name: 'Inspection Management', route: 'inspections.index' },
-    { name: 'PPE Management', route: 'equipments.index' },
-    { name: 'Safety Management', route: 'drills.index' },
-    { name: 'Incident Management', route: 'incidents.index' },
-    { name: 'Complaint Management', route: 'post-incidents.index' },
-    { name: 'Site Management', route: 'files.index' },
+    { name: 'Staff Management', route: 'users.index', permission: "user_access" },
+    { name: 'Inspection Management', route: 'inspections.index', permission: "inspection_access" },
+    { name: 'PPE Management', route: 'equipments.index', permission: "inspection_access" },
+    { name: 'Safety Management', route: 'drills.index', permission: "drill_access" },
+    { name: 'Incident Management', route: 'incidents.index', permission: "incident_access" },
+    { name: 'Complaint Management', route: 'complaints.index', permission: "file_access" },
+    { name: 'Site Management', route: 'files.index', permission: "file_access" },
   ];
 
   const handleLogout = () => {
@@ -24,7 +26,7 @@ const Header = () => {
       {/* Left Section: Logo */}
 
       <div className="flex items-center space-x-2">
-      <Link href="/">
+      <Link href="/dashboard">
         <img className="w-[62px] h-auto" src="./images/logo.png" alt="Chimp&Zee Logo" />
       </Link>
       </div>
@@ -51,7 +53,7 @@ const Header = () => {
       </button>
 
       {/* Center Section: Navigation Links */}
-      {isMenuOpen ? <NavMenu isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} /> : <NavTop isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} />}
+      {isMenuOpen ? <NavMenu isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} auth={auth} /> : <NavTop isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} auth={auth} />}
 
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
@@ -71,7 +73,7 @@ const Header = () => {
 
 export default Header;
 
-const NavTop = ({isMenuOpen, navLinks, url}) => {
+const NavTop = ({isMenuOpen, navLinks, url, auth}) => {
   return (
     <nav
       className={`${
@@ -79,7 +81,11 @@ const NavTop = ({isMenuOpen, navLinks, url}) => {
       } absolute top-[60px] left-0 w-full bg-white shadow-lg lg:static lg:block lg:shadow-none`}
     >
       <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
-        {navLinks.map((link) => (
+        {navLinks.map((link) => {
+          if (link?.permission && !auth?.permissions?.includes(link.permission)) {
+            return null;
+          }
+          return(
           <li key={link.name} className="header-links">
             <Link
               href={route(link.route)}
@@ -95,11 +101,50 @@ const NavTop = ({isMenuOpen, navLinks, url}) => {
               ))}
             </Link>
           </li>
-        ))}
+        )})}
       </ul>
     </nav>
   );
+}
 
+const NavMenu = ({isMenuOpen, navLinks, url, auth}) => {
+  return (
+    <nav
+      className={`${
+        isMenuOpen ? 'block' : 'hidden'
+      } absolute top-[60px] pt-2 pl-10 left-0 w-full bg-white shadow-lg lg:static lg:block lg:shadow-none`}
+    >
+      <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
+        {navLinks.map((link) => {
+          if (link?.permission && !auth?.permissions?.includes(link.permission)) {
+            return null;
+          }
+          return(
+          <li key={link.name} className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            <Link
+              href={route(link.route)}
+              className={`hover:text-blue-500 cursor-pointer ${
+                url === link.route ? 'text-blue-500 font-bold' : ''
+              }`}
+            >
+              {link.name.split(' ').map((word, index) => (
+                <React.Fragment key={index}>
+                  {word}
+                  <br />
+                </React.Fragment>
+              ))}
+            </Link>
+          </li>
+        )})}
+        <li className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+            Profile Management
+          </li>
+          <li className="header-links my-2 hover:text-blue-500 cursor-pointer">
+            Message Management
+          </li>
+      </ul>
+    </nav>
+  );
 }
 
 const NavTop1 = ({isMenuOpen}) => {
@@ -137,7 +182,7 @@ const NavTop1 = ({isMenuOpen}) => {
 
 }
 
-const NavMenu = ({isMenuOpen}) => {
+const NavMenu1 = ({isMenuOpen}) => {
   return (
       <nav
         className={`${
