@@ -42,7 +42,7 @@ class StoreFileRequest extends FormRequest
                 'integer',
             ],
             'type_file_id' => [
-                'string',
+                'required',
             ],
         ];
     }

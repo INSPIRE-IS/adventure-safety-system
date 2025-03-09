@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
+import lookupIcon from '@/Utils/lookupIcons';
 
 const Header = () => {
   const { auth } = usePage().props;
@@ -27,7 +28,7 @@ const Header = () => {
 
       <div className="flex items-center space-x-2">
       <Link href="/dashboard">
-        <img className="w-[62px] h-auto" src="./images/logo.png" alt="Chimp&Zee Logo" />
+        <img className="w-[62px] h-auto" src="./images/logo.png" alt="" />
       </Link>
       </div>
 
@@ -58,13 +59,22 @@ const Header = () => {
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
         <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
-          <img src="./images/logout-icon.svg" alt="Logout" className="w-[20px] h-[20px] rounded-full" />
+          {/* <img src="./images/logout-icon.svg" alt="Logout" className="w-[20px] h-[20px] rounded-full" /> */}
+          <div className=' w-[20px] h-[20px] rounded-full flex items-center justify-center hover:bg-gray-200'>
+                  {lookupIcon("logout")}
+          </div>
         </button>
         <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
-          <img src="./images/user-icon.svg" alt="User Icon" className="w-45 h-45" />
+          {/* <img src="./images/user-icon.svg" alt="User Icon" className="w-45 h-45" /> */}
+          <div className=' w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-gray-200'>
+                  {lookupIcon("user")}
+          </div>
         </button>
         <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
-          <img src="./images/notification-icon.svg" alt="Notification Icon" className="w-45 h-45" />
+          {/* <img src="./images/notification-icon.svg" alt="Notification Icon" className="w-45 h-45" /> */}
+          <div className=' w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-gray-200'>
+                  {lookupIcon("notification")}
+          </div>
         </button>
       </div>
     </header>

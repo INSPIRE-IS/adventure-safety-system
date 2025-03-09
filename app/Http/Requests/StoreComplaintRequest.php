@@ -11,7 +11,9 @@ class StoreComplaintRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // return Gate::allows('incident_create');
+        /** @disregard P1013 */
+        return true; // auth()->user()->can('incident_create');
     }
 
     /**
@@ -22,7 +24,25 @@ class StoreComplaintRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'site_id' => [
+                'required',
+                'integer',
+            ],
+            'user_id' => [
+                'required',
+                'integer',
+            ],
+            'complaint_date' => [
+                'required',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            ],
+            'description' => [
+                'required',
+            ],
+            // 'signature_file_id' => [
+            //     'required',
+            //     'integer',
+            // ],
         ];
     }
 }

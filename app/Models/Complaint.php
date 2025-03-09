@@ -26,10 +26,12 @@ class Complaint extends Model
         'name',
         'phone',
         'email',
+        'title',
+        'description',
         'complaint_date',
-        'complaint',
         'user_id',
         'site_id',
+        'uuid', // unique id created on mobile incase of update
         'created_at',
         'updated_at',
         'deleted_at',
@@ -45,7 +47,10 @@ class Complaint extends Model
         return $this->belongsTo(Team::class, 'site_id');
     }
 
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function getIncidentDateAttribute($value)
     {

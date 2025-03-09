@@ -421,7 +421,11 @@ class DatabaseSeeder extends Seeder
         TypeFile::create(['name' => 'incident signature']);
         TypeFile::create(['name' => 'inspection signature']);
         TypeFile::create(['name' => 'incident']);
-        TypeFile::create(['name' => 'inspection']);
+        TypeFile::create(['name' => 'safety inspection']);
+        TypeFile::create(['name' => 'annual inspection']);
+        TypeFile::create(['name' => 'safety drill']);
+        TypeFile::create(['name' => 'post incident']);
+        TypeFile::create(['name' => 'complaint']);
         TypeFile::create(['name' => 'report']);
         TypeFile::create(['name' => 'certificate']);
 
@@ -498,16 +502,22 @@ class DatabaseSeeder extends Seeder
         $user12->assignRole('manager'); // Assign 'user' role for Team 3 
         $user13->assignRole('inspector'); // Assign 'user' role for Team 3 
         $user14->assignRole('instructor'); // Assign 'user' role for Team 3 
-
+        //monthly
         CategoryItem::create(['name' => 'Launch Platform 1', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Element 1', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Launch Platform 2', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Element 2', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        // drill
         CategoryItem::create(['name' => 'Trolleys', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Lanyards', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Carabiners', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Harnesses', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
         CategoryItem::create(['name' => 'Maillons', 'type_inspection_id' => 3, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        // annual
+        CategoryItem::create(['name' => 'Launch Platform 1', 'type_inspection_id' => 2, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Element 1', 'type_inspection_id' => 2, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Launch Platform 2', 'type_inspection_id' => 2, 'site_id' => 2,  'certificate_recieved_id' => 2]);
+        CategoryItem::create(['name' => 'Element 2', 'type_inspection_id' => 2, 'site_id' => 2,  'certificate_recieved_id' => 2]);
 
         CategoryDetail::create(['category_item_id' => 1, 'name' => 'Concrete Stay Blocks', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 1, 'name' => 'Stay Cables and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
@@ -548,6 +558,7 @@ class DatabaseSeeder extends Seeder
         CategoryDetail::create(['category_item_id' => 7, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 7, 'name' => '#003', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 7, 'name' => '#004', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
         CategoryDetail::create(['category_item_id' => 8, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 8, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 8, 'name' => '#003', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
@@ -555,6 +566,37 @@ class DatabaseSeeder extends Seeder
         CategoryDetail::create(['category_item_id' => 8, 'name' => '#005', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 9, 'name' => '#001', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         CategoryDetail::create(['category_item_id' => 9, 'name' => '#002', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
+
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Concrete Stay Blocks', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Stay Cables and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Gumpole Posts', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Steel Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Platform Timber Frame', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Platform Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Zipline and Safety Cable and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 10, 'name' => 'Fixings and Fastenings', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
+        CategoryDetail::create(['category_item_id' => 11, 'name' => 'Combi Rope', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 11, 'name' => 'Support & Belay Cables', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 11, 'name' => 'Spreader Bars and Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 11, 'name' => 'Timber and Poles', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 11, 'name' => 'Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Concrete Stay Blocks', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Stay Cables and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Gumpole Posts', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Steel Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Platform Timber Frame', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Platform Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Zipline and Safety Cable and Rigging', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 12, 'name' => 'Fixings and Fastenings', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+
+        CategoryDetail::create(['category_item_id' => 13, 'name' => 'Combi Rope', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 13, 'name' => 'Support & Belay Cables', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 13, 'name' => 'Spreader Bars and Brackets', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 13, 'name' => 'Timber and Poles', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
+        CategoryDetail::create(['category_item_id' => 13, 'name' => 'Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
         // period 1 none,2 3month,3 4 month,4 6 month,5 12 month 
         InspectionSchedule::create(['name' => 'Rock climbing', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
@@ -590,10 +632,10 @@ class DatabaseSeeder extends Seeder
 
 
         // complaints
-        Complaint::create(['name' => 'John Doe', 'phone' => '123-456-7890', 'email' => 'john@doe.com', 'complaint_date' => now(), 'complaint' => 'The food was cold', 'user_id' => 1, 'site_id' => 2,]);
-        Complaint::create(['name' => 'Jane Doe', 'phone' => '123-456-7890', 'email' => 'jane@doe.com', 'complaint_date' => now(), 'complaint' => 'The walk way is slipper after it rained', 'user_id' => 1, 'site_id' => 2,]);
-        Complaint::create(['name' => 'John Smith', 'phone' => '123-456-7890', 'email' => 'john@smith.com', 'complaint_date' => now(), 'complaint' => 'The toilet is broken', 'user_id' => 1, 'site_id' => 2,]);
-        Complaint::create(['name' => 'Jane Smith', 'phone' => '123-456-7890', 'email' => 'jane@smith.com', 'complaint_date' => now(), 'complaint' => 'The cart is broken', 'user_id' => 1, 'site_id' => 2,]);
-        Complaint::create(['name' => 'Denver Doe', 'phone' => '123-456-7890', 'email' => 'denver@doe.com', 'complaint_date' => now(), 'complaint' => 'The bedding was wet', 'user_id' => 1, 'site_id' => 3,]);
+        Complaint::create(['name' => 'John Doe', 'phone' => '123-456-7890', 'email' => 'john@doe.com', 'complaint_date' => now(), 'title' => 'Food', 'description' => 'The food was cold', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Jane Doe', 'phone' => '123-456-7890', 'email' => 'jane@doe.com', 'complaint_date' => now(), 'title' => 'Path', 'description' => 'The walk way is slipper after it rained', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'John Smith', 'phone' => '123-456-7890', 'email' => 'john@smith.com', 'complaint_date' => now(), 'title' => 'Broken', 'description' => 'The toilet is broken', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Jane Smith', 'phone' => '123-456-7890', 'email' => 'jane@smith.com', 'complaint_date' => now(), 'title' => 'Damaged', 'description' => 'The cart is damaged', 'user_id' => 1, 'site_id' => 2,]);
+        Complaint::create(['name' => 'Denver Doe', 'phone' => '123-456-7890', 'email' => 'denver@doe.com', 'complaint_date' => now(), 'title' => 'Wet', 'description' => 'The bedding was wet', 'user_id' => 1, 'site_id' => 3,]);
     }
 }

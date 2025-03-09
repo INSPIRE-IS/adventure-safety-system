@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AuthController;
+use App\Http\Controllers\Api\V1\Admin\ComplaintApiController;
 use App\Http\Controllers\Api\V1\Admin\DrillDetailApiController;
 use App\Http\Controllers\Api\V1\Admin\DrillMembersApiController;
 use App\Http\Controllers\Api\V1\Admin\DrillsApiController;
@@ -94,6 +95,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Incident
     Route::apiResource('incidents', IncidentApiController::class)->except(['create', 'edit']);
+
+    // Complaint
+    Route::apiResource('complaints', ComplaintApiController::class)->except(['create', 'edit']);
 
     // Incident Instructor // pivot table for Incident
     //Route::apiResource('incident-instructors', IncidentInstructorApiController::class)->except(['create', 'edit']); 

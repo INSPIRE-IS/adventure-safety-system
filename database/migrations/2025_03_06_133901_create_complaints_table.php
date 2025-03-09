@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone');
             $table->string('email');
+            $table->string('title');
+            $table->string('description');
             $table->string('complaint_date');
-            $table->string('complaint');
+            $table->string('uuid')->nullable();
             $table->integer('resolved')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('site_id')->constrained('teams');

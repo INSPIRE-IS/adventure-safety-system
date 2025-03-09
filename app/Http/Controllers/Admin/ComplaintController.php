@@ -22,14 +22,26 @@ class ComplaintController extends Controller
         $complaints = Complaint::where('name', 'like', '%' . $searchTerm . '%')
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
+        // "id" => 5
+        //           "name" => "Denver Doe"
+        //           "phone" => "123-456-7890"
+        //           "email" => "denver@doe.com"
+        //           "complaint_date" => "2025-03-07 05:16:31"
+        //           "complaint" => "The bedding was wet"
+        //           "resolved" => 0
+        //           "user_id" => 1
+        //           "site_id" => 3
+        //           "created_at" => "2025-03-07 05:16:31"
+        //           "updated_at" => "2025-03-07 05:16:31"
+        //           "deleted_at" => null
         /** @disregard P1013 */
         return Inertia::render('Complaint/Index', [
             'complaints' => $complaints,
             'can' => [
-                'complaint_show' => false, //auth()->user()->can('type_complaint_show'),
-                'complaint_create' => auth()->user()->can('type_complaint_create'),
-                'complaint_edit' => auth()->user()->can('type_complaint_edit'),
-                'complaint_delete' => auth()->user()->can('type_complaint_delete'),
+                'complaint_show' => true, //auth()->user()->can('type_complaint_show'),
+                'complaint_create' => false, //auth()->user()->can('type_complaint_create'),
+                'complaint_edit' => false, //auth()->user()->can('type_complaint_edit'),
+                'complaint_delete' => false, //auth()->user()->can('type_complaint_delete'),
 
             ],
         ]);
@@ -53,7 +65,18 @@ class ComplaintController extends Controller
     {
         //abort_if(Gate::denies('type_complaint_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.complaints.show', compact('complaint'));
+        $complaint->load('site:id,name', 'user:id,name,surname');
+
+        return Inertia::render('Complaint/Show', [
+            'complaint' => $complaint,
+            'can' => [
+                'complaint_show' => true, //auth()->user()->can('type_complaint_show'),
+                'complaint_create' => false, //auth()->user()->can('type_complaint_create'),
+                'complaint_edit' => false, //auth()->user()->can('type_complaint_edit'),
+                'complaint_delete' => false, //auth()->user()->can('type_complaint_delete'),
+
+            ],
+        ]);
     }
 
     public function destroy(Complaint $complaint)

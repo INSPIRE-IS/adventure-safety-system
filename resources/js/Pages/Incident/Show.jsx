@@ -3,6 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head,router} from "@inertiajs/react";
 import EditButton from '@/Components/EditButton';
 import ManageModal from '@/Components/ManageModal';
+import EditButton2 from '@/Components/EditButton2';
+import lookupIcon from '@/Utils/lookupIcons';
 
 
 
@@ -43,12 +45,18 @@ const handleCloseModal = () => {
 
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
             <Head title="Incidents" />
             <div className="container mx-auto py-6">
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                    <EditButton title='Back to Incident Management' width="w-[254px]" height="h-[52px]" icon="./images/back-icon.svg"  onClick={() => router.get(route('incidents.index'))} />
+                    <EditButton2
+                        title="Back to Incident Management" 
+                        width="w-[254px]" 
+                        height="h-[52px]" 
+                        icon={lookupIcon("circleLeft")} 
+                        onClick={() => router.get(route('incidents.index'))}
+                    />
                 </div>
                 <header className="mb-6 flex items-center justify-between w-[100%]">
                     <div className="flex flex-col  items-right">               
@@ -56,13 +64,13 @@ const handleCloseModal = () => {
                     </div>
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                         {can.incident_edit_reminder && (
-                        <EditButton title='Send Reminder' width="w-[214px]" height="h-[52px]" icon="./images/add-alert-clock-icon.svg" onClick={() => handleOpenManageModal("reminder")} />
+                        <EditButton2 title='Send Reminder' width="w-[214px]" height="h-[52px]" icon={lookupIcon("add_alert_clock")} onClick={() => handleOpenManageModal("reminder")} />
                         )}
                         {can.incident_edit_inspector && (
-                        <EditButton title='Assign New Inspector' width="w-[244px]" height="h-[52px]" icon="./images/add-user-icon-2.svg" onClick={() => handleOpenManageModal("assign")} />
+                        <EditButton2 title='Assign New Inspector' width="w-[244px]" height="h-[52px]" icon={lookupIcon("add_user")} onClick={() => handleOpenManageModal("assign")} />
                         )}
                         {can.incident_edit_date && (
-                        <EditButton title='Update Incident Date' width="w-[254px]" height="h-[52px]" icon="./images/clock-setting-gear-icon.svg" onClick={() => handleOpenManageModal("change")} />
+                        <EditButton2 title='Update Incident Date' width="w-[254px]" height="h-[52px]" icon={lookupIcon("clock_setting_gear")} onClick={() => handleOpenManageModal("change")} />
                         )}
                     </div>
                 </header>
@@ -89,7 +97,7 @@ const handleCloseModal = () => {
                                 <p className="label-header-4 mb-2">Description of Incident</p>
                                 <p className="label-sub-header-4 mb-4">{incident?.description}</p>
                         </div>
-                        <div className="pt-[40px]">
+                        <div className="pt-[40px] self-start">
                             <div className="flex flex-col lg:flex-row lg:items-center lg:self-start gap-4 mb-6">
                                 <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
                                 <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
