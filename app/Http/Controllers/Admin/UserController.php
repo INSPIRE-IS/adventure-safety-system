@@ -45,7 +45,7 @@ class UserController extends Controller
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(10);
         //dd(DB::getQueryLog());
-        $roles = Role::select('name', 'id')->get(); //->pluck('name', 'id');
+        $roles = Role::whereNotIn('name', ['admin', 'super'])->select('name as label', 'id as value')->get(); //->pluck('name', 'id');
         $teams = Team::select('name', 'id')->get(); //->pluck('name', 'id');
         //dd($roles);
 

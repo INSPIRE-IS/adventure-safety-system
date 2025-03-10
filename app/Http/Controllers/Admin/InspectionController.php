@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyInspectionRequest;
 use App\Http\Requests\StoreInspectionRequest;
 use App\Http\Requests\UpdateInspectionRequest;
+use App\Jobs\SendMessageJob;
+use App\Models\BulkMessage;
+use App\Models\BulkMessageLog;
 use App\Models\CategoryItem;
 use App\Models\Inspection;
 use App\Models\InspectionSchedule;
@@ -15,9 +18,11 @@ use App\Models\TypeBool;
 use App\Models\TypeInspection;
 use App\Models\User;
 use App\Models\File;
+use App\Models\UserAlert;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -149,14 +154,13 @@ class InspectionController extends Controller
                 'inspection_show' => auth()->user()->can('inspection_show'),
                 'inspection_edit' => false, //auth()->user()->can('inspection_edit'),
                 'inspection_delete' => false, //auth()->user()->can('inspection_delete'),
-                'inspection_create' => false, //auth()->user()->can('inspection_create'),
+                'inspection_create' => true, //auth()->user()->can('inspection_create'),
                 'inspection_edit_reminder' => true, //auth()->user()->can('inspection_create'),
                 'inspection_edit_inspector' => true, //auth()->user()->can('inspection_create'),
                 'inspection_edit_date' => true, //auth()->user()->can('inspection_create'),
             ],
         ]);
     }
-
 
     public function store(StoreInspectionRequest $request)
     {
@@ -174,10 +178,63 @@ class InspectionController extends Controller
 
     public function manage(Request $request)
     {
-        dd($request->all());
-        //$inspection->update($request->all());
+        //dd($request->all());
+        $inspection = Inspection::find($request->input('inspection_id'));
+        $category = CategoryItem::find($request->input('category_id'));
 
-        return redirect()->route('admin.inspections.index');
+        if ($request->input('mode') == "change") {
+            $inspection->update([
+                'due_date' => $request->input('date'),
+                'complete_date' => null,
+                'assigned_to_id' => $request->input('assign'),
+            ]);
+            $category->update([
+                'assigned_to_id' => $request->input('assign'),
+            ]);
+        }
+        if ($request->input('mode') == "assign") {
+            $inspection->update([
+                'assigned_to_id' => $request->input('assign'),
+            ]);
+            $category->update([
+                'assigned_to_id' => $request->input('assign'),
+                'status' => "Active",
+            ]);
+        }
+
+        if ($request->input('mode') == "reminder") {
+            //$inspection->update([
+            //'assigned_to_id' => $request->input('assign'),
+            //]);
+            $category->update([
+                'assigned_to_id' => $request->input('assign'),
+                'status' => "Active",
+            ]);
+        }
+        // Assign users (same as step 2)
+        // $message = BulkMessage::create([
+        //     'subject' => 'Important Update',
+        //     'body' => 'Here is an important update for you.',
+        //     'site_id' => $inspection->site_id,
+        //     'user_id' => $inspection->user_id,
+        // ]);
+        $subject = "You have been assigned to a monthly safety inspection.";
+        $message = "Plese note that you have been assigned to a monthly safety inspection. Please complete the inspection as soon as possible.";
+
+        // Dispatch a job for each recipient
+        $users = [4, 5, 6];
+        $recipients = User::whereIn('id', $users)->get();
+        //dd($recipients);
+        foreach ($recipients as $user) {
+            Log::info("Sending message to: {$user}");
+            SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
+        }
+        $userAlert = UserAlert::create([
+            'alert_text' => $subject,
+            'alert_link' => '/(monthly_safety_inspection)',
+        ]);
+        $userAlert->users()->sync($users);
+        return redirect()->back()->with('success', 'Inspection updated successfully.');
     }
 
     public function show(Inspection $inspection)

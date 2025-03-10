@@ -168,6 +168,7 @@ const UsersIndex = ({auth, users, roles, teams, can, searchTerm, sortColumn, sor
                 user={selectedUser}
                 roles={roles}
                 teams={teams}
+                team = {auth?.team}
             />
             </div>
 

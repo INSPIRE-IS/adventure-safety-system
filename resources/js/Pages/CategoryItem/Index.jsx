@@ -7,6 +7,7 @@ import SearchBar from '@/Components/SearchBar';
 import AddButton from '@/Components/AddButton';
 
 const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, type_bools, can, searchTerm, sortColumn, sortDirection }) => {	
+    //alert(data);
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on categoryitem ', auth);
@@ -66,7 +67,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">Category Items</h1>                    
+                    <h1 className="view-header">Category Items <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                   
                 </div>
             </header>
 
@@ -179,6 +180,8 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                 type_inspections={type_inspections}
                 teams={teams}
                 type_bools={type_bools}
+                team={auth?.team}
+                type_item={data}
             />
             </div>
 

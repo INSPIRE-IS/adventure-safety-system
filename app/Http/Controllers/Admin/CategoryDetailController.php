@@ -10,6 +10,7 @@ use App\Models\CategoryDetail;
 use App\Models\CategoryItem;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,16 +20,22 @@ class CategoryDetailController extends Controller
     {
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('category_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-
+        $user = auth()->user();
+        $teamId = Session::get('team_id');
+        $data = $request->get('data', '');
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'category_item_id'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         $categoryDetails = CategoryDetail::with(['category_item'])
             ->where('name', 'like', '%' . $searchTerm . '%')
-            ->orWhereHas('category_item', function ($query) use ($searchTerm) {
-                $query->where('name', $searchTerm); // Replace $teamId with the actual team ID you're filtering by
+            // ->orWhereHas('category_item', function ($query) use ($searchTerm, $teamId) {
+            //     $query->where('name', $searchTerm);
+            // })
+            ->whereHas('category_item', function ($query) use ($data, $teamId) {
+                $query->where('type_inspection_id', $data)
+                    ->where('site_id', $teamId);
             })
+            //->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(500);
         //dd($categoryDetails);

@@ -3,7 +3,7 @@ import { useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
 import CustomSelect1 from "@/Components/CustomSelect1";
 
-const CategoryDetailModal = ({ isOpen, onClose, mode, categoryDetail = null, categoryItems }) => {
+const CategoryDetailModal = ({ isOpen, onClose, mode, categoryDetail = null, categoryItems, team }) => {
     console.log("mode", mode);
     console.log("categoryDetail", categoryDetail);
 

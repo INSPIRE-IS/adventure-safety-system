@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
 import CustomCheckbox from "@/Components/CustomCheckbox";
+import CustomSelect1 from "@/Components/CustomSelect1";
 
-const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
+const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) => {
     console.log("mode", mode);
     console.log("user", user);
     console.log("roles", roles);
@@ -13,7 +14,7 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
         email: "",
         mobile_number: "",
         roles: [],
-        teams: [],
+        teams: [team?.id],
         is_admin: false,
         is_email_recipient: false,
     });
@@ -32,7 +33,7 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
         } else if (mode === "create") {
             reset(); // Clear form for create mode
         }
-    }, [mode,user]);
+    }, [mode,user,team]);
 
     const handleChange = (target, value) => {
         setData(target, value);
@@ -95,7 +96,16 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
                         handleChange={handleChange}
                         errors={errors}
                     />
-                    <div className="mb-4">
+                    <CustomSelect1
+                        label="roles"
+                        name="roles"
+                        value={data.roles}
+                        mode={mode}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
+                        error={errors.roles}
+                        options={roles}
+                    />
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
                             Roles
                         </label>
@@ -129,8 +139,8 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
                                 </label>
                             ))}
                         </div>
-                    </div>
-                    <div className="mb-4">
+                    </div> */}
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
                             Teams
                         </label>
@@ -164,23 +174,23 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams }) => {
                                 </label>
                             ))}
                         </div>
-                    </div>
-                    <CustomCheckbox
+                    </div> */}
+                    {/* <CustomCheckbox
                         label="Is Admin"
                         name="is_admin"
                         checked={data.is_admin}
                         mode={mode}
                         onChange={handleChange}
                         errors={errors}
-                    />
-                    <CustomCheckbox
+                    /> */}
+                    {/* <CustomCheckbox
                         label="Is Email Recipient"
                         name="is_email_recipient"
                         checked={data.is_email_recipient}
                         mode={mode}
                         onChange={handleChange}
                         errors={errors}
-                    />
+                    /> */}
                     <div className="flex justify-end space-x-2">
                         <button
                             type="button"

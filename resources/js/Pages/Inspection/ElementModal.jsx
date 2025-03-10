@@ -6,7 +6,7 @@ import CustomButton from "@/Components/CustomButton";
 const ElementModal = ({ isOpen, onClose, mode, elementItem = null, team }) => {
     const { data, setData, post, put, errors, reset } = useForm({
         name: "",
-        type_inspection_id: 3,
+        type_inspection_id: 1,
         site_id: team?.id,
         in_use_date: new Date().toISOString().split("T")[0],
         out_use_date: "",

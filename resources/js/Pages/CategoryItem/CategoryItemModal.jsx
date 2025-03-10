@@ -15,9 +15,10 @@ const typeOptions = [
     { value: "4", label: "Dr" },
   ];
 
-const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspections, teams, type_bools }) => {
+const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspections, teams, type_bools, team, type_item }) => {
     console.log("mode", mode);
     console.log("categoryItem", categoryItem);
+    //alert(type_item);
     //console.log("type_bools", type_bools);
 
     const currentImage = categoryItem?.path; 
@@ -25,10 +26,10 @@ const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_in
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
         type_inspection_id: "",        
-        site_id: "",        
-        in_use_date: "",
+        site_id: team?.id,
+        in_use_date: new Date().toISOString().split("T")[0],
         out_use_date: "",
-        certificate_recieved_id: "", 
+        certificate_recieved_id: 2, 
 
     });
     useEffect(() => {
@@ -148,7 +149,7 @@ const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_in
                         error={errors.type_inspection_id}
                         options={type_inspections}
                     />
-                    <CustomSelect1
+                    {/* <CustomSelect1
                         label="Site"
                         name="site_id"
                         value={data?.site_id}
@@ -156,40 +157,45 @@ const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_in
                         onChange={(e) => handleChange(e.target.name, e.target.value)}
                         error={errors.site_id}
                         options={teams}
-                    />
-                    <CustomDatePicker
+                    /> */}
+                    {/* <CustomDatePicker
                         label="In Use Date"
                         name="in_use_date"
                         mode={mode}
                         value={data?.in_use_date}
                         onChange={handleChange}
                         error={errors.in_use_date}
-                    />
-                    <CustomDatePicker
+                    /> */}
+                    {/* <CustomDatePicker
                         label="Out Use Date"
                         name="out_use_date"
                         mode={mode}
                         value={data?.out_use_date}
                         onChange={handleChange}
                         error={errors.out_use_date}
-                    />
-                    <CustomSelect1
-                        label="Certificate Recieved"
-                        name="certificate_recieved_id"
-                        mode={mode}
-                        value={data?.certificate_recieved_id}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.certificate_recieved_id}
-                        options={type_bools}
-                    />
+                    /> */}
+                    {type_item == 1 &&(
+                        <> 
+                            <CustomSelect1
+                                label="Certificate Recieved"
+                                name="certificate_recieved_id"
+                                mode={mode}
+                                value={data?.certificate_recieved_id}
+                                onChange={(e) => handleChange(e.target.name, e.target.value)}
+                                error={errors.certificate_recieved_id}
+                                options={type_bools}
+                            />
 
-                    <div className="flex justify-start">
-                        <ImageUpload
-                        mode={mode}
-                        currentImage={currentImage}
-                        onUpload={handleImageUpload}
-                        />
-                    </div>
+                            <div className="flex justify-start">
+                                <ImageUpload
+                                mode={mode}
+                                currentImage={currentImage}
+                                onUpload={handleImageUpload}
+                                />
+                            </div>                        
+                        </>
+                    )}
+
                     <div className="flex justify-end space-x-2">
                     <CustomButton
                             onClick={onClose}

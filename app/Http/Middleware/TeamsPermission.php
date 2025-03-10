@@ -11,7 +11,7 @@ class TeamsPermission
 
     public function handle($request, \Closure $next)
     {
-        $debug = 1;
+        $debug = 0;
 
         if ($debug == 1) {
             Log::info('TeamsPermission do nothing');

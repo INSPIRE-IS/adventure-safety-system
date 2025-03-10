@@ -14,6 +14,7 @@ use App\Models\TypeBool;
 use App\Models\TypeInspection;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,16 +25,20 @@ class CategoryItemController extends Controller
         //dd($request->get('data', ''));
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('category_item_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        $user = auth()->user();
+        $teamId = Session::get('team_id');
+        $data = $request->get('data', '');
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         $categoryItems = CategoryItem::with(['site', 'type', 'certificate_recieved', 'certificate_file'])
             ->where('name', 'like', '%' . $searchTerm . '%')
+            ->where('type_inspection_id', '=', $data)
+            ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
-
-        $type_inspections = TypeInspection::select('name as label', 'id as value')->get();
+        $type_items = $data == 1 ? [1, 2] : [3];
+        $type_inspections = TypeInspection::whereIn('id', $type_items)->select('name as label', 'id as value')->get();
         $teams = Team::select('name as label', 'id as value')->get();
         $type_bools = TypeBool::select('name as label', 'id as value')->get();
 
@@ -84,6 +89,18 @@ class CategoryItemController extends Controller
                 $saveImage = true;
             }
             $categoryItem = CategoryItem::create($request->all());
+            if (!empty($request->identifications)) {
+                $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
+                foreach ($request->identifications as $identification) {
+                    //dd($identification);
+                    $categoryItem->categoryDetails()->create([
+                        'name' => $identification,
+                        'in_use_date' =>  $in_use_date,
+                    ]);
+                }
+            }
+
+
             if ($saveImage) {
                 $image_file = $request->file('image');
 

@@ -66,8 +66,8 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
                 )}
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
-                <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">Category Details</h1>                    
+                <div className="flex flex-col  items-right">
+                    <h1 className="view-header">Category Details <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                    
                 </div>
             </header>
 
@@ -157,6 +157,7 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
                 mode={modalMode}
                 categoryDetail={selectedCategoryDetail}
                 categoryItems={categoryItems}
+                team={auth?.team}
             />
             </div>
 
