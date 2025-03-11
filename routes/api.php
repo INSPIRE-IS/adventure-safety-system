@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\Admin\TypeFilesApiController;
 use App\Http\Controllers\Api\V1\Admin\TypeIncidentApiController;
 use App\Http\Controllers\Api\V1\Admin\TypeInspectionApiController;
 use App\Http\Controllers\Api\V1\Admin\TypeQuestionApiController;
+use App\Http\Controllers\Api\V1\Admin\UserAlertApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -98,6 +99,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Complaint
     Route::apiResource('complaints', ComplaintApiController::class)->except(['create', 'edit']);
+    // UserAlert
+    Route::apiResource('user-alerts', UserAlertApiController::class)->except(['create', 'edit']);
 
     // Incident Instructor // pivot table for Incident
     //Route::apiResource('incident-instructors', IncidentInstructorApiController::class)->except(['create', 'edit']); 

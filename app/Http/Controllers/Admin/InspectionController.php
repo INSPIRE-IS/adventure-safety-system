@@ -178,9 +178,14 @@ class InspectionController extends Controller
 
     public function manage(Request $request)
     {
-        //dd($request->all());
+        dd($request->all());
         $inspection = Inspection::find($request->input('inspection_id'));
         $category = CategoryItem::find($request->input('category_id'));
+        $typeInspection = TypeInspection::find($request->input('type_inspection_id'));
+        $name = $typeInspection->name ?? "Inspection";
+        $subject = "";
+        $message = "";
+        $notification = "";
 
         if ($request->input('mode') == "change") {
             $inspection->update([
@@ -191,6 +196,9 @@ class InspectionController extends Controller
             $category->update([
                 'assigned_to_id' => $request->input('assign'),
             ]);
+            $subject = "You have been assigned to a " . $name . ".";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection as soon as possible.";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
         }
         if ($request->input('mode') == "assign") {
             $inspection->update([
@@ -200,6 +208,9 @@ class InspectionController extends Controller
                 'assigned_to_id' => $request->input('assign'),
                 'status' => "Active",
             ]);
+            $subject = "You have been assigned to a " . $name . ".";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection as soon as possible.";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
         }
 
         if ($request->input('mode') == "reminder") {
@@ -210,19 +221,13 @@ class InspectionController extends Controller
                 'assigned_to_id' => $request->input('assign'),
                 'status' => "Active",
             ]);
+            $subject = $name . ".";
+            $message = "Please note that " . $name . ", Is past Due date.";
+            $notification = $name . "Due.";
         }
-        // Assign users (same as step 2)
-        // $message = BulkMessage::create([
-        //     'subject' => 'Important Update',
-        //     'body' => 'Here is an important update for you.',
-        //     'site_id' => $inspection->site_id,
-        //     'user_id' => $inspection->user_id,
-        // ]);
-        $subject = "You have been assigned to a monthly safety inspection.";
-        $message = "Plese note that you have been assigned to a monthly safety inspection. Please complete the inspection as soon as possible.";
 
         // Dispatch a job for each recipient
-        $users = [4, 5, 6];
+        $users = [$inspection->assigned_to_id]; // [4, 5, 6];
         $recipients = User::whereIn('id', $users)->get();
         //dd($recipients);
         foreach ($recipients as $user) {
@@ -230,8 +235,9 @@ class InspectionController extends Controller
             SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
         }
         $userAlert = UserAlert::create([
-            'alert_text' => $subject,
-            'alert_link' => '/(monthly_safety_inspection)',
+            'alert_text' => $notification,
+            'alert_link' => '/(monthly_safety)',
+            'alert_param_id' => $inspection->id,
         ]);
         $userAlert->users()->sync($users);
         return redirect()->back()->with('success', 'Inspection updated successfully.');

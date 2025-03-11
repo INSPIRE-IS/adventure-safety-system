@@ -211,16 +211,16 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                             <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Equipment
                             </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Assigned to
                             </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Status
                             </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Date Processed
                             </th>
-                            <th className="px-6 py-3 uppercase tracking-wider  w-[30%]">
+                            <th className="px-6 py-3 text-start uppercase tracking-wider  w-[30%]">
                                 
                             </th>
                         </tr>
@@ -271,28 +271,19 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
                                     
-                                    <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
+                                    <div className="w-[180px] h-[49px] flex-col justify-start text-start gap-[9px] inline-flex  border-r border-gray-300 ">
                                         <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.category_item}</div>
                                         <div className="w-full text-[#808191] text-[11px] font-normal font-['Manrope'] leading-[18px]">Description</div>                              
                                     </div>
                                         {/* <div className="w-[50px] h-[0px] origin-top-left -rotate-90 border border-[#cecece]"></div>  */}
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-
-                                    <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-start   table-text1   ">
+                                    <div className="w-[175px] h-[49px] flex-col justify-center text-start gap-[9px] inline-flex border-r border-gray-300 ">
                                             <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.inspector}</div>                                        
                                     </div>
-                                     
                                 </td>
 
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center ">
-
-                                    {/* {status == "Overdue" && <h5 className="bg-[#F00] text-pill-box py-[3px] px-4 gap-[10px] rounded-[4px] w-[89px] h-6 text-center">Overdue</h5>}
-                                    {status == "Upcoming" && 
-                                    <div className="h-6 px-4 py-[3px] bg-[#eba535] rounded justify-start items-center gap-2.5 inline-flex">
-                                    <div className="text-center text-white text-sm font-semibold font-['Manrope'] leading-[18px]">Upcoming</div>
-                                    </div>}
-                                    {status == "Complete" && <h5 className="bg-[#7FBA7A] text-pill-box py-[3px] px-4 gap-[10px] rounded-[4px] w-[89px] h-6 text-center">Complete</h5>} */}
                                     <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
                                         <span
                                             className={`px-2 py-1 rounded-[4px] text-pill-box  ${
@@ -308,7 +299,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                                     </div>
 
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center table-text3 ">
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text3 ">
                                     {inspection.complete_date?.split(" ")[0]}
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-start ">

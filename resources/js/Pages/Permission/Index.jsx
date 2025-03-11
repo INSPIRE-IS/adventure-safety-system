@@ -79,7 +79,7 @@ const PermissionsIndex = ({auth, permissions, can, searchTerm, sortColumn, sortD
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Permission Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -93,8 +93,10 @@ const PermissionsIndex = ({auth, permissions, can, searchTerm, sortColumn, sortD
                     <tbody className="bg-white divide-y divide-gray-200">
                         {permissions?.data.map((permission) => (
                             <tr key={permission.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {permission.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{permission.name}</div>                                        
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.permission_show && (

@@ -79,7 +79,7 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Role Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -91,7 +91,7 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                                     sort: 'role', 
                                     direction: sortColumn === 'role' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Access Role
                                 <img 
@@ -110,18 +110,21 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                     <tbody className="bg-white divide-y divide-gray-200">
                         {roles?.data.map((role) => (
                             <tr key={role.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className="px-6 py-4 whitespace-nowrap text-start justify-center  table-text1 ">
-                                        {role.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{role.name}</div>                                        
+                                    </div>
                                 </td>
-                                <td className="px-6 py-4 max-h-[100px] overflow-y-auto">
-                                    <div className="max-h-[100px] overflow-y-auto">
-                                        {role?.permissions.map((role) => (
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full max-h-[100px] overflow-y-auto table-text1 ">{role?.permissions.map((role) => (
                                             <h4 key={role.id} className="table-text2">
                                                 {role.name}
                                             </h4>
-                                        ))}
+                                        ))}</div>                                        
                                     </div>
                                 </td>
+
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.role_show && (
                                         <button

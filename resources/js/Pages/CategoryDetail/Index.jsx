@@ -83,7 +83,7 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
                                     sort: 'category_item_id', 
                                     direction: sortColumn === 'category_item_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Item Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -95,7 +95,7 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Detail Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -109,11 +109,15 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
                     <tbody className="bg-white divide-y divide-gray-200">
                         {categoryDetails?.data.map((categoryDetail) => (
                             <tr key={categoryDetail.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryDetail.category_item.name}
-                                </td>                                
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryDetail.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryDetail.category_item.name}</div>                                        
+                                    </div>
+                                </td>
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryDetail.name}</div>                                        
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.category_detail_show && (

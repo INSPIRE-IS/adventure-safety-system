@@ -15,6 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('alert_text')->nullable();
             $table->string('alert_link')->nullable();
+            $table->integer('alert_param_id')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

@@ -82,7 +82,7 @@ const FilesIndex = ({auth, Files, roles, teams, can, searchTerm, sortColumn, sor
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 File Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -94,7 +94,7 @@ const FilesIndex = ({auth, Files, roles, teams, can, searchTerm, sortColumn, sor
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Expiry
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -116,19 +116,15 @@ const FilesIndex = ({auth, Files, roles, teams, can, searchTerm, sortColumn, sor
                                     </svg>
                                 </div>
                                 </td>
-                                <td className=" px-6 py-4  text-center justify-center   table-text1   ">
-
-                                    <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{File.file_name}</div>                                        
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{File.file_name}</div>                                        
                                     </div>
-                                    
-                                    </td>
-                                    <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-
-                                    <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{File?.expiry}</div>                                        
+                                </td>
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{File?.expiry}</div>                                        
                                     </div>
-                                    
                                 </td>
 
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">

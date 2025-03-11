@@ -82,7 +82,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Category Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -95,7 +95,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                     sort: 'site_id', 
                                     direction: sortColumn === 'site_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-start items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Site Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -107,13 +107,13 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                     sort: 'type_id', 
                                     direction: sortColumn === 'type_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-start items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Inspection Type 
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
-                            <th className="px-6 py-3 table-header uppercase tracking-wider">
+                            <th className="px-6 py-3 text-left table-header uppercase tracking-wider">
                                     Certification Recieved
                             </th>
                             <th className="px-6 py-3 uppercase tracking-wider">
@@ -124,17 +124,25 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                     <tbody className="bg-white divide-y divide-gray-200">
                         {categoryItems?.data.map((categoryItem) => (
                             <tr key={categoryItem.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryItem.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryItem.name}</div>                                        
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryItem.site.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryItem.site.name}</div>                                        
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryItem.type.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryItem.type.name}</div>                                        
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {categoryItem.certificate_recieved.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{categoryItem.certificate_recieved.name}</div>                                        
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.category_item_show && (

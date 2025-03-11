@@ -79,17 +79,17 @@ const AuditLogsIndex = ({auth, auditLogs, can, searchTerm, sortColumn, sortDirec
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Description
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left table-header uppercase tracking-wider">
                                     Subject Type
                                 </th>
 
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left table-header uppercase tracking-wider">
                                     Created At
                                 </th>
                             <th className="px-6 py-3 uppercase tracking-wider">
@@ -100,15 +100,22 @@ const AuditLogsIndex = ({auth, auditLogs, can, searchTerm, sortColumn, sortDirec
                     <tbody className="bg-white divide-y divide-gray-200">
                         {auditLogs?.data.map((log) => (
                             <tr key={log.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {log.description}
+                                    <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                        <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                                <div className="w-full table-text1 ">{log.description}</div>                                        
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {log.subject_type}
+                                    <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                        <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                                <div className="w-full table-text1 ">{log.subject_type}</div>                                        
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {log.created_at}
+                                    <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                        <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                                <div className="w-full table-text1 ">{log.created_at}</div>                                        
+                                        </div>
                                     </td>
+
                                     <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.audit_log_show && (
                                         <button

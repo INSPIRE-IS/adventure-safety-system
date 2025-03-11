@@ -20,6 +20,7 @@ use App\Models\TypeIncident;
 use App\Models\TypeInspection;
 use App\Models\TypeQuestion;
 use App\Models\User;
+use App\Models\UserAlert;
 use Carbon\Carbon;
 use DB;
 use Gate;
@@ -134,6 +135,16 @@ class HomeApiController extends Controller
             //->whereBetween('drills.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
 
+        $user_alerts = UserAlert::select('id', 'alert_text', 'alert_link', 'alert_param_id')->with([
+            'users:id,name',
+            'users.teams:id,name'
+        ])
+            ->whereHas('users', function ($query) use ($teamId) {
+                $query->whereHas('teams', function ($subQuery) use ($teamId) {
+                    $subQuery->where('team_id', $teamId);
+                });
+            })->get();
+
 
         return new HomeResource(compact(
             'safety_inspections',
@@ -141,6 +152,7 @@ class HomeApiController extends Controller
             'equipment_inspections',
             'post_incidents',
             'drills',
+            'user_alerts'
         ));
     }
 

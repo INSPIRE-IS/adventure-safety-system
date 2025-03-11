@@ -80,7 +80,7 @@ const UsersIndex = ({auth, users, roles, teams, can, searchTerm, sortColumn, sor
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 User Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -92,7 +92,7 @@ const UsersIndex = ({auth, users, roles, teams, can, searchTerm, sortColumn, sor
                                     sort: 'role', 
                                     direction: sortColumn === 'role' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Access Role
                                 <img 
@@ -118,12 +118,16 @@ const UsersIndex = ({auth, users, roles, teams, can, searchTerm, sortColumn, sor
                                     </div>
 
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap ">
-                                    {user?.roles.map((role) => 
-                                        (
-                                        <h4 className="table-text2">{role.name}</h4>
-                                        )
-                                    )}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full max-h-[100px] overflow-y-auto table-text1 ">
+                                            {user?.roles.map((role) => 
+                                            (
+                                            <h4 className="table-text2">{role.name}</h4>
+                                            )
+                                        )}
+                                        </div>                                        
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.user_show && (

@@ -102,13 +102,13 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                             {/* <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Drill Name
                             </th> */}
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Last Safety Drill
                             </th>
-                            <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
+                            <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Next Drill
                             </th>
-                            <th className="px-6 py-3 uppercase tracking-wider  w-[30%]">
+                            <th className="px-6 py-3 text-start uppercase tracking-wider  w-[30%]">
                                 
                             </th>
                         </tr>
@@ -148,10 +148,14 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
                                     </div>
                                      
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center table-text3 ">
-                                <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{formattedDate}</div>
+                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
+
+                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                        <div className="w-full table-text1 ">{formattedDate}</div>                                        
+                                </div>
+                                
                                 </td>
-                                <td className="px-6 py-4 flex flex-row items-center justify-start ">
+                                <td className="px-6 py-4 flex flex-row items-center justify-end ">
                                     {can.drill_show && (
                                         // <button
                                         //     onClick={() => handleOpenModal("view",drill)}

@@ -103,7 +103,7 @@ Route::middleware('auth')->group(function () {
 
     // User Alerts
     Route::get('user-alerts/read', [UserAlertController::class, 'read'])->name('user-alerts.read');
-    Route::resource('user-alerts', UserAlertController::class);
+    Route::resource('user-alerts', UserAlertController::class)->except(['create', 'edit']);
 
     // Type Bool
     Route::resource('type-bools', TypeBoolController::class)->except(['create', 'edit']);

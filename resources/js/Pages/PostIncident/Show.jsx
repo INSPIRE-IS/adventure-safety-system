@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router, useForm , usePage } from "@inertiajs/react";
 import Pagination from '@/Components/Pagination';
-import InspectionModal from './InspectionModal';
 import SearchBar from '@/Components/SearchBar';
 import AddButton from '@/Components/AddButton';
 import EditButton from '@/Components/EditButton';

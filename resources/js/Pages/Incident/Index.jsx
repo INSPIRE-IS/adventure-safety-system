@@ -73,7 +73,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                        <th className="px-6 py-3 table-header uppercase tracking-wider">
+                            <th className="px-6 py-3 table-header uppercase tracking-wider">
                             </th>
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
@@ -81,7 +81,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                                     sort: 'type_incident_id', 
                                     direction: sortColumn === 'type_incident_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Incident Type
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -95,7 +95,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                                     sort: 'incident_date', 
                                     direction: sortColumn === 'incident_date' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Date
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -108,7 +108,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                                     sort: 'incident_date', 
                                     direction: sortColumn === 'incident_date' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
                                 Time of Incident
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
@@ -121,7 +121,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {incidents?.data.map((incident) => (
-                            <tr key={incident.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
+                            <tr key={incident.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
                                 <div className='bg-[#8A94A6] w-[43px] h-[43px] rounded-full flex items-center justify-center hover:bg-gray-200'>
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -130,22 +130,20 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
                                     </svg>
                                 </div>
                                 </td>
-
-
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{incident.type_incident.name}</div>                                        
-                                </div>
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{incident.type_incident.name}</div>                                        
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{incident.incident_date?.split(" ")[0]}</div>                                        
-                                </div>
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{incident.incident_date?.split(" ")[0]}</div>                                        
+                                    </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{incident.incident_date?.split(" ")[1]}</div>                                        
-                                </div>                            
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{incident.incident_date?.split(" ")[1]}</div>                                        
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.incident_show && (

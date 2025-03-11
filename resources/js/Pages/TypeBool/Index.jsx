@@ -37,7 +37,7 @@ const TypeBoolsIndex = ({auth, typeBools, roles, teams, can, searchTerm, sortCol
         e.preventDefault();
         // Redirect to the route with search query and other parameters
         console.log('search ', search);
-        window.location.href = route('type-inspections.index', {
+        window.location.href = route('type-bools.index', {
             search,
             sort: sortColumn,
             direction: sortDirection
@@ -46,8 +46,8 @@ const TypeBoolsIndex = ({auth, typeBools, roles, teams, can, searchTerm, sortCol
 
     const handleDelete = (typebool) => {
         if (confirm("Are you sure you want to delete this typebool?")) {
-            //post(route("type-inspections.destroy", typebool), { _method: "DELETE",});
-            router.delete(route('type-inspections.destroy', typebool), {preserveScroll: true});
+            //post(route("type-bools.destroy", typebool), { _method: "DELETE",});
+            router.delete(route('type-bools.destroy', typebool), {preserveScroll: true});
         }
     };
 
@@ -75,7 +75,7 @@ const TypeBoolsIndex = ({auth, typeBools, roles, teams, can, searchTerm, sortCol
                         <tr>
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
-                                href={route('type-inspections.index', { 
+                                href={route('type-bools.index', { 
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
