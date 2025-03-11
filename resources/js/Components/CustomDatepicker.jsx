@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-date-picker";
-import "react-date-picker/dist/DatePicker.css"; // Optional, for default styling
+// import DatePicker from "react-date-picker";
+// import "react-date-picker/dist/DatePicker.css"; // Optional, for default styling
 
 const CustomDatePicker = ({ label, name, value, onChange, mode, error }) => {
   const [date, setDate] = useState('');
@@ -24,7 +24,7 @@ const CustomDatePicker = ({ label, name, value, onChange, mode, error }) => {
   return (
     <div className="w-full mb-4">
       {label && <label className="block input-header mb-[14px]">{label}</label>}
-      <DatePicker
+      {/* <DatePicker
         value={date}
         onChange={handleChange}
         format="dd/MM/yyyy" // Set the format to dd/MM/yyyy
@@ -32,7 +32,7 @@ const CustomDatePicker = ({ label, name, value, onChange, mode, error }) => {
         shadow-sm input-text border rounded-xl border-gray-300 focus:ring-blue-300`}
         disabled={mode === "view"}
 
-      />
+      /> */}
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
