@@ -7,7 +7,6 @@ import AddButton from '@/Components/AddButton';
 import EditButton from '@/Components/EditButton';
 import CustomSelect2 from '@/Components/CustomSelect2';
 import ManageModal from '@/Components/ManageModal';
-import ElementModal from './ElementModal';
 import EditButton2 from '@/Components/EditButton2';
 import lookupIcon from '@/Utils/lookupIcons';
 
