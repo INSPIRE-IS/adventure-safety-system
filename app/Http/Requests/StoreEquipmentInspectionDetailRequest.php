@@ -35,14 +35,14 @@ class StoreEquipmentInspectionDetailRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'category_item_id' => [
-                'required',
-                'integer',
-            ],
-            'category_detail_id' => [
-                'required',
-                'integer',
-            ],
+            // 'category_item_id' => [
+            //     'required',
+            //     'integer',
+            // ],
+            // 'category_detail_id' => [
+            //     'required',
+            //     'integer',
+            // ],
         ];
     }
 }

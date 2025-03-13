@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyIncidentRequest;
 use App\Http\Requests\StoreIncidentRequest;
 use App\Http\Requests\UpdateIncidentRequest;
+use App\Jobs\SendMessageJob;
 use App\Models\File;
 use App\Models\Incident;
 use App\Models\Team;
 use App\Models\TypeIncident;
 use App\Models\User;
+use App\Models\UserAlert;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
@@ -128,6 +131,50 @@ class IncidentController extends Controller
                 'drill_edit_date' => true, //auth()->user()->can('drill_create'),
             ],
         ]);
+    }
+
+    public function resolveIssue(Request $request)
+    {
+        Incident::where('id', $request->incident_id)
+            ->update(['resolved' => 1]);
+        return redirect()->back();
+    }
+
+    public function esculateIssue(Request $request)
+    {
+        //dd($request->all());
+        $teamId = Session::get('team_id');
+        $incident = Incident::find($request->input('incident_id'));
+        $typeIncident = TypeIncident::find($incident->type_incident_id);
+        $type_name = $typeIncident->name ?? "Incident";
+        $subject = "Esculate issue for " . $type_name . ".";
+        $message = "Please note that this is still and issue for " . $type_name . ". <br/> This incident remains unresolved " . $incident->description;
+        $notification = "Please note that " . $type_name . " has been escalated.";
+
+        $users = User::whereHas('teams', function ($query) use ($teamId) {
+            $query->where('team_id', $teamId);
+        })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['ceo', 'manager', 'inspector']);
+            })
+            ->select('name as label', 'id as value')->get();
+
+        if (!empty($users)) {
+            $recipients = User::whereIn('id', $users)->get();
+
+            foreach ($recipients as $user) {
+                Log::info("Sending message to: {$user->id}");
+                //dd($message);
+                SendMessageJob::dispatch($user->id, $incident->site_id, $subject, $message);
+            }
+        }
+        $userAlert = UserAlert::create([
+            'alert_text' => $notification,
+            'alert_link' => '/(incident)',
+            'alert_param_id' => $incident->id,
+        ]);
+        $userAlert->users()->sync($users);
+        return redirect()->back();
     }
 
     public function destroy(Incident $incident)

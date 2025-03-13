@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\EquipmentInspectionDetailResource;
 use App\Models\EquipmentInspectionDetail;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class EquipmentInspectionDetailApiController extends Controller
@@ -22,6 +23,8 @@ class EquipmentInspectionDetailApiController extends Controller
 
     public function store(StoreEquipmentInspectionDetailRequest $request)
     {
+        Log::info('store');
+        Log::info('store', [$request->all()]);
         $equipmentInspectionDetail = EquipmentInspectionDetail::updateOrCreate(
             [
                 'site_id' => $request->site_id,

@@ -421,8 +421,7 @@ class DatabaseSeeder extends Seeder
         TypeFile::create(['name' => 'incident signature']);
         TypeFile::create(['name' => 'inspection signature']);
         TypeFile::create(['name' => 'incident']);
-        TypeFile::create(['name' => 'safety inspection']);
-        TypeFile::create(['name' => 'annual inspection']);
+        TypeFile::create(['name' => 'inspection']);
         TypeFile::create(['name' => 'safety drill']);
         TypeFile::create(['name' => 'post incident']);
         TypeFile::create(['name' => 'complaint']);

@@ -12,7 +12,7 @@ import lookupIcon from '@/Utils/lookupIcons';
 
 
 
-const InspectionsIndex = ({auth, inspection, inspection_details, can, users,inspection_id,category_id }) => {
+const InspectionsIndex = ({auth, inspection, inspection_details, can, users, inspection_id, category_id }) => {
 const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 const [modalMode, setModalMode] = useState("create");
 const [checkedState, setCheckedState] = useState([]);

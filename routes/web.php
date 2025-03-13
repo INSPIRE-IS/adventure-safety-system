@@ -119,6 +119,8 @@ Route::middleware('auth')->group(function () {
 
     // Inspections
     Route::post('inspections/manage', [InspectionController::class, 'manage'])->name('inspections.manage');
+    Route::post('inspections/resolve', [InspectionController::class, 'resolveIssue'])->name('inspections.resolve');
+    Route::post('inspections/escalate', [InspectionController::class, 'esculateIssue'])->name('inspections.escalate');
     Route::resource('inspections', InspectionController::class)->except(['create', 'edit']);
     Route::resource('equipments', EquipmentController::class)->except(['create', 'edit']);
 
@@ -145,6 +147,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('drill-schedules', DrillScheduleController::class)->except(['create', 'edit']);
 
     // Drills
+    Route::post('drills/manage', [DrillController::class, 'manage'])->name('drills.manage');
     Route::resource('drills', DrillController::class)->except(['create', 'edit']);
 
     // Drills
@@ -157,6 +160,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('type-incidents', TypeIncidentController::class)->except(['create', 'edit']);
 
     // Incident
+    Route::post('incidents/resolve', [IncidentController::class, 'resolveIssue'])->name('incidents.resolve');
+    Route::post('incidents/escalate', [IncidentController::class, 'esculateIssue'])->name('incidents.escalate');
     Route::resource('incidents', IncidentController::class)->except(['create', 'edit']);
 
     // Incident Instructor

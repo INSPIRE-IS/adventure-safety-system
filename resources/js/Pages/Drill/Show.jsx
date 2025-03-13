@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from "@inertiajs/react";
-import EditButton from '@/Components/EditButton';
-import ManageModal from '@/Components/ManageModal';
+import ManageDrillModal from '@/Components/ManageDrillModal';
 import EditButton2 from '@/Components/EditButton2';
 import lookupIcon from '@/Utils/lookupIcons';
 
 
 
 
-const DrillsIndex = ({auth, drill, can, users, drill_id, category_id }) => {
+const DrillsIndex = ({auth, drill, can, users, drill_id }) => {
 const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 const [modalMode, setModalMode] = useState("create");
 const [checkedState, setCheckedState] = useState([]);
@@ -19,12 +18,12 @@ console.log('drill',drill);
 
 const handleOpenManageModal = (mode) => {
 
-    if(drill_id == null || category_id == null){
+    if(drill_id == null){
         alert("Please select at least one drill");
         return;
     }
     setModalMode(mode);
-    setCheckedState({drill_id,category_id});
+    setCheckedState({drill_id});
     setIsManageModalOpen(true);
 };
 
@@ -91,10 +90,10 @@ const handleCloseModal = () => {
                                     <div className='flex flex-col'>
                                         <p className="view-header-2 mb-2">General Comments:
                                         </p>
-                                        <p className="label-comment-text">drill members
+                                        <p className="label-comment-text">Drill Members:<br/>
 
                                             {drill?.drill_members?.map((member) => {
-                                                return (<span> {member.member_name} </span>);
+                                                return (<span key={member.id} className="label-comment-text"> {member.member_name} <br/></span>);
                                             })}                                            
                                             are all compitent.
                                         </p>                                         
@@ -105,7 +104,7 @@ const handleCloseModal = () => {
                             </div>
 
                 </div>
-                <ManageModal
+                <ManageDrillModal
                 isOpen={isManageModalOpen}
                 onClose={handleCloseModal}
                 checkedState={checkedState}

@@ -3,8 +3,10 @@ import { router, useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
 import CustomButton from "@/Components/CustomButton";
 import CustomSelect1 from "./CustomSelect1";
+import { useToast } from "@/context/ToastProvider";
 
 const ManageModal = ({ isOpen, onClose,mode, users, checkedState }) => {
+    const { addToast } = useToast();
     console.log("mode", mode);
     console.log("checkedState", checkedState);
     const { data, setData, post, put, errors, reset } = useForm({
@@ -32,11 +34,18 @@ const ManageModal = ({ isOpen, onClose,mode, users, checkedState }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+            console.log('handleSubmit checkedState', data);
             post(route("inspections.manage",checkedState), {
-                onSuccess: () => {
+                onSuccess: (res) => {
+                    console.log('success',res);
+                    addToast("success", "Submitted Successfully");
+                    onClose();                    
                     reset();
-                    onClose();
+
+                },
+                onError: (err) => {
+                    console.log('error',err);
+                    addToast("error", "Something went wrong");
                 },
             });
 

@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router, useForm , usePage } from "@inertiajs/react";
-import Pagination from '@/Components/Pagination';
-import InspectionModal from './InspectionModal';
-import SearchBar from '@/Components/SearchBar';
-import AddButton from '@/Components/AddButton';
+import { Head, router, useForm } from "@inertiajs/react";
 import EditButton from '@/Components/EditButton';
-import CustomSelect2 from '@/Components/CustomSelect2';
 import ManageModal from '@/Components/ManageModal';
-import ElementModal from './ElementModal';
 import EditButton2 from '@/Components/EditButton2';
 import lookupIcon from '@/Utils/lookupIcons';
+import { useToast } from '@/context/ToastProvider';
 
 
 
 const InspectionsIndex = ({auth, inspection, inspection_details, can, users,inspection_id,category_id }) => {
+    const { addToast } = useToast();
+    const { data, setData, post, errors, reset } = useForm({
+        inspection_id: 0,
+        category_id: 0,
+    });
+
 const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 const [modalMode, setModalMode] = useState("create");
 const [checkedState, setCheckedState] = useState([]);
 console.log('inspection_details',inspection_details);
 console.log('inspection',inspection);
-function processInspectionData(data) {
+useEffect(() => {
+    setData({
+        inspection_id: inspection_id,
+        category_id: category_id,
+    });
+}, []);
+
+
+
+function processInspectionData(insData) {
     let count = 0;
     let allImages = [];
 
-    data.forEach(item => {
+    insData.forEach(item => {
         // Count non-null conditions
         if (item.condition !== null) {
             count++;
@@ -52,11 +62,29 @@ const handleOpenManageModal = (mode) => {
     setIsManageModalOpen(true);
 };
 
-const handleCloseModal = () => {
-    setIsManageModalOpen(false);
+const handleResolveIssue = (inspection_id,category_id) => {
+    setCheckedState({inspection_id,category_id});
+    post(route("inspections.resolve"), {
+
+        onSuccess: () => {addToast("success", "Issue Resolved")},
+        onError: () => {addToast("error", "Issue Resolved Failed")},
+    });
+};
+
+const handleEscalateIssue = (inspection_id,category_id) => {
+    setCheckedState({inspection_id,category_id});
+    post(route("inspections.escalate"), {
+
+        onSuccess: () => {addToast("success", "Issue Escalated Successfully!");},
+        onError: () => {addToast("error", "Issue Escalation Failed");},
+    });
 };
 
 
+
+const handleCloseModal = () => {
+    setIsManageModalOpen(false);
+};
 
     return (
         <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
@@ -96,8 +124,8 @@ const handleCloseModal = () => {
                             <h3 className="label-alt-header-3">{inspection_details?.[0]?.category_item?.name}</h3>                    
                         </div>
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-start gap-4 mb-6">
-                        <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
-                        <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
+                        <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={handleResolveIssue} />
+                        <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={handleEscalateIssue} />
                         </div>                        
                     </div>
 

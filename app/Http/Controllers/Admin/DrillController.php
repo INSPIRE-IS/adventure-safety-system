@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDrillRequest;
 use App\Http\Requests\UpdateDrillRequest;
+use App\Jobs\SendMessageJob;
 use App\Models\Drill;
 use App\Models\DrillMember;
 use App\Models\DrillSchedule;
@@ -13,8 +14,10 @@ use App\Models\InspectionSchedule;
 use App\Models\Team;
 use App\Models\TypeDrill;
 use App\Models\User;
+use App\Models\UserAlert;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
@@ -146,7 +149,7 @@ class DrillController extends Controller
         return Inertia::render('Drill/Show', [
             'drill' => $drill,
             'drill_id' => $drill->id,
-            'category_id' => $drill->type_drill->id,
+            'type_drill_id' => $drill->type_drill->id,
             'users' => $users,
             //'signature_files' => $signature_files,
             //'photoFiles' => $photo_files,
@@ -156,6 +159,59 @@ class DrillController extends Controller
                 'drill_edit_date' => true, //auth()->user()->can('drill_create'),
             ],
         ]);
+    }
+
+    public function manage(Request $request)
+    {
+        //dd($request->all());
+        $drill = Drill::find($request->input('drill_id'));
+        $type_drill = TypeDrill::find($drill->type_drill_id);
+        $name = $type_drill->name ?? "Drill";
+        $subject = ""; //
+        $message = "";
+        $notification = "";
+
+        if ($request->input('mode') == "change") {
+            $drill->update([
+                'due_date' => $request->input('date'),
+            ]);
+            $subject = "You have been assigned to a " . $name . " drill.";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the drill before " . $drill->due_date . ".";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
+        }
+        if ($request->input('mode') == "assign") {
+            $drill->update([
+                'assigned_to_id' => $request->input('assign'),
+            ]);
+            $subject = "You have been assigned to a " . $name . " drill.";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the drill before " . $drill->due_date . ".";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
+        }
+
+        if ($request->input('mode') == "reminder") {
+            $subject = $name . ".";
+            $message = "Please note that " . $name . ", Is past Due date " . $drill->due_date . ".";
+            $notification = $name . "Due.";
+        }
+
+        // Dispatch a job for each recipient
+        $users = array_filter([$drill->assigned_to_id]); // [4, 5, 6];
+        if (!empty($users)) {
+            $recipients = User::whereIn('id', $users)->get();
+
+            foreach ($recipients as $user) {
+                Log::info("Sending message to: {$user->id}");
+                //dd($message);
+                SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
+            }
+        }
+        $userAlert = UserAlert::create([
+            'alert_text' => $notification,
+            'alert_link' => '/(monthly_safety)',
+            'alert_param_id' => $drill->id,
+        ]);
+        $userAlert->users()->sync($users);
+        return redirect()->back()->with('success', 'drill updated successfully.');
     }
 
     public function destroy(Drill $drill)

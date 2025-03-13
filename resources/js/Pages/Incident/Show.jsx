@@ -1,47 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head,router} from "@inertiajs/react";
+import { Head, router, useForm} from "@inertiajs/react";
 import EditButton from '@/Components/EditButton';
-import ManageModal from '@/Components/ManageModal';
+import ManageIncidentModal from '@/Components/ManageIncidentModal';
 import EditButton2 from '@/Components/EditButton2';
 import lookupIcon from '@/Utils/lookupIcons';
+import { useToast } from '@/context/ToastProvider';
 
 
 
 
-const IncidentsIndex = ({auth, incident, can, users,incident_id,category_id }) => {
-const [isManageModalOpen, setIsManageModalOpen] = useState(false);
-const [modalMode, setModalMode] = useState("create");
-const [checkedState, setCheckedState] = useState([]);
-let datepart1 = "";
-let datepart2 = "";
-let datepart3 = "";
-console.log('incident',incident);
+const IncidentsIndex = ({auth, incident, can, users, incident_id, category_id }) => {
+    const { addToast } = useToast();
+    const { data, setData, post, errors, reset } = useForm({
+        incident_id: 0,
+        category_id: 0,
+    });
+    const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState("create");
+    const [checkedState, setCheckedState] = useState([]);
+    let datepart1 = "";
+    let datepart2 = "";
+    let datepart3 = "";
+    console.log('incident',incident);
 
-if(incident && incident.incident_date){
-    datepart1 = incident?.incident_date?.split(" ")[0];
-    datepart2 = incident?.incident_date?.split(" ")[1];
-    datepart3 = datepart1?.split("-");
-    console.log('datepart3',datepart3[0],datepart3[1],datepart3[2]);
-}
+    useEffect(() => {
+        setData({
+            incident_id: incident_id,
+            category_id: category_id,
+        });
+    }, []);
 
-
-
-const handleOpenManageModal = (mode) => {
-
-    if(incident_id == null || category_id == null){
-        alert("Please select at least one incident");
-        return;
+    if(incident && incident.incident_date){
+        datepart1 = incident?.incident_date?.split(" ")[0];
+        datepart2 = incident?.incident_date?.split(" ")[1];
+        datepart3 = datepart1?.split("-");
+        console.log('datepart3',datepart3[0],datepart3[1],datepart3[2]);
     }
-    setModalMode(mode);
-    setCheckedState({incident_id,category_id});
-    setIsManageModalOpen(true);
-};
 
-const handleCloseModal = () => {
-    setIsManageModalOpen(false);
-};
+    const handleOpenManageModal = (mode) => {
 
+        if(incident_id == null || category_id == null){
+            alert("Please select at least one incident");
+            return;
+        }
+        setModalMode(mode);
+        setCheckedState({incident_id,category_id});
+        setIsManageModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsManageModalOpen(false);
+    };
+
+    const handleResolveIssue = () => {
+        setCheckedState({incident_id,category_id});
+        post(route("incidents.resolve"), {
+
+            onSuccess: () => {addToast("success", "Issue Resolved")},
+            onError: () => {addToast("error", "Issue Resolved Failed")},
+        });
+    };
+
+    const handleEscalateIssue = () => {
+        setCheckedState({incident_id,category_id});
+        post(route("incidents.escalate"), {
+
+            onSuccess: () => {addToast("success", "Issue Escalated Successfully!");},
+            onError: () => {addToast("error", "Issue Escalation Failed");},
+        });
+    };
 
 
     return (
@@ -99,8 +127,8 @@ const handleCloseModal = () => {
                         </div>
                         <div className="pt-[40px] self-start">
                             <div className="flex flex-col lg:flex-row lg:items-center lg:self-start gap-4 mb-6">
-                                <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
-                                <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={() => handleOpenManageModal("change")} />
+                                <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={handleResolveIssue} />
+                                <EditButton title='Escalate Issue' width="w-[254px]" height="h-[52px]"  onClick={handleEscalateIssue} />
 
                             </div> 
                             <div className=" mt-6 grid grid-cols-3 gap-2 justify-end">
@@ -117,7 +145,7 @@ const handleCloseModal = () => {
                        
                     </div>
                 </div>
-                <ManageModal
+                <ManageIncidentModal
                 isOpen={isManageModalOpen}
                 onClose={handleCloseModal}
                 checkedState={checkedState}
