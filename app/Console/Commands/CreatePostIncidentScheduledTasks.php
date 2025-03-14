@@ -110,11 +110,12 @@ class CreatePostIncidentScheduledTasks extends Command
                     SendMessageJob::dispatch($user->id, $postincident->site_id, $subject, $message);
                 }
             }
-            UserAlert::create([
+            $userAlert = UserAlert::create([
                 'alert_text' => $notification,
                 'alert_link' => '/(rescue)',
                 'alert_param_id' => $postincident->id,
             ]);
+            $userAlert->users()->sync($users);
 
             $this->info('postincident: ' . $postincident->id);
         }

@@ -120,11 +120,12 @@ class CreateDrillScheduledTasks extends Command
                     SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
                 }
             }
-            UserAlert::create([
+            $userAlert = UserAlert::create([
                 'alert_text' => $notification,
                 'alert_link' => '/(rescue)',
                 'alert_param_id' => $drill->id,
             ]);
+            $userAlert->users()->sync($users);
 
             $this->info('drill: ' . $drill->id);
         }
