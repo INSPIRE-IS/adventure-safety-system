@@ -157,7 +157,7 @@ const handleCloseModal = () => {
                                     {result.allImages.map((img, index) => (
                                         <img 
                                             key={index} 
-                                            src={"/storage/" + img?.path} 
+                                            src={img?.path} 
                                             alt={img?.file_name} 
                                             className="rounded-lg object-cover h-48 w-48" 
                                         />

@@ -135,7 +135,7 @@ const IncidentsIndex = ({auth, incident, can, users, incident_id, category_id })
                                 {incident?.files?.map((img, index) => (
                                     <img 
                                         key={index} 
-                                        src={"/storage/" + img?.path} 
+                                        src={img?.path} 
                                         alt={img?.file_name} 
                                         className="rounded-lg object-cover h-48 w-48" 
                                     />

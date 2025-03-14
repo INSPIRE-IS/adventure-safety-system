@@ -416,15 +416,15 @@ class DatabaseSeeder extends Seeder
         TypeQuestion::create(['name' => 'Has a proper debriefing session taken place with ALL the operational staff?']);
         TypeQuestion::create(['name' => 'Was any additional input learnt from this?']);
 
-        TypeFile::create(['name' => 'logo']);
-        TypeFile::create(['name' => 'drill signature']);
-        TypeFile::create(['name' => 'incident signature']);
-        TypeFile::create(['name' => 'inspection signature']);
-        TypeFile::create(['name' => 'incident']);
-        TypeFile::create(['name' => 'inspection']);
-        TypeFile::create(['name' => 'safety drill']);
-        TypeFile::create(['name' => 'post incident']);
-        TypeFile::create(['name' => 'complaint']);
+        TypeFile::create(['name' => 'teams']);
+        TypeFile::create(['name' => 'drill_signature']);
+        TypeFile::create(['name' => 'incident_signature']);
+        TypeFile::create(['name' => 'inspection_signature']);
+        TypeFile::create(['name' => 'incidents']);
+        TypeFile::create(['name' => 'inspections']);
+        TypeFile::create(['name' => 'drills']);
+        TypeFile::create(['name' => 'post_incidents']);
+        TypeFile::create(['name' => 'complaints']);
         TypeFile::create(['name' => 'report']);
         TypeFile::create(['name' => 'certificate']);
 
