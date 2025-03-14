@@ -102,39 +102,40 @@ class CreateDrillScheduledTasks extends Command
                 $drill->due_date = $dueDate;
                 $drill->save();
             }
+            $this->info('type_drill_id: ' . $drill->type_drill_id);
+            try {
 
-            $typeInspection = TypeDrill::find($drill->type_drill_id);
-            $name = $typeInspection->name ?? "Safety Drill";
+                $typeInspection = TypeDrill::find($drill->type_drill_id);
+                $name = $typeInspection->name ?? "Safety Drill";
 
-            $subject = "You have been assigned to a " . $name . ".";
-            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the safety drill before " . $drill->due_date . ".";
-            $notification = "Please note that you have been assigned to a " . $name . ".";
+                $subject = "You have been assigned to a " . $name . ".";
+                $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the safety drill before " . $drill->due_date . ".";
+                $notification = "Please note that you have been assigned to a " . $name . ".";
 
-            $users = array_filter([$drill->assigned_to_id]); // [4, 5, 6];
-            if (!empty($users)) {
-                $recipients = User::whereIn('id', $users)->get();
+                $users = array_filter([$drill->assigned_to_id]); // [4, 5, 6];
+                if (!empty($users)) {
+                    $recipients = User::whereIn('id', $users)->get();
 
-                foreach ($recipients as $user) {
-                    $this->info("Sending message to: {$user->id}");
-                    //dd($message);
-                    SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
+                    foreach ($recipients as $user) {
+                        $this->info("Sending message to: {$user->id}");
+                        //dd($message);
+                        SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
+                    }
                 }
+                // the alert link is set as menu names in app do not change it will break
+                $userAlert = UserAlert::create([
+                    'alert_text' => $notification,
+                    'alert_link' => '/(rescue)',
+                    'alert_param_id' => $drill->id,
+                ]);
+                $this->info('userAlert: ' . $userAlert->id);
+                $userAlert->users()->sync($users);
+            } catch (\Exception $e) {
+
+                Log::error("Error sending message to {$drill->assigned_to_id}: " . $e->getMessage());
             }
-            // the alert link is set as menu names in app do not change it will break
-            $userAlert = UserAlert::create([
-                'alert_text' => $notification,
-                'alert_link' => '/(rescue)',
-                'alert_param_id' => $drill->id,
-            ]);
-            $this->info('userAlert: ' . $userAlert->id);
-            $userAlert->users()->sync($users);
 
             $this->info('drill: ' . $drill->id);
         }
-
-        // foreach ($drillSchedule as $schedule) {
-        //     //Log::info('DrillSchedule: ' . $schedule->id);
-        //     $this->info('DrillSchedule: ' . $schedule);
-        // }
     }
 }
