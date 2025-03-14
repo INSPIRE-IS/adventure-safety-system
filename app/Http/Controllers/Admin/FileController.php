@@ -62,7 +62,8 @@ class FileController extends Controller
         $fileName = time() . '_' . $image_file->getClientOriginalName();
         $type_file = TypeFile::find($request->type_file_id);
         $folder_name = $type_file ? $type_file->name : 'general';
-        $directoryPath = 'uploads/' . $folder_name . '/' . $request->table_row_id;
+        //$directoryPath = 'uploads/' . $folder_name . '/' . $request->table_row_id;
+        $directoryPath = 'storage/';
 
 
         $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');

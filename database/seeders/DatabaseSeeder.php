@@ -424,8 +424,8 @@ class DatabaseSeeder extends Seeder
         TypeFile::create(['name' => 'inspections']);
         TypeFile::create(['name' => 'drills']);
         TypeFile::create(['name' => 'post_incidents']);
-        TypeFile::create(['name' => 'complaints']);
-        TypeFile::create(['name' => 'report']);
+        TypeFile::create(['name' => 'safety_inspection_details']);
+        TypeFile::create(['name' => 'equipment_inspection_details']);
         TypeFile::create(['name' => 'certificate']);
 
         $user1 = User::create(['name' => 'super user', 'email' => 'super@super.com', 'password' => bcrypt('password'),]);
