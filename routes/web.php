@@ -122,6 +122,9 @@ Route::middleware('auth')->group(function () {
     Route::post('inspections/resolve', [InspectionController::class, 'resolveIssue'])->name('inspections.resolve');
     Route::post('inspections/escalate', [InspectionController::class, 'esculateIssue'])->name('inspections.escalate');
     Route::resource('inspections', InspectionController::class)->except(['create', 'edit']);
+
+
+    Route::post('equipments/replace', [EquipmentController::class, 'equipmentsReplace'])->name('equipments.replace');
     Route::resource('equipments', EquipmentController::class)->except(['create', 'edit']);
 
     // Inspection Schedule

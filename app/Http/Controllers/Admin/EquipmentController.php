@@ -204,6 +204,16 @@ class EquipmentController extends Controller
         ]);
     }
 
+
+
+
+    public function equipmentsReplace(Request $request)
+    {
+
+        $data = $request->all();
+        dd($data);
+    }
+
     public function destroy(Inspection $inspection)
     {
         //abort_if(Gate::denies('inspection_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
