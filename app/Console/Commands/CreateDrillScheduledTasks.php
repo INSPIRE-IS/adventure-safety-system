@@ -115,16 +115,18 @@ class CreateDrillScheduledTasks extends Command
                 $recipients = User::whereIn('id', $users)->get();
 
                 foreach ($recipients as $user) {
-                    Log::info("Sending message to: {$user->id}");
+                    $this->info("Sending message to: {$user->id}");
                     //dd($message);
                     SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
                 }
             }
+            // the alert link is set as menu names in app do not change it will break
             $userAlert = UserAlert::create([
                 'alert_text' => $notification,
                 'alert_link' => '/(rescue)',
                 'alert_param_id' => $drill->id,
             ]);
+            $this->info('userAlert: ' . $userAlert->id);
             $userAlert->users()->sync($users);
 
             $this->info('drill: ' . $drill->id);

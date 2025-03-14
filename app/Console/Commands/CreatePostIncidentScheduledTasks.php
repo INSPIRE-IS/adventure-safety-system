@@ -110,6 +110,7 @@ class CreatePostIncidentScheduledTasks extends Command
                     SendMessageJob::dispatch($user->id, $postincident->site_id, $subject, $message);
                 }
             }
+            // the alert link is set as menu names in app do not change it will break
             $userAlert = UserAlert::create([
                 'alert_text' => $notification,
                 'alert_link' => '/(rescue)',

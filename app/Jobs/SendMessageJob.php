@@ -40,7 +40,7 @@ class SendMessageJob implements ShouldQueue
     public function handle(): void
     {
         $debug = 1;
-
+        Log::info("Preparing to send email---------------");
         $user = User::find($this->userId);
         Log::info("Preparing to send email to---------------------------------------------------------: {$user}");
 

@@ -104,7 +104,14 @@ class CreateInspectionScheduledTasks extends Command
 
             $typeInspection = TypeInspection::find($inspection->type_inspection_id);
             $name = $typeInspection->name ?? "Inspection";
-
+            // this link is set as menu names in app do not change it will break
+            $alert_link = "(/monthly_safety)";
+            if ($inspection->type_inspection_id == 2) {
+                $alert_link = "(/anual_safety)";
+            }
+            if ($inspection->type_inspection_id == 3) {
+                $alert_link = "(/ppe)";
+            }
             $subject = "You have been assigned to a " . $name . ".";
             $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection before " . $inspection->due_date . ".";
             $notification = "Please note that you have been assigned to a " . $name . ".";
@@ -121,7 +128,7 @@ class CreateInspectionScheduledTasks extends Command
             }
             $userAlert = UserAlert::create([
                 'alert_text' => $notification,
-                'alert_link' => '/(rescue)',
+                'alert_link' => $alert_link,
                 'alert_param_id' => $inspection->id,
             ]);
             $userAlert->users()->sync($users);
