@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendMessageJob;
 use Carbon\Carbon;
 use App\Models\Inspection;
 use App\Models\InspectionSchedule;
+use App\Models\TypeInspection;
+use App\Models\User;
+use App\Models\UserAlert;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -97,6 +101,30 @@ class CreateInspectionScheduledTasks extends Command
                 $inspection->due_date = $dueDate;
                 $inspection->save();
             }
+
+            $typeInspection = TypeInspection::find($inspection->type_inspection_id);
+            $name = $typeInspection->name ?? "Inspection";
+
+            $subject = "You have been assigned to a " . $name . ".";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection before " . $inspection->due_date . ".";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
+
+            $users = array_filter([$inspection->assigned_to_id]); // [4, 5, 6];
+            if (!empty($users)) {
+                $recipients = User::whereIn('id', $users)->get();
+
+                foreach ($recipients as $user) {
+                    Log::info("Sending message to: {$user->id}");
+                    //dd($message);
+                    SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
+                }
+            }
+            UserAlert::create([
+                'alert_text' => $notification,
+                'alert_link' => '/(rescue)',
+                'alert_param_id' => $inspection->id,
+            ]);
+
             $this->info('inspection: ' . $inspection->id);
         }
 

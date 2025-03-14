@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendMessageJob;
 use Carbon\Carbon;
 use App\Models\Drill;
 use App\Models\DrillSchedule;
+use App\Models\TypeDrill;
+use App\Models\User;
+use App\Models\UserAlert;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -98,6 +102,30 @@ class CreateDrillScheduledTasks extends Command
                 $drill->due_date = $dueDate;
                 $drill->save();
             }
+
+            $typeInspection = TypeDrill::find($drill->type_drill_id);
+            $name = $typeInspection->name ?? "Safety Drill";
+
+            $subject = "You have been assigned to a " . $name . ".";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the safety drill before " . $drill->due_date . ".";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
+
+            $users = array_filter([$drill->assigned_to_id]); // [4, 5, 6];
+            if (!empty($users)) {
+                $recipients = User::whereIn('id', $users)->get();
+
+                foreach ($recipients as $user) {
+                    Log::info("Sending message to: {$user->id}");
+                    //dd($message);
+                    SendMessageJob::dispatch($user->id, $drill->site_id, $subject, $message);
+                }
+            }
+            UserAlert::create([
+                'alert_text' => $notification,
+                'alert_link' => '/(rescue)',
+                'alert_param_id' => $drill->id,
+            ]);
+
             $this->info('drill: ' . $drill->id);
         }
 

@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendMessageJob;
 use Carbon\Carbon;
 use App\Models\PostIncident;
 use App\Models\PostIncidentSchedule;
+use App\Models\TypeIncident;
+use App\Models\User;
+use App\Models\UserAlert;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -88,6 +92,30 @@ class CreatePostIncidentScheduledTasks extends Command
                 $postincident->due_date = $dueDate;
                 $postincident->save();
             }
+
+            $typeIncident = TypeIncident::find($postincident->type_incident_id);
+            $name = $typeIncident->name ?? "Inspection";
+
+            $subject = "You have been assigned to a " . $name . ".";
+            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the post incident before " . $postincident->due_date . ".";
+            $notification = "Please note that you have been assigned to a " . $name . ".";
+
+            $users = array_filter([$postincident->assigned_to_id]); // [4, 5, 6];
+            if (!empty($users)) {
+                $recipients = User::whereIn('id', $users)->get();
+
+                foreach ($recipients as $user) {
+                    Log::info("Sending message to: {$user->id}");
+                    //dd($message);
+                    SendMessageJob::dispatch($user->id, $postincident->site_id, $subject, $message);
+                }
+            }
+            UserAlert::create([
+                'alert_text' => $notification,
+                'alert_link' => '/(rescue)',
+                'alert_param_id' => $postincident->id,
+            ]);
+
             $this->info('postincident: ' . $postincident->id);
         }
 
