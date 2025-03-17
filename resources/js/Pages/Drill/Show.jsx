@@ -81,15 +81,15 @@ const handleCloseModal = () => {
                                     </div>
                                     <div className='mb-4'>
                                     <p className="label-header-4 mb-2">Date Completed:</p>
-                                    <p className="view-header-2-light">{drill?.complete_date}</p>
+                                    <p className="view-header-2-light">{drill?.drill_details?.complete_date}</p>
                                     </div>
                                 </div>
 
 
                                 <div className="col-span-2  grid grid-cols-3 gap-2 justify-start align-top">
                                     <div className='flex flex-col'>
-                                        <p className="view-header-2 mb-2">General Comments:
-                                        </p>
+                                        <p className="view-header-2 mb-2">General Comments:</p>
+                                        <p className="view-header-2-light mb-2">{drill?.drill_details?.comment}</p>
                                         <p className="label-comment-text">Drill Members:<br/>
 
                                             {drill?.drill_members?.map((member) => {

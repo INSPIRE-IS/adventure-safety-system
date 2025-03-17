@@ -87,7 +87,7 @@ class Drill extends Model
 
     public function drill_details()
     {
-        return $this->hasMany(DrillDetail::class, 'drill_id');
+        return $this->hasOne(DrillDetail::class, 'drill_id');
     }
 
     public function drill_members()
