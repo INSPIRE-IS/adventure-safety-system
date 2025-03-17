@@ -35,6 +35,7 @@ class DrillDetailApiController extends Controller
             [
                 'complete_date' => $request->complete_date,
                 'competent' => $request->competent,
+                'comment' => $request->comment,
             ]
         );
 
