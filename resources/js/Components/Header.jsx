@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import lookupIcon from '@/Utils/lookupIcons';
+import UserModal from './UserModal';
+import AlertModal from './AlertModal';
 
 const Header = () => {
   const { auth } = usePage().props;
   console.log('auth header', auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(auth?.user);
+  const [alerts, setAlerts] = useState(auth?.alerts);
   const { url } = usePage(); // Get the current URL
 
   const navLinks = [
@@ -18,9 +24,22 @@ const Header = () => {
     { name: 'Site Management', route: 'files.index', permission: "file_access" },
   ];
 
+  const handleOpenUserModal = () => {
+    setIsUserModalOpen(true);
+  };
+
+  const handleOpenAlertModal = () => {
+    setIsAlertModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+      setIsUserModalOpen(false);
+      setIsAlertModalOpen(false);
+  };
+
   const handleLogout = () => {
     router.post(route('logout'));
-};
+  };
 
   return (
     <header className="bg-white w-[95%] ml-[50px] mt-[23px] mb-[23px] mr-[50px] h-[60px] flex items-center justify-between px-10">
@@ -58,24 +77,33 @@ const Header = () => {
 
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
-        <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
-          {/* <img src="./images/logout-icon.svg" alt="Logout" className="w-[20px] h-[20px] rounded-full" /> */}
+        {/* <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
           <div className=' w-[20px] h-[20px] rounded-full flex items-center justify-center hover:bg-gray-200'>
                   {lookupIcon("logout")}
           </div>
-        </button>
-        <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+        </button> */}
+        <button onClick={() => handleOpenUserModal()} className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
           {/* <img src="./images/user-icon.svg" alt="User Icon" className="w-45 h-45" /> */}
           <div className=' w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-gray-200'>
                   {lookupIcon("user")}
           </div>
         </button>
-        <button className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
+        <button onClick={() => handleOpenAlertModal()} className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
           {/* <img src="./images/notification-icon.svg" alt="Notification Icon" className="w-45 h-45" /> */}
           <div className=' w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-gray-200'>
                   {lookupIcon("notification")}
           </div>
         </button>
+        <UserModal
+            isOpen={isUserModalOpen}
+            onClose={handleCloseModal}
+            user={selectedUser}
+        />
+        <AlertModal
+            isOpen={isAlertModalOpen}
+            onClose={handleCloseModal}
+            alerts={alerts}
+        />
       </div>
     </header>
   );

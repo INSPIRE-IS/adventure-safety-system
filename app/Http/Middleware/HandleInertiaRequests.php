@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserAlert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
@@ -83,6 +84,8 @@ class HandleInertiaRequests extends Middleware
             $permissions = $user->getAllPermissions()->pluck('name');
             $roles = $user->getRoleNames()->pluck('name');
             $team = Team::find($team_id); // with('type_activities')->
+            $alerts = $user->userAlerts;
+            //dd($alerts);
             $is_admin = $user->hasAnyRole(['admin', 'super']);
             //dd($team);
             if ($user->isAdminOfTeam(1) || $user->id === 2) {
@@ -127,6 +130,7 @@ class HandleInertiaRequests extends Middleware
                 'teams' => $teams  ?? [],
                 'permissions' => $permissions ?? [],
                 'roles' => $roles ?? [],
+                'alerts' => $alerts ?? [],
                 'is_admin' => $is_admin,
             ],
             'flash' => [

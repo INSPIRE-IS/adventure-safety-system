@@ -116,12 +116,12 @@ const Sidebar = () => {
                     route: "inspection-schedules.index",
                     permission: "inspection_schedule_access",
                 },
-                {
-                    label: "Equipment Inspection Details",
-                    icon: "fas fa-building",
-                    route: "equipment-inspection-details.index",
-                    permission: "equipment_inspection_detail_access",
-                },
+                // {
+                //     label: "Equipment Inspection Details",
+                //     icon: "fas fa-building",
+                //     route: "equipment-inspection-details.index",
+                //     permission: "equipment_inspection_detail_access",
+                // },
             ],
         },
         {
@@ -168,12 +168,12 @@ const Sidebar = () => {
                     route: "inspection-schedules.index",
                     permission: "inspection_schedule_access",
                 },
-                {
-                    label: "Safety Inspection Details",
-                    icon: "fas fa-file-alt",
-                    route: "safety-inspection-details.index",
-                    permission: "safety_inspection_detail_access",
-                },
+                // {
+                //     label: "Safety Inspection Details",
+                //     icon: "fas fa-file-alt",
+                //     route: "safety-inspection-details.index",
+                //     permission: "safety_inspection_detail_access",
+                // },
             ],
         },
         {
@@ -199,20 +199,18 @@ const Sidebar = () => {
                     route: "drills.index",
                     permission: "drill_access",
                 },  
-                {
-                    label: "Drill Details",
-                    icon: "fas fa-file-alt",
-                    route: "drill-details.index",
-                    permission: "drill_detail_access",
-                },                       
-                {
-                    label: "Drill Members",
-                    icon: "fas fa-bell",
-                    route: "drill-members.index",
-                    permission: "drill_member_access",
-                },            
-
-
+                // {
+                //     label: "Drill Details",
+                //     icon: "fas fa-file-alt",
+                //     route: "drill-details.index",
+                //     permission: "drill_detail_access",
+                // },                       
+                // {
+                //     label: "Drill Members",
+                //     icon: "fas fa-bell",
+                //     route: "drill-members.index",
+                //     permission: "drill_member_access",
+                // },            
             ],
         },
         {

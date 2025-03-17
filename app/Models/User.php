@@ -88,6 +88,11 @@ class User extends Authenticatable
         return $this->belongsToMany(UserAlert::class);
     }
 
+    public function userAlerts()
+    {
+        return $this->belongsToMany(UserAlert::class, 'user_user_alert', 'user_id', 'user_alert_id');
+    }
+
     public function getAllTeamNames()
     {
         // return $this->teams()

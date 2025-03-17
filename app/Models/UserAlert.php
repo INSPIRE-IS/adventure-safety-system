@@ -32,8 +32,13 @@ class UserAlert extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    // public function users()
+    // {
+    //     return $this->belongsToMany(User::class);
+    // }
+
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_alert_user', 'user_alert_id', 'user_id');
     }
 }
