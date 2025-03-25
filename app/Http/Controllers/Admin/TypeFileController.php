@@ -28,6 +28,9 @@ class TypeFileController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeFile/Index', [
             'typeFiles' => $typeFiles,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_file_show' => false, //auth()->user()->can('type_file_show'),
                 'type_file_create' => auth()->user()->can('type_file_create'),

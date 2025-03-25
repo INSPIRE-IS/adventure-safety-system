@@ -48,6 +48,9 @@ class PostIncidentController extends Controller
             'post_incident_schedules' => $post_incident_schedules,
             'sites' => $sites,
             'users' => $users,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'post_incident_show' => false, //auth()->user()->can('post_incident_show'),
                 'post_incident_create' => false, //auth()->user()->can('post_incident_create'),

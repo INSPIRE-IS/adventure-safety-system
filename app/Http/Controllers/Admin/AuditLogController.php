@@ -26,6 +26,9 @@ class AuditLogController extends Controller
         /** @disregard P1013 */
         return Inertia::render('AuditLog/Index', [
             'auditLogs' => $auditLogs,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'audit_log_show' => auth()->user()->can('audit_log_show'),
                 'audit_log_create' => false, // auth()->user()->can('audit_log_create'),

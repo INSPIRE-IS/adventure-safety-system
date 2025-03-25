@@ -90,6 +90,12 @@ const Sidebar = () => {
             icon: "fas fa-users",
             permission: "admin_panel_show",
             dropdown: [
+                // { // this is working it is not implemented on app and on ppe report though and was not part of original scope
+                //     label: "Type Degradation",
+                //     icon: "fas fa-unlock-alt",
+                //     route: "type-degredations.index",
+                //     permission: "type_degradation_access",
+                // },
                 {
                     label: "Items",
                     icon: "fas fa-user",

@@ -45,6 +45,9 @@ class CategoryDetailController extends Controller
         return Inertia::render('CategoryDetail/Index', [
             'categoryItems' => $categoryItems,
             'categoryDetails' => $categoryDetails,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'category_detail_show' => auth()->user()->can('category_detail_show'),
                 'category_detail_edit' => auth()->user()->can('category_detail_edit'),

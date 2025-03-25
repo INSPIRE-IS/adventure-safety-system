@@ -26,6 +26,9 @@ class TypeActivityController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeActivity/Index', [
             'typeActivitys' => $typeActivitys,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_bool_show' => false, //auth()->user()->can('type_bool_show'),
                 'type_bool_create' => auth()->user()->can('type_bool_create'),

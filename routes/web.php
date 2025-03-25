@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PostIncidentDetailController;
 use App\Http\Controllers\Admin\SystemCalendarController;
 use App\Http\Controllers\Admin\TypeDegradationController;
+use App\Models\TypeDegradation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -107,6 +108,8 @@ Route::middleware('auth')->group(function () {
 
     // Type Bool
     Route::resource('type-bools', TypeBoolController::class)->except(['create', 'edit']);
+
+    Route::resource('type-degredations', TypeDegradationController::class)->except(['create', 'edit']);
 
     // Type Inspection
     Route::resource('type-inspections', TypeInspectionController::class)->except(['create', 'edit']);

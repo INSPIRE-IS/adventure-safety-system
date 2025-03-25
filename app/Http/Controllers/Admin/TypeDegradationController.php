@@ -15,17 +15,26 @@ class TypeDegradationController extends Controller
 {
     public function index(Request $request)
     {
+
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('type_degradation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        //dd(method_exists($user, 'can'));
+        //dd($user->can('view permission'));
+
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         $typeDegradations = TypeDegradation::where('name', 'like', '%' . $searchTerm . '%')
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
+        //dd('here');
         /** @disregard P1013 */
         return Inertia::render('TypeDegradation/Index', [
             'typeDegradations' => $typeDegradations,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_degradation_show' => false, //auth()->user()->can('type_degradation_show'),
                 'type_degradation_create' => auth()->user()->can('type_degradation_create'),
@@ -40,14 +49,14 @@ class TypeDegradationController extends Controller
     {
         $typeDegradation = TypeDegradation::create($request->all());
 
-        return redirect()->route('type-bools.index');
+        return redirect()->route('type-degradations.index');
     }
 
     public function update(UpdateTypeDegradationRequest $request, TypeDegradation $typeDegradation)
     {
         $typeDegradation->update($request->all());
 
-        return redirect()->route('type-bools.index');
+        return redirect()->route('type-degradations.index');
     }
 
     public function show(TypeDegradation $typeDegradation)

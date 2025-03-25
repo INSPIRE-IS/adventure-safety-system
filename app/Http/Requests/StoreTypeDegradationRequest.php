@@ -11,7 +11,8 @@ class StoreTypeDegradationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        /** @disregard P1013 */
+        return auth()->user()->can('type_degradation_create');
     }
 
     /**
@@ -22,7 +23,9 @@ class StoreTypeDegradationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+            ],
         ];
     }
 }

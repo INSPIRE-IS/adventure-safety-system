@@ -31,6 +31,9 @@ class TypeDrillController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeDrill/Index', [
             'typeDrills' => $typeDrills,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_drill_show' => auth()->user()->can('type_drill_show'),
                 'type_drill_edit' => auth()->user()->can('type_drill_edit'),

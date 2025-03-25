@@ -123,12 +123,13 @@ const NavTop = ({isMenuOpen, navLinks, url, auth}) => {
           if (link?.permission && !auth?.permissions?.includes(link.permission)) {
             return null;
           }
+
           return(
           <li key={link.name} className="header-links">
             <Link
               href={route(link.route)}
-              className={`hover:text-blue-500 cursor-pointer ${
-                url === link.route ? 'text-blue-500 font-bold' : ''
+              className={`hover:text-[#f6c546] cursor-pointer ${
+                url.replace('/', '') === link.route.replace('.index', '') ? 'text-[#f6c546] font-bold text-base' : ''
               }`}
             >
               {link.name.split(' ').map((word, index) => (
@@ -157,8 +158,13 @@ const NavMenu = ({isMenuOpen, navLinks, url, auth}) => {
           if (link?.permission && !auth?.permissions?.includes(link.permission)) {
             return null;
           }
+          
           return(
-          <li key={link.name} className="header-links mt-2 hover:text-blue-500 cursor-pointer">
+          <li key={link.name} className={`header-links mt-2 hover:text-blue-500 cursor-pointer
+            ${
+              url === link.route ? 'text-blue-500 font-bold' : ''
+            }
+            `}>
             <Link
               href={route(link.route)}
               className={`hover:text-blue-500 cursor-pointer ${

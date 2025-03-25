@@ -49,6 +49,9 @@ class IncidentController extends Controller
             'incidents' => $incidents,
             'sites' => $sites,
             'typeIncidents' => $typeIncidents,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'incident_show' => auth()->user()->can('incident_show'),
                 'incident_create' => false, // auth()->user()->can('incident_create'),

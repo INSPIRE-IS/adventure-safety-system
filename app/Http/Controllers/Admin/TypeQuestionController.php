@@ -28,6 +28,9 @@ class TypeQuestionController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeQuestion/Index', [
             'typeQuestions' => $typeQuestions,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_question_show' => false, //auth()->user()->can('type_question_show'),
                 'type_question_create' => auth()->user()->can('type_question_create'),

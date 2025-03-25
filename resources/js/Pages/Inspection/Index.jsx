@@ -10,33 +10,34 @@ import CustomSelect2 from '@/Components/CustomSelect2';
 import ManageModal from '@/Components/ManageModal';
 import ElementModal from './ElementModal';
 
-const periods = [
-    { value: "1", label: "Last 30 Days" },
-    { value: "2", label: "Last 60 Days" },
-    { value: "3", label: "Last 90 Days" },
-  ];
-  const months = [
-    { value: "1", label: "Jan 2025" },
-    { value: "2", label: "Dec 2024" },
-    { value: "3", label: "Nov 2024" },
-    { value: "4", label: "Oct 2024" },
-  ];
-  const shows = [
-    { value: "1", label: "All" },
-    { value: "2", label: "10" },
-    { value: "3", label: "25" },
-    { value: "4", label: "50" },
-  ];
+// const periods = [
+//     { value: "1", label: "Last 30 Days" },
+//     { value: "2", label: "Last 60 Days" },
+//     { value: "3", label: "Last 90 Days" },
+//   ];
+//   const months = [
+//     { value: "1", label: "Jan 2025" },
+//     { value: "2", label: "Dec 2024" },
+//     { value: "3", label: "Nov 2024" },
+//     { value: "4", label: "Oct 2024" },
+//   ];
+//   const shows = [
+//     { value: "1", label: "All" },
+//     { value: "2", label: "10" },
+//     { value: "3", label: "25" },
+//     { value: "4", label: "50" },
+//   ];
 
-const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, typeInspections, categoryItems, users, typeBools }) => {
+const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPeriod,months, searchMonth, shows, searchShow, sortColumn, sortDirection, sites, typeInspections, categoryItems, users, typeBools }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on inspection ', auth);
     console.log('inspections ', inspections);
-    const [search, setSearch] = useState(searchTerm);
-    const [period, setPeriod] = useState(searchPeriod);
-    const [month, setMonth] = useState(searchMonth);
-    const [show, setShow] = useState(searchShow);
+
+    const [search, setSearch] = useState(searchTerm  || '');
+    const [period, setPeriod] = useState(searchPeriod || '');
+    const [month, setMonth] = useState(searchMonth  || '');
+    const [show, setShow] = useState(searchShow  || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isManageModalOpen, setIsManageModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
@@ -44,6 +45,15 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
     const [selectedElementItem, setSelectedElementItem] = useState(null);
     const [checkedState, setCheckedState] = useState([]);
 
+    useEffect(() => {
+        console.log('searchPeriod ', searchPeriod);
+        setPeriod(searchPeriod);
+        console.log('searchMonth ', searchMonth);
+        setMonth(searchMonth);
+        console.log('searchShow ', searchShow);
+        setShow(searchShow);
+    }, []);
+    console.log('Props for CustomSelect2:', { period, periods });
     const handleOpenModal = (mode, inspection = null) => {
         console.log('mode ', mode);
         console.log('inspections ', inspection);
@@ -89,7 +99,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
         // Redirect to the route with search query and other parameters
         console.log('filter ', filter);
         if(filter == "period"){setPeriod(e.target.value);
-}
+        }
         if(filter == "month"){setMonth(e.target.value);
         }
         if(filter == "show"){setShow(e.target.value);}

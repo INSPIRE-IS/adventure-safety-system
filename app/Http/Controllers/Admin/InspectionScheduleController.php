@@ -80,6 +80,9 @@ class InspectionScheduleController extends Controller
             'typeInspections' => $typeInspections,
             'categoryItems' => $categoryItems,
             'users' => $users,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'inspection_schedule_show' => auth()->user()->can('inspection_schedule_show'),
                 'inspection_schedule_edit' => auth()->user()->can('inspection_schedule_edit'),

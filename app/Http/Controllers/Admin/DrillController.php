@@ -99,8 +99,9 @@ class DrillController extends Controller
             'periods' => $periods,
             'actives' => $actives,
             'users' => $users,
-            //'signature_files' => $signature_files,
-            //'photoFiles' => $photo_files,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'drill_show' => auth()->user()->can('drill_show'),
                 'drill_edit' => false, //auth()->user()->can('drill_edit'),

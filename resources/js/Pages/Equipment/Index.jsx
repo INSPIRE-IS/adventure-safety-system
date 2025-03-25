@@ -10,39 +10,21 @@ import CustomSelect2 from '@/Components/CustomSelect2';
 import EquipmentModal from './EquipmentModal';
 import ManageModal from '@/Components/ManageModal';
 
-const periods = [
-    { value: "1", label: "Last 30 Days" },
-    { value: "2", label: "Last 60 Days" },
-    { value: "3", label: "Last 90 Days" },
-  ];
-  const months = [
-    { value: "1", label: "Jan 2025" },
-    { value: "2", label: "Dec 2024" },
-    { value: "3", label: "Nov 2024" },
-    { value: "4", label: "Oct 2024" },
-  ];
-  const shows = [
-    { value: "1", label: "All" },
-    { value: "2", label: "10" },
-    { value: "3", label: "25" },
-    { value: "4", label: "50" },
-  ];
-
-const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, searchMonth, searchShow, sortColumn, sortDirection, sites, periods,actives, typeInspections, categoryItems, users,typeBools }) => {
+const InspectionsIndex = ({auth, inspections, can, searchTerm, periodFilters, searchPeriod,months, searchMonth, shows, searchShow, sortColumn, sortDirection, sites, periods,actives, typeInspections, categoryItems, users,typeBools }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
-    console.log('auth on inspection ', auth);
-    console.log('sites ', sites);
-    console.log('inspections ', inspections);
-    console.log('typeInspections ', typeInspections);
-    console.log('categoryItems ', categoryItems);
-    console.log('users ', users);
-    console.log('periods ', periods);
-    console.log('actives ', actives);
-    const [search, setSearch] = useState(searchTerm);
-    const [period, setPeriod] = useState(searchPeriod);
-    const [month, setMonth] = useState(searchMonth);
-    const [show, setShow] = useState(searchShow);
+    // console.log('auth on inspection ', auth);
+    // console.log('sites ', sites);
+    // console.log('inspections ', inspections);
+    // console.log('typeInspections ', typeInspections);
+    // console.log('categoryItems ', categoryItems);
+    // console.log('users ', users);
+    // console.log('periods ', periods);
+    // console.log('actives ', actives);
+    const [search, setSearch] = useState(searchTerm  || '');
+    const [period, setPeriod] = useState(searchPeriod || '');
+    const [month, setMonth] = useState(searchMonth  || '');
+    const [show, setShow] = useState(searchShow  || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isManageModalOpen, setIsManageModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
@@ -88,6 +70,21 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
             search,
             sort: sortColumn,
             direction: sortDirection
+        });
+    };
+
+    const handleFilterSubmit = (e, filter) => {
+        e.preventDefault();
+        // Redirect to the route with search query and other parameters
+        console.log('filter ', filter);
+        if(filter == "period"){setPeriod(e.target.value);
+        }
+        if(filter == "month"){setMonth(e.target.value);
+        }
+        if(filter == "show"){setShow(e.target.value);}
+        window.location.href = route('inspections.index', {
+            filter,
+            value: e.target.value
         });
     };
 
@@ -175,15 +172,15 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         label="Period"
                         name="period"
                         value={period}
-                        onChange={(e) => setPeriod(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'period')}
                         mode="create"
-                        options={periods}
+                        options={periodFilters}
                     />
                     <CustomSelect2
                         label="Month"
                         name="month"
                         value={month}
-                        onChange={(e) => setMonth(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'month')}
                         mode="create"
                         options={months}
                     />
@@ -191,7 +188,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, searchPeriod, sea
                         label="Show"
                         name="show"
                         value={show}
-                        onChange={(e) => setShow(e.target.value)}
+                        onChange={(e) => handleFilterSubmit(e,'show')}
                         mode="create"
                         options={shows}
                     />

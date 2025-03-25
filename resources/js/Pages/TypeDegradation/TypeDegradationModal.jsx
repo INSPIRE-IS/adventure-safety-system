@@ -27,12 +27,12 @@ const TypeDegradationModal = ({ isOpen, onClose, mode, typedegradation = null, r
     const handleSubmit = (e) => {
         e.preventDefault();
         if (mode === "create") {
-            post(route("type-bools.store"), {
+            post(route("type-degradations.store"), {
 
                 onSuccess: () => {reset();onClose()},
             });
         } else if (mode === "edit") {
-            put(route("type-bools.update", typedegradation.id), {
+            put(route("type-degradations.update", typedegradation.id), {
                 onSuccess: () => {reset();onClose()},
             });
         }

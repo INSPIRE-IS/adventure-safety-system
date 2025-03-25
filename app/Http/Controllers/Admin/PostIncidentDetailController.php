@@ -41,6 +41,9 @@ class PostIncidentDetailController extends Controller
             'postIncidents' => $postIncidents,
             'users' => $users,
             'typeQuestions' => $typeQuestions,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'post_incident_detail_show' => false, //auth()->user()->can('post_incident_detail_show'),
                 'post_incident_detail_create' => false, //auth()->user()->can('post_incident_detail_create'),

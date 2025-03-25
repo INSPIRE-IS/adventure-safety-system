@@ -45,6 +45,9 @@ class FileController extends Controller
             'Files' => $Files,
             'sites' => $sites,
             'typeFiles' => $type_files,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'file_show' => true, // auth()->user()->can('file_show'),
                 'file_create' => true, // auth()->user()->can('file_create'),

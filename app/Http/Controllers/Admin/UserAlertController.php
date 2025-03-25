@@ -32,6 +32,9 @@ class UserAlertController extends Controller
         /** @disregard P1013 */
         return Inertia::render('UserAlert/Index', [
             'userAlerts' => $userAlerts,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_bool_show' => false, //auth()->user()->can('type_bool_show'),
                 'type_bool_create' => false, //auth()->user()->can('type_bool_create'),

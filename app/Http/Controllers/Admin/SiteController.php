@@ -54,6 +54,9 @@ class SiteController extends Controller
         return Inertia::render('Site/Index', [
             'sites' => $sites,
             'typeActivities' => $typeActivities,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'site_show' => auth()->user()->can('site_show'),
                 'site_create' => auth()->user()->can('site_create'),

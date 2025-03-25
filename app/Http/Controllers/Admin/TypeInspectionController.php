@@ -27,6 +27,9 @@ class TypeInspectionController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeInspection/Index', [
             'typeInspections' => $typeInspections,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_inspection_show' => false, //auth()->user()->can('type_inspection_show'),
                 'type_inspection_create' => auth()->user()->can('type_inspection_create'),

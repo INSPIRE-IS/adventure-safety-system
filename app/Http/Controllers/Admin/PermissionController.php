@@ -32,6 +32,9 @@ class PermissionController extends Controller
         /** @disregard P1013 */
         return Inertia::render('Permission/Index', [
             'permissions' => $permissions,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'permission_show' => auth()->user()->can('permission_show'),
                 'permission_edit' => auth()->user()->can('permission_edit'),

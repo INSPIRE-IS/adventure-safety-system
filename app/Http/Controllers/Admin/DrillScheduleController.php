@@ -88,6 +88,9 @@ class DrillScheduleController extends Controller
             'categoryItems' => $categoryItems,
             'periods' => $periods,
             'users' => $users,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'drill_schedule_show' => auth()->user()->can('drill_schedule_show'),
                 'drill_schedule_edit' => auth()->user()->can('drill_schedule_edit'),

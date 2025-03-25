@@ -27,6 +27,9 @@ class TypeBoolController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeBool/Index', [
             'typeBools' => $typeBools,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_bool_show' => false, //auth()->user()->can('type_bool_show'),
                 'type_bool_create' => auth()->user()->can('type_bool_create'),

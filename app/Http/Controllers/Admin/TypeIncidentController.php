@@ -28,6 +28,9 @@ class TypeIncidentController extends Controller
         /** @disregard P1013 */
         return Inertia::render('TypeIncident/Index', [
             'typeIncidents' => $typeIncidents,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'type_incident_show' => false, //auth()->user()->can('type_incident_show'),
                 'type_incident_create' => auth()->user()->can('type_incident_create'),

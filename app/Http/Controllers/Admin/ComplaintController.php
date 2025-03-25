@@ -37,6 +37,9 @@ class ComplaintController extends Controller
         /** @disregard P1013 */
         return Inertia::render('Complaint/Index', [
             'complaints' => $complaints,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'complaint_show' => true, //auth()->user()->can('type_complaint_show'),
                 'complaint_create' => false, //auth()->user()->can('type_complaint_create'),

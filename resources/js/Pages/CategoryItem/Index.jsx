@@ -79,6 +79,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('category-items.index', { 
+                                    data: data,
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
@@ -104,8 +105,9 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('category-items.index', { 
-                                    sort: 'type_id', 
-                                    direction: sortColumn === 'type_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
+                                    data: data,
+                                    sort: 'type_inspection_id', 
+                                    direction: sortColumn === 'type_inspection_id' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
                                 className="flex flex-row justify-between items-center"
                             >

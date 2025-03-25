@@ -86,20 +86,9 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                             </Link>
                             </th>
                             <th className="px-6 py-3 text-left table-header uppercase tracking-wider">
-                            <Link 
-                                href={route('roles.index', { 
-                                    sort: 'role', 
-                                    direction: sortColumn === 'role' && sortDirection === 'asc' ? 'desc' : 'asc' 
-                                })} 
-                                className="flex flex-row justify-between items-center"
-                            >
+
                                 Access Role
-                                <img 
-                                    src="./images/left-arrow-icon.svg" 
-                                    alt="filter" 
-                                    className="w-[16px] h-[15px] rounded-full ml-4" 
-                                />
-                            </Link>
+
 
                             </th>
                             <th className="px-6 py-3 uppercase tracking-wider">

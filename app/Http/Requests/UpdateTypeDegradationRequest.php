@@ -11,7 +11,8 @@ class UpdateTypeDegradationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        /** @disregard P1013 */
+        return auth()->user()->can('type_degradation_edit');
     }
 
     /**
@@ -22,7 +23,9 @@ class UpdateTypeDegradationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+            ],
         ];
     }
 }

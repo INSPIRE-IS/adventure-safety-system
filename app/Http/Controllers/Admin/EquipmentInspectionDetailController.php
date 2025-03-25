@@ -19,21 +19,11 @@ class EquipmentInspectionDetailController extends Controller
     {
         //abort_if(Gate::denies('equipment_inspection_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $equipmentInspectionDetails = EquipmentInspectionDetail::with(['inspection', 'site', 'team'])->get();
+        $equipmentInspectionDetails = EquipmentInspectionDetail::with(['inspection', 'site'])->get();
 
         return view('admin.equipmentInspectionDetails.index', compact('equipmentInspectionDetails'));
     }
 
-    public function create()
-    {
-        //abort_if(Gate::denies('equipment_inspection_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $inspections = InspectionUserAssigned::pluck('due_by_date', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $sites = Team::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.equipmentInspectionDetails.create', compact('inspections', 'sites'));
-    }
 
     public function store(StoreEquipmentInspectionDetailRequest $request)
     {
@@ -42,18 +32,6 @@ class EquipmentInspectionDetailController extends Controller
         return redirect()->route('admin.equipment-inspection-details.index');
     }
 
-    public function edit(EquipmentInspectionDetail $equipmentInspectionDetail)
-    {
-        //abort_if(Gate::denies('equipment_inspection_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $inspections = InspectionUserAssigned::pluck('due_by_date', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $sites = Team::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $equipmentInspectionDetail->load('inspection', 'site', 'team');
-
-        return view('admin.equipmentInspectionDetails.edit', compact('equipmentInspectionDetail', 'inspections', 'sites'));
-    }
 
     public function update(UpdateEquipmentInspectionDetailRequest $request, EquipmentInspectionDetail $equipmentInspectionDetail)
     {
@@ -66,7 +44,7 @@ class EquipmentInspectionDetailController extends Controller
     {
         //abort_if(Gate::denies('equipment_inspection_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $equipmentInspectionDetail->load('inspection', 'site', 'team');
+        $equipmentInspectionDetail->load('inspection', 'site');
 
         return view('admin.equipmentInspectionDetails.show', compact('equipmentInspectionDetail'));
     }

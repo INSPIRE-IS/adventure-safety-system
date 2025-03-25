@@ -20,6 +20,7 @@ const CustomSelect2 = ({ label, name, value, onChange, error,mode, options }) =>
     </div>
   );
 };
+export default CustomSelect2;
         // className={`w-full pl-[19px] pt-[11px] pb-[12px] bd-[#FBF9F7] border rounded-full focus:outline-none focus:ring-2 ${
         //   error
         //     ? "border-red-500 focus:ring-red-300 text-red-700"
@@ -28,4 +29,4 @@ const CustomSelect2 = ({ label, name, value, onChange, error,mode, options }) =>
         // style={{
         //     backgroundColor: "#FBF9F7", // Explicitly set the background color in case Tailwind is overridden
         //   }}
-export default CustomSelect2;
+

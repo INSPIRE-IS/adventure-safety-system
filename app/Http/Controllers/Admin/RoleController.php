@@ -17,11 +17,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         //abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $roles = Role::with(['permissions'])->paginate(10);
+        $searchTerm = $request->get('search', '');
+        $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
+        $sortDirection = $request->get('direction', 'asc');
+        $roles = Role::with(['permissions'])
+            ->where('name', 'like', '%' . $searchTerm . '%')
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(25);
 
         $permissions = Permission::all(); //latest()->get(); //// You can paginate if necessary
 
@@ -32,6 +37,9 @@ class RoleController extends Controller
 
             'roles' => $roles,
             'permissions' => $permissions,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'role_show' => auth()->user()->can('role_show'),
                 'role_create' => auth()->user()->can('role_create'),

@@ -51,6 +51,9 @@ class SafetyInspectionDetailController extends Controller
             'inspections' => $inspections,
             'categoryItems' => $category_items,
             'categoryDetails' => $category_details,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'safety_inspection_detail_show' => auth()->user()->can('safety_inspection_detail_show'),
                 'safety_inspection_detail_edit' => auth()->user()->can('safety_inspection_detail_edit'),

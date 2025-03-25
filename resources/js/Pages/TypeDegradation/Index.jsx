@@ -37,7 +37,7 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
         e.preventDefault();
         // Redirect to the route with search query and other parameters
         console.log('search ', search);
-        window.location.href = route('type-inspections.index', {
+        window.location.href = route('type-degradations.index', {
             search,
             sort: sortColumn,
             direction: sortDirection
@@ -46,25 +46,25 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
 
     const handleDelete = (typedegradation) => {
         if (confirm("Are you sure you want to delete this typedegradation?")) {
-            //post(route("type-inspections.destroy", typedegradation), { _method: "DELETE",});
-            router.delete(route('type-inspections.destroy', typedegradation), {preserveScroll: true});
+            //post(route("type-degradations.destroy", typedegradation), { _method: "DELETE",});
+            router.delete(route('type-degradations.destroy', typedegradation), {preserveScroll: true});
         }
     };
 
     return (
         <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
-            <Head title="Certification Types" />
+            <Head title="Degradation Types" />
             <div className="container mx-auto py-6">
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                 <SearchBar search={search} handleSearchChange={(e) => handleSearchChange(e)} handleSearchSubmit={handleSearchSubmit} />
-                {can.type_bool_create && (
-                <AddButton title='Add New Certification Type' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
+                {can.type_degradation_create && (
+                <AddButton title='Add New Degradation Type' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
                 )}
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">Certification Types</h1>                    
+                    <h1 className="view-header">Degradation Types</h1>                    
                 </div>
             </header>
 
@@ -75,13 +75,13 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
                         <tr>
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
-                                href={route('type-inspections.index', { 
+                                href={route('type-degradations.index', { 
                                     sort: 'name', 
                                     direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
-                                className="flex flex-row justify-center items-center"
+                                className="flex flex-row justify-between items-center"
                             >
-                                Certification Name
+                                Name
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
@@ -93,11 +93,14 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
                     <tbody className="bg-white divide-y divide-gray-200">
                         {typeDegradations?.data.map((typeDegradations) => (
                             <tr key={typeDegradations.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
-                                <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
-                                    {typeDegradations.name}
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                            <div className="w-full table-text1 ">{typeDegradations.name}</div>                                        
+                                    </div>
                                 </td>
+
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
-                                    {can.type_bool_show && (
+                                    {can.type_degradation_show && (
                                         <button
                                             onClick={() => handleOpenModal("view",typeDegradations)}
                                             className="text-indigo-600 hover:text-indigo-900"
@@ -105,7 +108,7 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
                                             View
                                         </button>                                        
                                     )}
-                                    {can.type_bool_edit && (
+                                    {can.type_degradation_edit && (
                                         <button
                                             onClick={() => handleOpenModal("edit",typeDegradations)}
                                             className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 mr-3"
@@ -113,7 +116,7 @@ const TypeDegradationsIndex = ({auth, typeDegradations, roles, teams, can, searc
                                             <img src="./images/edit-icon.svg" alt="Edit" className="w-45 h-45" />
                                         </button>
                                     )}
-                                    {can.type_bool_delete && (
+                                    {can.type_degradation_delete && (
                                         <button
                                             onClick={() => handleDelete(typeDegradations)}
                                             className="w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-red-200"

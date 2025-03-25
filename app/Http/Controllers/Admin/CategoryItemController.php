@@ -49,6 +49,9 @@ class CategoryItemController extends Controller
             'data' => $request->get('data', ''),
             'teams' => $teams,
             'type_bools' => $type_bools,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'category_item_show' => auth()->user()->can('category_item_show'),
                 'category_item_edit' => auth()->user()->can('category_item_edit'),

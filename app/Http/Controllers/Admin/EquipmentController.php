@@ -14,6 +14,7 @@ use App\Models\Team;
 use App\Models\TypeBool;
 use App\Models\TypeInspection;
 use App\Models\User;
+use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -30,6 +31,20 @@ class EquipmentController extends Controller
         $user = auth()->user();
         //dd($user->hasAnyRole(['admin', 'super']));
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+        if ($request->get('filter', '') == 'period') {
+            $searchPeriod = $request->get('value', ''); // 1 = Last 30 Days
+        }
+        $searchMonth = '';
+        if ($request->get('filter', '') == 'month') {
+            $searchMonth = $request->get('value', ''); // 1 = current month
+        }
+        $searchShow = '';
+        if ($request->get('filter', '') == 'show') {
+            $searchShow = $request->get('value', ''); // paginate 25
+        }
+        $selectedDate = $searchMonth ? Carbon::parse($searchMonth) : null;
+        $pages = $searchShow ? $searchShow : 25;
+
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'due_date'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
@@ -43,13 +58,16 @@ class EquipmentController extends Controller
                 // 'photo_file:id,name,path,type_file_id,row',
                 // 'signature_file:id,name,path,type_file_id,row',
             ])
-
+            ->when($selectedDate, function ($query) use ($selectedDate) {
+                $query->whereMonth('created_at', $selectedDate->month)
+                    ->whereYear('created_at', $selectedDate->year);
+            })
             ->whereHas('inspection_schedule', function ($query) use ($typeInspection) {
                 $query->where('type_inspection_id', $typeInspection);
             })
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
-            ->paginate(25);
+            ->paginate($pages);
 
         $flattenedData = collect();
 
@@ -72,7 +90,7 @@ class EquipmentController extends Controller
 
         // Create a new paginator instance manually
         $page = request('page', 1);
-        $perPage = 10;
+        $perPage = $pages;
         $pagedData = $flattenedData->slice(($page - 1) * $perPage, $perPage)->values();
         $pagination = new LengthAwarePaginator($pagedData, $flattenedData->count(), $perPage, $page, [
             'path' => request()->url(),
@@ -91,14 +109,18 @@ class EquipmentController extends Controller
             })
             ->select('name as label', 'id as value')->get();
 
-        $periodSelects = InspectionSchedule::PERIOD_SELECT;
-        $periods = [];
-        foreach ($periodSelects as $value => $label) {
-            $periods[] = [
-                'value' => (string)$value,  // Convert value to string
-                'label' => $label
-            ];
-        }
+        $periods = collect(InspectionSchedule::PERIOD_SELECT);
+        $periodFilters = collect(Inspection::PERIOD_SELECT);
+        $months = Inspection::getMonths();
+        $shows = collect(Inspection::SHOWS_SELECT);
+
+        // $periods = [];
+        // foreach ($periodSelects as $value => $label) {
+        //     $periods[] = [
+        //         'value' => (string)$value,  // Convert value to string
+        //         'label' => $label
+        //     ];
+        // }
         $actives = array(
             [
                 'value' => "1",
@@ -124,10 +146,14 @@ class EquipmentController extends Controller
             'typeInspections' => $typeInspections,
             'categoryItems' => $categoryItems,
             'periods' => $periods,
+            'periodFilters' => $periodFilters,
+            'months' => $months,
+            'shows' => $shows,
+            'searchPeriod' => $searchPeriod ?? '',
+            'searchMonth' => $searchMonth ?? '',
+            'searchShow' => $searchShow ?? '',
             'actives' => $actives,
             'users' => $users,
-
-
             'typeBools' => $type_bools,
             'can' => [
                 'inspection_show' => auth()->user()->can('inspection_show'),

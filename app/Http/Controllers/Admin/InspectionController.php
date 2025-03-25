@@ -19,6 +19,7 @@ use App\Models\TypeInspection;
 use App\Models\User;
 use App\Models\File;
 use App\Models\UserAlert;
+use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -39,18 +40,24 @@ class InspectionController extends Controller
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
 
         if ($request->get('filter', '') == 'period') {
-            $searchPeriod = $request->get('value', '');
+            $searchPeriod = $request->get('value', ''); // 1 = Last 30 Days
         }
-        if ($request->get('filter', '') == 'period') {
-            $searchMonth = $request->get('value', '');
+        $searchMonth = '';
+        if ($request->get('filter', '') == 'month') {
+            $searchMonth = $request->get('value', ''); // 1 = current month
         }
-        if ($request->get('filter', '') == 'period') {
-            $searchPeriod = $request->get('value', '');
+        $searchShow = '';
+        if ($request->get('filter', '') == 'show') {
+            $searchShow = $request->get('value', ''); // paginate 25
         }
+        $selectedDate = $searchMonth ? Carbon::parse($searchMonth) : null;
+        $pages = $searchShow ? $searchShow : 25;
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'due_date'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         $typeInspection = [1, 2]; // Monthly Safety Inspection Annual Safety Inspection  $request->get('typeInspection', 1);
+        // Ensure the selected month is correctly parsed
+
 
         $inspections = Inspection::select('id', 'due_date', 'complete_date', 'inspection_schedule_id', 'assigned_to_id', 'photo_file_id', 'signature_file_id', 'site_id', 'created_at')
             ->with([
@@ -61,13 +68,17 @@ class InspectionController extends Controller
                 // 'signature_file:id,name,path,type_file_id,row',
             ])
             ->where('due_date', 'like', '%' . $searchTerm . '%')
+            ->when($selectedDate, function ($query) use ($selectedDate) {
+                $query->whereMonth('created_at', $selectedDate->month)
+                    ->whereYear('created_at', $selectedDate->year);
+            })
             ->whereHas('inspection_schedule', function ($query) use ($typeInspection) {
                 $query->whereIn('type_inspection_id', $typeInspection);
             })
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
-            ->paginate(25);
-
+            ->paginate($pages);
+        //dd($inspections);
         $flattenedData = collect();
 
         foreach ($inspections as $inspection) {
@@ -89,7 +100,7 @@ class InspectionController extends Controller
 
         // Create a new paginator instance manually
         $page = request('page', 1);
-        $perPage = 10;
+        $perPage = $pages;
         $pagedData = $flattenedData->slice(($page - 1) * $perPage, $perPage)->values();
         $pagination = new LengthAwarePaginator($pagedData, $flattenedData->count(), $perPage, $page, [
             'path' => request()->url(),
@@ -115,25 +126,9 @@ class InspectionController extends Controller
             })
             ->select('name as label', 'id as value')->get();
 
-        $periodSelects = InspectionSchedule::PERIOD_SELECT;
-        $periods = [];
-        foreach ($periodSelects as $value => $label) {
-            $periods[] = [
-                'value' => (string)$value,  // Convert value to string
-                'label' => $label
-            ];
-        }
-        $actives = array(
-            [
-                'value' => "1",
-                'label' => "No",
-            ],
-            [
-                'value' => "2",
-                'label' => "Yes",
-            ]
-        );
-
+        $periods = collect(Inspection::PERIOD_SELECT);
+        $months = Inspection::getMonths();
+        $shows = collect(Inspection::SHOWS_SELECT);
         //add equipment
         $categoryItems = CategoryItem::select('name as label', 'id as value')
             ->with(['site', 'type'])
@@ -141,6 +136,19 @@ class InspectionController extends Controller
 
         $type_bools = TypeBool::select('name as label', 'id as value')->get();
 
+        // // Generate last 6 months dynamically
+        // $months = collect(range(0, 5))->map(function ($i) {
+        //     $date = Carbon::now()->subMonths($i);
+        //     return [
+        //         'value' => $date->format('M Y'), // Example: "Mar 2025"
+        //         'label' => $date->format('M Y'),
+        //     ];
+        // });
+        // // Prepend "Select Month" option
+        // $months->prepend([
+        //     'value' => "",
+        //     'label' => "Select Month",
+        // ]);
 
         /** @disregard P1013 */
         return Inertia::render('Inspection/Index', [
@@ -150,6 +158,15 @@ class InspectionController extends Controller
             'categoryItems' => $categoryItems,
             'users' => $users,
             'typeBools' => $type_bools,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
+            'periods' => $periods,
+            'months' => $months,
+            'shows' => $shows,
+            'searchPeriod' => $searchPeriod ?? '',
+            'searchMonth' => $searchMonth ?? '',
+            'searchShow' => $searchShow ?? '',
             'can' => [
                 'inspection_show' => auth()->user()->can('inspection_show'),
                 'inspection_edit' => false, //auth()->user()->can('inspection_edit'),
@@ -175,6 +192,8 @@ class InspectionController extends Controller
 
         return redirect()->route('admin.inspections.index');
     }
+
+
 
     public function show(Inspection $inspection)
     {

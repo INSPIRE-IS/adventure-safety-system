@@ -36,6 +36,66 @@ class Inspection extends Model
         'deleted_at',
     ];
 
+    public const PERIOD_SELECT = [
+        [
+            'value' => "",
+            'label' => "Select Period",
+        ],
+        [
+            'value' => "30",
+            'label' => "Last 30 Days",
+        ],
+        [
+            'value' => "60",
+            'label' => "Last 60 Days",
+        ],
+        [
+            'value' => "90",
+            'label' => "Last 90 Days",
+        ],
+    ];
+
+    public const MONTHS_SELECT = [
+        [
+            'value' => "",
+            'label' => "Select Month",
+        ],
+    ];
+    public static function getMonths()
+    {
+        return collect(self::MONTHS_SELECT)->merge(
+            collect(range(0, 5))->map(function ($i) {
+                $date = Carbon::now()->subMonths($i);
+                return [
+                    'value' => $date->format('M Y'), // Example: "Mar 2025"
+                    'label' => $date->format('M Y'),
+                ];
+            })
+        );
+    }
+    public const SHOWS_SELECT = [
+        [
+            'value' => "",
+            'label' => "Select Show",
+        ],
+        [
+            'value' => "1000",
+            'label' => "All",
+        ],
+        [
+            'value' => "10",
+            'label' => "10",
+        ],
+        [
+            'value' => "25",
+            'label' => "25",
+        ],
+        [
+            'value' => "50",
+            'label' => "50",
+        ]
+    ];
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

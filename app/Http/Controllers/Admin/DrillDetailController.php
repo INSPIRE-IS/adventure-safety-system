@@ -59,6 +59,9 @@ class DrillDetailController extends Controller
             'signature_files' => $signature_files,
             'competents' => $competents,
             'members' => $members,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
             'can' => [
                 'drill_detail_show' => auth()->user()->can('drill_detail_show'),
                 'drill_detail_edit' => auth()->user()->can('drill_detail_edit'),

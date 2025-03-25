@@ -599,7 +599,7 @@ class DatabaseSeeder extends Seeder
 
         // period 1 none,2 3month,3 4 month,4 6 month,5 12 month 
         InspectionSchedule::create(['name' => 'Rock climbing', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
-        InspectionSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 2, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
+        // InspectionSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 2, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         InspectionSchedule::create(['name' => 'Rope climbing', 'site_id' => $team2->id, 'type_inspection_id' => 2, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         InspectionSchedule::create(['name' => 'Bunge Jumping', 'site_id' =>  $team2->id, 'type_inspection_id' => 3, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         InspectionSchedule::create(['name' => 'Zipline', 'site_id' =>  $team3->id, 'type_inspection_id' => 1, 'type_activity_id' => 2, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user9->id, 'assigned_by_id' => $user8->id,]);
@@ -610,8 +610,8 @@ class DatabaseSeeder extends Seeder
 
 
         DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_drill_id' => 1, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
-        DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_drill_id' => 2, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
-        DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_drill_id' => 3, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
+        //DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_drill_id' => 2, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
+        //DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_drill_id' => 3, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team3->id, 'type_drill_id' => 2, 'type_activity_id' => 2, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user9->id, 'assigned_by_id' => $user8->id,]);
         DrillSchedule::create(['name' => 'Zipline', 'site_id' => $team4->id, 'type_drill_id' => 3, 'type_activity_id' => 3, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user13->id, 'assigned_by_id' => $user12->id,]);
 
