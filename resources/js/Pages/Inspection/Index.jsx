@@ -10,24 +10,6 @@ import CustomSelect2 from '@/Components/CustomSelect2';
 import ManageModal from '@/Components/ManageModal';
 import ElementModal from './ElementModal';
 
-// const periods = [
-//     { value: "1", label: "Last 30 Days" },
-//     { value: "2", label: "Last 60 Days" },
-//     { value: "3", label: "Last 90 Days" },
-//   ];
-//   const months = [
-//     { value: "1", label: "Jan 2025" },
-//     { value: "2", label: "Dec 2024" },
-//     { value: "3", label: "Nov 2024" },
-//     { value: "4", label: "Oct 2024" },
-//   ];
-//   const shows = [
-//     { value: "1", label: "All" },
-//     { value: "2", label: "10" },
-//     { value: "3", label: "25" },
-//     { value: "4", label: "50" },
-//   ];
-
 const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPeriod,months, searchMonth, shows, searchShow, sortColumn, sortDirection, sites, typeInspections, categoryItems, users, typeBools }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();

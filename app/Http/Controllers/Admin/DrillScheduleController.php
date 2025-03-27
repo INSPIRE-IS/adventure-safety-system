@@ -30,7 +30,9 @@ class DrillScheduleController extends Controller
 
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('drill_schedule_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $teamId = Session::get('team_id');
+        $user = $request->user();
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+        setPermissionsTeamId($teamId);
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
@@ -48,9 +50,20 @@ class DrillScheduleController extends Controller
 
         $typeDrills = TypeDrill::select('name as label', 'id as value')->get();
 
-        $users = User::whereHas('teams', function ($query) use ($teamId) {
-            $query->where('team_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
-        })->select('name as label', 'id as value')->get();
+        $users = User::with(['roles', 'teams'])
+            ->whereHas('teams', function ($query) use ($teamId) {
+                $query->where('team_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
+            })
+            ->whereDoesntHave('roles', function ($query) {
+                $query->whereIn('name', ['super', 'admin', 'author']);
+            })
+            // unless user has this role do not show users with this role
+            // ->when(!$user->hasAnyRole(['owner']), function ($query) { // 'author', 
+            //     $query->whereDoesntHave('roles', function ($subQuery) {
+            //         $subQuery->whereIn('name', ['owner']);
+            //     });
+            // })
+            ->select('name as label', 'id as value')->get();
 
         $drills = Drill::get();
 

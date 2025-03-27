@@ -142,7 +142,8 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, periodFilters, se
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                 <SearchBar search={search} handleSearchChange={(e) => handleSearchChange(e)} handleSearchSubmit={handleSearchSubmit} />
                 {can.inspection_create && (
-                <AddButton title='Add New Equipment' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
+                // <AddButton title='Add New Equipment' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
+                <AddButton title='Add New Inspection Schedule' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
                 )}
             </div>
             <header className="mb-6 flex items-center justify-between w-[100%]">

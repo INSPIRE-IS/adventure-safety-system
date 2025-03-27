@@ -5,13 +5,14 @@ import CustomCheckbox from "@/Components/CustomCheckbox";
 import CustomSelect1 from "@/Components/CustomSelect1";
 
 const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) => {
-    console.log("mode", mode);
-    console.log("user", user);
-    console.log("roles", roles);
+    // console.log("mode", mode);
+    // console.log("user", user);
+    // console.log("roles", roles);
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
         surname: "",
         email: "",
+        password: "",
         mobile_number: "",
         roles: [],
         teams: [team?.id],
@@ -24,6 +25,7 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) =
                 name: user.name || "",
                 surname: user.surname || "",
                 email: user.email || "",
+                password: "",
                 mobile_number: user.mobile_number || "",
                 roles: user.roles.map((role) => role.id),
                 teams: user.teams.map((team) => team.id),
@@ -84,6 +86,14 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) =
                         title="Email"
                         field="email"
                         value={data.email}
+                        mode={mode}
+                        handleChange={handleChange}
+                        errors={errors}
+                    />
+                    <InputText
+                        title="Password"
+                        field="password"
+                        value={data.password}
                         mode={mode}
                         handleChange={handleChange}
                         errors={errors}

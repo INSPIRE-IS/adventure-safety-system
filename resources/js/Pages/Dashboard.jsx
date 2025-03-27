@@ -56,7 +56,7 @@ const SiteCards1 = ({ sites }) => {
           <div key={index} className="bg-white shadow-lg rounded-lg p-4">
             <h2 className="sidebar-header-2">{site.site_name}</h2>
   
-            {site.entries.length === 0 ? (
+            {site?.entries?.length === 0 || site?.entries == undefined ? (
               <p className="text-gray-500 text-center">No records available</p>
             ) : (
               site.entries.map((entry, i) => (

@@ -169,12 +169,12 @@ class InspectionController extends Controller
             'searchShow' => $searchShow ?? '',
             'can' => [
                 'inspection_show' => auth()->user()->can('inspection_show'),
-                'inspection_edit' => false, //auth()->user()->can('inspection_edit'),
-                'inspection_delete' => false, //auth()->user()->can('inspection_delete'),
-                'inspection_create' => true, //auth()->user()->can('inspection_create'),
-                'inspection_edit_reminder' => true, //auth()->user()->can('inspection_create'),
-                'inspection_edit_inspector' => true, //auth()->user()->can('inspection_create'),
-                'inspection_edit_date' => true, //auth()->user()->can('inspection_create'),
+                'inspection_edit' => auth()->user()->can('inspection_edit'),
+                'inspection_delete' => auth()->user()->can('inspection_delete'),
+                'inspection_create' => auth()->user()->can('inspection_create'),
+                'inspection_edit_reminder' => auth()->user()->can('inspection_edit_reminder'),
+                'inspection_edit_inspector' => auth()->user()->can('inspection_edit_inspector'),
+                'inspection_edit_date' => auth()->user()->can('inspection_edit_date'),
             ],
         ]);
     }

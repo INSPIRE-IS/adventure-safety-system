@@ -12,7 +12,7 @@ const CustomInput1 = ({ label, type = "text", name, value, onChange, error, plac
         id={name}
         name={name}
         type={type}        
-        value={value}
+        value={value ?? ""}	
         onChange={onChange}
         placeholder={placeholder}
         className={`w-full pl-[19px] pt-[6px] pb-[6px] bg-[#FFFFFF] border rounded-xl focus:outline-none focus:ring-2 ${

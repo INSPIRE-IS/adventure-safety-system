@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyCategoryItemRequest;
 use App\Http\Requests\StoreCategoryItemRequest;
 use App\Http\Requests\UpdateCategoryItemRequest;
+use App\Models\CategoryDetail;
 use App\Models\CategoryItem;
 use App\Models\File;
 use App\Models\Team;
@@ -31,7 +32,7 @@ class CategoryItemController extends Controller
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
-        $categoryItems = CategoryItem::with(['site', 'type', 'certificate_recieved', 'certificate_file'])
+        $categoryItems = CategoryItem::with(['site', 'type', 'certificate_recieved', 'certificate_file', 'identifications'])
             ->where('name', 'like', '%' . $searchTerm . '%')
             ->where('type_inspection_id', '=', $data)
             ->where('site_id', $teamId)
@@ -74,7 +75,7 @@ class CategoryItemController extends Controller
                 $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
                 foreach ($request->identifications as $identification) {
                     //dd($identification);
-                    $categoryItem->categoryDetails()->create([
+                    $categoryItem->identifications()->create([
                         'name' => $identification,
                         'in_use_date' =>  $in_use_date,
                     ]);
@@ -96,7 +97,7 @@ class CategoryItemController extends Controller
                 $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
                 foreach ($request->identifications as $identification) {
                     //dd($identification);
-                    $categoryItem->categoryDetails()->create([
+                    $categoryItem->identifications()->create([
                         'name' => $identification,
                         'in_use_date' =>  $in_use_date,
                     ]);
@@ -123,44 +124,93 @@ class CategoryItemController extends Controller
                 $categoryItem->certificate_file_id = $file->id;
                 $categoryItem->save();
             }
-            return redirect()->route('category-items.index');
+            return redirect()->back()->with('success', 'Element item added successfully.');
+            //return redirect()->route('category-items.index');
         }
     }
 
 
     public function update(UpdateCategoryItemRequest $request, CategoryItem $categoryItem)
     {
-        $saveImage = false;
-        if ($request->hasFile('image')) {
 
-            $request->validate([
-                'image' => 'required|file|image',
-            ]);
-            $saveImage = true;
+        //dd($request, $categoryItem);
+        if ($request->type_inspection_id == 3) {
+            $categoryItem->update($request->all());
+            //$categoryItem = CategoryItem::create($validated);
+            $categoryItem->identifications()->delete();
+
+            if (!empty($request->identifications)) {
+                $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
+                foreach ($request->identifications as $identification) {
+                    //dd($identification);
+                    $categoryItem->identifications()->create([
+                        'name' => $identification,
+                        'in_use_date' =>  $in_use_date,
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Equipment item added successfully.');
+        } else {
+            $saveImage = false;
+            if ($request->hasFile('image')) {
+
+                $request->validate([
+                    'image' => 'required|file|image',
+                ]);
+                $saveImage = true;
+            }
+            $categoryItem->update($request->all());
+            $categoryItem->identifications()->delete();
+
+            if (!empty($request->identifications)) {
+                $in_use_date = $request->input('in_use_date') ?? null; // Ensure nullable support
+                foreach ($request->identifications as $identification) {
+                    //dd($identification);
+                    $categoryItem->identifications()->create([
+                        'name' => $identification,
+                        'in_use_date' =>  $in_use_date,
+                    ]);
+                }
+            }
+
+
+            if ($saveImage) {
+                $image_file = $request->file('image');
+
+                $fileName = time() . '_' . $image_file->getClientOriginalName();
+                $directoryPath = 'uploads/certification/' . $categoryItem->id;
+
+                $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
+                $file = File::create([
+                    'site_id'   => $categoryItem->site_id,
+                    'table_name' => 'category_items',
+                    'file_name' => $fileName,
+                    'type_file_id' => 8, // certificate
+                    'row' => $categoryItem->id,
+                    'path' => $filePath,
+                ]);
+                $categoryItem->certificate_file_id = $file->id;
+                $categoryItem->save();
+            }
+            return redirect()->back()->with('success', 'Element item added successfully.');
+            //return redirect()->route('category-items.index');
         }
 
-        $categoryItem->update($request->all());
+        // $saveImage = false;
+        // if ($request->hasFile('image')) {
 
-        if ($saveImage) {
-            $image_file = $request->file('image');
+        //     $request->validate([
+        //         'image' => 'required|file|image',
+        //     ]);
+        //     $saveImage = true;
+        // }
 
-            $fileName = time() . '_' . $image_file->getClientOriginalName();
-            $directoryPath = 'uploads/certification/' . $categoryItem->id;
+        // $categoryItem->update($request->all());
 
-            $filePath = $image_file->storeAs($directoryPath, $fileName, 'public');
-            $file = File::create([
-                'site_id'   => $categoryItem->site_id,
-                'table_name' => 'category_items',
-                'file_name' => $fileName,
-                'type_file_id' => 8, // certificate
-                'row' => $categoryItem->id,
-                'path' => $filePath,
-            ]);
-            $categoryItem->certificate_file_id = $file->id;
-            $categoryItem->save();
-        }
 
-        return redirect()->route('category-items.index');
+
+        // return redirect()->route('category-items.index');
     }
 
     public function show(CategoryItem $categoryItem)

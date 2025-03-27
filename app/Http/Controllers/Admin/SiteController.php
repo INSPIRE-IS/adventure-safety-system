@@ -69,6 +69,9 @@ class SiteController extends Controller
 
     public function store(StoreTeamRequest $request)
     {
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+        setPermissionsTeamId($teamId);
+
         $saveImage = false;
         if ($request->hasFile('file')) {
 
@@ -77,17 +80,53 @@ class SiteController extends Controller
             ]);
             $saveImage = true;
         }
-
         $team = Team::create($request->all());
         $team->type_activities()->sync($request->input('type_activities', []));
-        $super = User::where('email', 'super@super.com')->first();
-        $admin = User::where('email', 'admin@admin.com')->first();
-        $teams = Team::pluck('id')->toArray();
-        $super->teams()->sync($teams);
-        $admin->teams()->sync($teams);
+        // spatie permission with teams reuires us to first find users with the logged in user's team id
+        $teams = Team::pluck('id')->toArray(); // Get all team IDs
+        $superUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'super');
+        })->get(); // Get all users with the "super" role   
+        $adminUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get(); // Get all users with the "super" role    
+        $authorUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'author');
+        })->get(); // Get all users with the "author" role      
+        $directorUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'director');
+        })->get(); // Get all users with the "owner" role   
+        $managerUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'manager');
+        })->get(); // Get all users with the "owner" role  
+
+
+        // now we update the team id to assign the new team to these users or no one will be able to see the new team
         setPermissionsTeamId($team->id);
-        $super->assignRole('super'); // Assign 'super' role for Team 1
-        $admin->assignRole('admin'); // Assign 'admin' role for Team 1  
+        foreach ($superUsers as $superUser) {
+            $superUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $superUser->assignRole('super'); // Assign 'super' role for Team
+        }
+
+        foreach ($adminUsers as $adminUser) {
+            $adminUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $adminUser->assignRole('admin'); // Assign 'admin' role for Team
+        }
+
+        foreach ($authorUsers as $authorUser) {
+            $authorUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $authorUser->assignRole('author'); // Assign 'author' role for Team
+        }
+
+        foreach ($directorUsers as $directorUser) {
+            $directorUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $directorUser->assignRole('director'); // Assign 'director' role for Team
+        }
+
+        foreach ($managerUsers as $managerUser) {
+            $managerUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $managerUser->assignRole('manager'); // Assign 'manager' role for Team
+        }
 
         if ($saveImage) {
             $image_file = $request->file('file');

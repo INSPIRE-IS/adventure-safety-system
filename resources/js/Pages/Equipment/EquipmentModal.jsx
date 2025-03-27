@@ -91,7 +91,7 @@ const EquipmentModal = ({ isOpen, onClose, mode, equipmentItem = null, team }) =
 
                     {/* Identification Section */}
                     <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block input-header">
                             Add Identification
                         </label>
                         <div className="flex items-center space-x-2 mt-2">

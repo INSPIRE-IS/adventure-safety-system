@@ -20,7 +20,7 @@ const Header = () => {
     { name: 'PPE Management', route: 'equipments.index', permission: "inspection_access" },
     { name: 'Safety Management', route: 'drills.index', permission: "drill_access" },
     { name: 'Incident Management', route: 'incidents.index', permission: "incident_access" },
-    { name: 'Complaint Management', route: 'complaints.index', permission: "file_access" },
+    { name: 'Complaint Management', route: 'complaints.index', permission: "complaint_access" },
     { name: 'Site Management', route: 'files.index', permission: "file_access" },
   ];
 
@@ -77,11 +77,11 @@ const Header = () => {
 
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
-        {/* <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
+        <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
           <div className=' w-[20px] h-[20px] rounded-full flex items-center justify-center hover:bg-gray-200'>
                   {lookupIcon("logout")}
           </div>
-        </button> */}
+        </button>
         <button onClick={() => handleOpenUserModal()} className="w-[45px] h-[45px] bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
           {/* <img src="./images/user-icon.svg" alt="User Icon" className="w-45 h-45" /> */}
           <div className=' w-[45px] h-[45px] rounded-full flex items-center justify-center hover:bg-gray-200'>
@@ -120,6 +120,7 @@ const NavTop = ({isMenuOpen, navLinks, url, auth}) => {
     >
       <ul className="flex flex-col lg:flex-row lg:items-center lg:justify-center lg:space-x-8 text-gray-800 text-sm font-semibold h-full">
         {navLinks.map((link) => {
+          //alert(JSON.stringify(link));
           if (link?.permission && !auth?.permissions?.includes(link.permission)) {
             return null;
           }

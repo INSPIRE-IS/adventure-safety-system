@@ -104,12 +104,12 @@ class DrillController extends Controller
             'sortDirection' => $sortDirection,
             'can' => [
                 'drill_show' => auth()->user()->can('drill_show'),
-                'drill_edit' => false, //auth()->user()->can('drill_edit'),
-                'drill_delete' => false, //auth()->user()->can('drill_delete'),
-                'drill_create' => true, //auth()->user()->can('drill_create'),
-                'drill_edit_reminder' => false, //auth()->user()->can('drill_create'),
-                'drill_edit_inspector' => false, //auth()->user()->can('drill_create'),
-                'drill_edit_date' => false, //auth()->user()->can('drill_create'),
+                'drill_edit' => auth()->user()->can('drill_edit'),
+                'drill_delete' => auth()->user()->can('drill_delete'),
+                'drill_create' => auth()->user()->can('drill_create'),
+                'drill_edit_reminder' => auth()->user()->can('drill_edit_reminder'),
+                'drill_edit_inspector' => auth()->user()->can('drill_edit_inspector'),
+                'drill_edit_date' => auth()->user()->can('drill_edit_date'),
             ],
         ]);
     }
@@ -147,6 +147,8 @@ class DrillController extends Controller
                 $query->whereIn('name', ['manager', 'inspector']);
             })
             ->select('name as label', 'id as value')->get();
+
+        /** @disregard P1013 */
         return Inertia::render('Drill/Show', [
             'drill' => $drill,
             'drill_id' => $drill->id,
@@ -155,9 +157,13 @@ class DrillController extends Controller
             //'signature_files' => $signature_files,
             //'photoFiles' => $photo_files,
             'can' => [
-                'drill_edit_reminder' => true, //auth()->user()->can('drill_create'),
-                'drill_edit_inspector' => true, //auth()->user()->can('drill_create'),
-                'drill_edit_date' => true, //auth()->user()->can('drill_create'),
+                'drill_show' => auth()->user()->can('drill_show'),
+                'drill_edit' => auth()->user()->can('drill_edit'),
+                'drill_delete' => auth()->user()->can('drill_delete'),
+                'drill_create' => auth()->user()->can('drill_create'),
+                'drill_edit_reminder' => auth()->user()->can('drill_edit_reminder'),
+                'drill_edit_inspector' => auth()->user()->can('drill_edit_inspector'),
+                'drill_edit_date' => auth()->user()->can('drill_edit_date'),
             ],
         ]);
     }

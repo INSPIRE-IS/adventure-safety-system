@@ -42,6 +42,10 @@ class StoreCategoryItemRequest extends FormRequest
             // 'certificate_recieved_id' => [
             //     'required',
             // ],
+            'identifications' => [
+                'array',
+                'required',
+            ]
         ];
     }
 }

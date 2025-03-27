@@ -56,18 +56,18 @@ const CategoryDetailsIndex = ({auth, data, categoryItems,categoryDetails, can, s
 
     return (
         <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
-            <Head title="CategoryDetails" />
+            <Head title="ItemDetails" />
             <div className="container mx-auto py-6">
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                 <SearchBar search={search} handleSearchChange={(e) => handleSearchChange(e)} handleSearchSubmit={handleSearchSubmit} />
                 {can.category_detail_create && (
-                <AddButton title='Add New CategoryDetail' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
+                <AddButton title='Add New Detail' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
                 )}
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">
-                    <h1 className="view-header">Category Details <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                    
+                    <h1 className="view-header">Item Details <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                    
                 </div>
             </header>
 

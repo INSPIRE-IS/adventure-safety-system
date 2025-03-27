@@ -5,6 +5,7 @@ import CustomSelect1 from "@/Components/CustomSelect1";
 //import { format } from 'date-fns';
 import CustomDatePicker from "@/Components/CustomDatepicker";
 import MultiSelect from "@/Components/MultiSelect";
+import CustomInput1 from "@/Components/CustomInput1";
 
 const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedule = null,site, typeActivities, typeInspections,categoryItems, periods, users }) => {
     console.log("mode", mode);
@@ -183,14 +184,15 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
                         error={errors.period_id}
                         options={periods}
                     /> 
-                    <CustomDatePicker 
+                    <CustomInput1
                         label="Active Date (cron job runs from this date by specified period)"
                         name="active_date"
+                        type="date"
                         value={data?.active_date}
                         mode={mode}
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
                         error={errors.active_date}  
-                        />
+                    />
                     <CustomSelect1
                         label="User"
                         name="assigned_to_id"

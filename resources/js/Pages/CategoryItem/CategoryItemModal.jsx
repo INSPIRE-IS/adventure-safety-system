@@ -127,9 +127,9 @@ const CategoryItemModal = ({ isOpen, onClose, mode, categoryItem = null, type_in
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[95%] overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">
-                    {mode === "create" && "Create Category Item"}
-                    {mode === "edit" && "Edit Category Item"}
-                    {mode === "view" && "View Category Item"}
+                    {mode === "create" && "Create Element Item"}
+                    {mode === "edit" && "Edit Element Item"}
+                    {mode === "view" && "View Element Item"}
                 </h2>
                 <form onSubmit={handleSubmit}>
                     <InputText

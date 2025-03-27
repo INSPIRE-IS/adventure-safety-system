@@ -27,8 +27,10 @@ class InspectionScheduleController extends Controller
         /** @disregard P1013 */
         abort_if(!auth()->user()->can('inspection_schedule_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $user = $request->user();
+        $data = $request->get('data', '');
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
-        //dd($teamId);
+        setPermissionsTeamId($teamId);
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
@@ -51,16 +53,28 @@ class InspectionScheduleController extends Controller
         //dd($typeActivities);
         //$type_activities = Team::->get();
 
-
-        $typeInspections = TypeInspection::select('name as label', 'id as value')->get();
+        $type_items = $data == 1 ? [1, 2] : [3];
+        $type_inspections = TypeInspection::whereIn('id', $type_items)->select('name as label', 'id as value')->get();
+        //$typeInspections = TypeInspection::select('name as label', 'id as value')->where('name', '!=', 'PPE Inspections')->get();
 
         $categoryItems = CategoryItem::whereHas('site', function ($query) use ($teamId) {
             $query->where('site_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
         })->get();
 
-        $users = User::whereHas('teams', function ($query) use ($teamId) {
-            $query->where('team_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
-        })->select('name as label', 'id as value')->get();
+        $users = User::with(['roles', 'teams'])
+            ->whereHas('teams', function ($query) use ($teamId) {
+                $query->where('team_id', $teamId); // Replace $teamId with the actual team ID you're filtering by
+            })
+            ->whereDoesntHave('roles', function ($query) {
+                $query->whereIn('name', ['super', 'admin', 'author']);
+            })
+            // unless user has this role do not show users with this role
+            // ->when(!$user->hasAnyRole(['owner']), function ($query) { // 'author', 
+            //     $query->whereDoesntHave('roles', function ($subQuery) {
+            //         $subQuery->whereIn('name', ['owner']);
+            //     });
+            // })
+            ->select('name as label', 'id as value')->get();
 
         $periodSelects = InspectionSchedule::PERIOD_SELECT;
         $periods = [];
@@ -70,16 +84,17 @@ class InspectionScheduleController extends Controller
                 'label' => $label
             ];
         }
-        //dd($periods);
+        //dd($users);
         /** @disregard P1013 */
         return Inertia::render('InspectionSchedule/Index', [
             'inspectionSchedules' => $inspectionSchedules,
             'sites' => $sites,
             'typeActivities' => $typeActivities,
             'periods' => $periods,
-            'typeInspections' => $typeInspections,
+            'typeInspections' => $type_inspections,
             'categoryItems' => $categoryItems,
             'users' => $users,
+            'data' => $data,
             'searchTerm' => $searchTerm,
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
@@ -99,10 +114,11 @@ class InspectionScheduleController extends Controller
         $data = $request->all();
         $data['active_date'] = Carbon::parse($data['active_date'])->format('Y-m-d');
         $inspectionSchedule = InspectionSchedule::create($data);
-        $inspectionSchedule->category_items()->sync($request->input('category_items', []));
+        // $inspectionSchedule->category_items()->sync($request->input('category_items', []));
+        return redirect()->route('admin.inspection-schedules.index');
 
-        return redirect()->route('inspection-schedules.index')
-            ->with('message', ['info' => 'Application redirect year does not match id: ' . $inspectionSchedule->id]);
+        // return redirect()->route('inspection-schedules.index')
+        //     ->with('message', ['info' => 'Application redirect year does not match id: ' . $inspectionSchedule->id]);
     }
     //     Carbon::parse($value)->format('Y-m-d') 
     //     $inspectionSchedule = InspectionSchedule::create($request->all());

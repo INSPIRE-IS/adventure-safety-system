@@ -30,17 +30,21 @@ class UpdateCategoryItemRequest extends FormRequest
                 'string',
                 'required',
             ],
-            'in_use_date' => [
-                'string',
-                'nullable',
-            ],
-            'out_use_date' => [
-                'string',
-                'nullable',
-            ],
-            'certificate_recieved_id' => [
+            // 'in_use_date' => [
+            //     'string',
+            //     'nullable',
+            // ],
+            // 'out_use_date' => [
+            //     'string',
+            //     'nullable',
+            // ],
+            // 'certificate_recieved_id' => [
+            //     'required',
+            // ],
+            'identifications' => [
+                'array',
                 'required',
-            ],
+            ]
         ];
     }
 }

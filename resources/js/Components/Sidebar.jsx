@@ -85,53 +85,9 @@ const Sidebar = () => {
                 },
             ],
         },
+
         {
-            label: "Equipment Management",
-            icon: "fas fa-users",
-            permission: "admin_panel_show",
-            dropdown: [
-                // { // this is working it is not implemented on app and on ppe report though and was not part of original scope
-                //     label: "Type Degradation",
-                //     icon: "fas fa-unlock-alt",
-                //     route: "type-degredations.index",
-                //     permission: "type_degradation_access",
-                // },
-                {
-                    label: "Items",
-                    icon: "fas fa-user",
-                    route: "category-items.index",
-                    param: 2,
-                    permission: "category_item_access",
-                },
-                {
-                    label: "Details",
-                    icon: "fas fa-bell",
-                    route: "category-details.index",
-                    param: 2,
-                    permission: "category_detail_access",
-                },
-                {
-                    label: "Inspections",
-                    icon: "fas fa-building",
-                    route: "inspections.index",
-                    permission: "inspection_access",
-                },
-                {
-                    label: "Inspection Schedule",
-                    icon: "fas fa-building",
-                    route: "inspection-schedules.index",
-                    permission: "inspection_schedule_access",
-                },
-                // {
-                //     label: "Equipment Inspection Details",
-                //     icon: "fas fa-building",
-                //     route: "equipment-inspection-details.index",
-                //     permission: "equipment_inspection_detail_access",
-                // },
-            ],
-        },
-        {
-            label: "Safety Management",
+            label: "Inspection Management",
             icon: "fas fa-users",
             permission: "admin_panel_show",
             dropdown: [
@@ -161,7 +117,6 @@ const Sidebar = () => {
                     param: 1,
                     permission: "category_detail_access",
                 },
-
                 {
                     label: "Inspections",
                     icon: "fas fa-building",
@@ -172,6 +127,7 @@ const Sidebar = () => {
                     label: "Inspection Schedule",
                     icon: "fas fa-building",
                     route: "inspection-schedules.index",
+                    param: 1,
                     permission: "inspection_schedule_access",
                 },
                 // {
@@ -183,7 +139,53 @@ const Sidebar = () => {
             ],
         },
         {
-            label: "Drill Management",
+            label: "PPE Management",
+            icon: "fas fa-users",
+            permission: "admin_panel_show",
+            dropdown: [
+                // { // this is working it is not implemented on app and on ppe report though and was not part of original scope
+                //     label: "Type Degradation",
+                //     icon: "fas fa-unlock-alt",
+                //     route: "type-degredations.index",
+                //     permission: "type_degradation_access",
+                // },
+                {
+                    label: "Equipment Items",
+                    icon: "fas fa-user",
+                    route: "category-items.index",
+                    param: 3,
+                    permission: "category_item_access",
+                },
+                {
+                    label: "Equipment Details",
+                    icon: "fas fa-bell",
+                    route: "category-details.index",
+                    param: 3,
+                    permission: "category_detail_access",
+                },
+                {
+                    label: "Inspections",
+                    icon: "fas fa-building",
+                    route: "equipments.index",
+                    permission: "inspection_access",
+                },
+                {
+                    label: "Inspection Schedule",
+                    icon: "fas fa-building",
+                    route: "inspection-schedules.index",
+                    param: 3,
+                    permission: "inspection_schedule_access",
+                },
+                // {
+                //     label: "Equipment Inspection Details",
+                //     icon: "fas fa-building",
+                //     route: "equipment-inspection-details.index",
+                //     permission: "equipment_inspection_detail_access",
+                // },
+            ],
+        },        
+        {
+            label: "Safety Management",
             icon: "fas fa-users",
             permission: "admin_panel_show",
             dropdown: [
@@ -254,12 +256,12 @@ const Sidebar = () => {
                     route: "post-incidents.index",
                     permission: "post_incident_access",
                 },
-                {
-                    label: "Post Incident Detail",
-                    icon: "fas fa-file-alt",
-                    route: "post-incident-details.index",
-                    permission: "post_incident_detail_access",
-                },
+                // {
+                //     label: "Post Incident Detail",
+                //     icon: "fas fa-file-alt",
+                //     route: "post-incident-details.index",
+                //     permission: "post_incident_detail_access",
+                // },
             ],
         },
         {
@@ -381,7 +383,12 @@ const Sidebar = () => {
                     </button>
                     {openParent === idx && (
                     <ul className="pl-6 space-y-1">
-                        {link.dropdown.map((sublink, subIdx) => (
+                        {link.dropdown.map((sublink, subIdx) => {
+                            //alert(JSON.stringify(sublink));
+                            if (sublink?.permission && !auth?.permissions?.includes(sublink.permission)) {
+                                return null;
+                            }
+                        return (
                         <li key={subIdx}>
                         <button
                           onClick={() => handleNavigation(sublink.route, sublink.param)}
@@ -391,7 +398,8 @@ const Sidebar = () => {
                           {sublink.label}
                         </button>
                         </li>
-                        ))}
+                        )
+                        })}
                     </ul>
                     )}
                 </>

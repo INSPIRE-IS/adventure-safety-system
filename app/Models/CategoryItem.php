@@ -67,7 +67,7 @@ class CategoryItem extends Model
         return $this->belongsTo(File::class, 'certificate_file_id');
     }
 
-    public function categoryDetails()
+    public function identifications()
     {
         return $this->hasMany(CategoryDetail::class, 'category_item_id');
     }

@@ -5,6 +5,7 @@ import CustomSelect1 from "@/Components/CustomSelect1";
 //import { format } from 'date-fns';
 import CustomDatePicker from "@/Components/CustomDatepicker";
 import MultiSelect from "@/Components/MultiSelect";
+import CustomInput1 from "@/Components/CustomInput1";
 
 const DrillScheduleModal = ({ auth, isOpen, onClose, mode, drillSchedule = null,site, typeActivities, typeDrills,categoryItems, periods, users }) => {
     console.log("mode", mode);
@@ -44,16 +45,6 @@ const DrillScheduleModal = ({ auth, isOpen, onClose, mode, drillSchedule = null,
         }
     }, [mode,drillSchedule]);
 
-    // useEffect(() => {
-    //     if (data.type_drill_id) {
-    //         const filteredItems = categoryItems.filter(
-    //             (item) => item.type_drill_id == data.type_drill_id
-    //         );
-    //         setFilteredCategoryItems(filteredItems);
-    //     } else {
-    //         setFilteredCategoryItems([]);
-    //     }
-    // }, [data.type_drill_id, categoryItems]);
 
     function formatDate(isoDate) {
         const date = new Date(isoDate);
@@ -74,25 +65,6 @@ const DrillScheduleModal = ({ auth, isOpen, onClose, mode, drillSchedule = null,
         console.log("data", data);
         //setData("name", e.target.value);
     };
-
-    const handleIsChecked = (check_array, check_id) => {
-        console.log("check_array", check_array);
-        console.log("check_id", check_id);
-        return Array.isArray(check_array) && check_array.includes(check_id);
-    };
-    // const handleCheckChange = (event,check_id) => {
-    //     console.log("event", event);
-    //     console.log("check_id", check_id);
-    //     const isChecked = event.target.checked;
-    //     console.log("isChecked", isChecked);
-    //     setData((prevState) => {
-    //         const updatedCategoryItems = isChecked
-    //             ? [...prevState.category_items, check_id]
-    //             : prevState.category_items.filter((id) => id !== check_id);
-        
-    //         return { ...prevState, category_items: updatedCategoryItems };
-    //     });
-    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -141,41 +113,7 @@ const DrillScheduleModal = ({ auth, isOpen, onClose, mode, drillSchedule = null,
                         error={errors.type_drill_id}
                         options={typeDrills}
                     />
-                    {/* <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">
-                        Categorys
-                        </label>
-                        <div
-                            className="mt-1 border border-gray-300 rounded-md p-2 max-h-80 w-full overflow-y-scroll flex flex-wrap gap-2"
-                        >
-                            {filteredCategoryItems?.map((category_item) => (
-                                <label
-                                    key={category_item.id}
-                                    className="flex items-center text-sm space-x-2"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        value={category_item.id}
-                                        checked={Array.isArray(data.category_items) && data.category_items.includes(category_item.id)}
-                                        onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            setData((prevState) => {
-                                                const updatedItems = isChecked
-                                                    ? [...prevState.category_items, category_item.id]
-                                                    : prevState.category_items.filter((id) => id !== category_item.id);
-                                            
-                                                return { ...prevState, category_items: updatedItems };
-                                            });
-                                            }
-                                        }
-                                        className="form-checkbox h-4 w-4 text-blue-600"
-                                        disabled={mode === "view"}
-                                    />
-                                    <span>{category_item.name}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div> */}
+                    
                     <CustomSelect1
                         label="Assessment Period (set to none to stop the cron job)"
                         name="period_id"
@@ -185,14 +123,15 @@ const DrillScheduleModal = ({ auth, isOpen, onClose, mode, drillSchedule = null,
                         error={errors.period_id}
                         options={periods}
                     /> 
-                    <CustomDatePicker 
+                    <CustomInput1
                         label="Active Date (cron job runs from this date by specified period)"
                         name="active_date"
+                        type="date"
                         value={data?.active_date}
                         mode={mode}
-                        onChange={handleChange}
+                        onChange={(e) => handleChange(e.target.name, e.target.value)}
                         error={errors.active_date}  
-                        />
+                    />
                     <CustomSelect1
                         label="User"
                         name="assigned_to_id"

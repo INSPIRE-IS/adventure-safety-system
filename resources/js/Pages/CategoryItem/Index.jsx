@@ -2,32 +2,43 @@ import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router, useForm , usePage } from "@inertiajs/react";
 import Pagination from '@/Components/Pagination';
-import CategoryItemModal from './CategoryItemModal';
+import ElementModal from './ElementModal';
 import SearchBar from '@/Components/SearchBar';
 import AddButton from '@/Components/AddButton';
+import EquipmentModal from './EquipmentModal';
 
 const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, type_bools, can, searchTerm, sortColumn, sortDirection }) => {	
     //alert(data);
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
+    console.log('data ', data);
     console.log('auth on categoryitem ', auth);
     console.log('categoryItems ', categoryItems);
     const [search, setSearch] = useState(searchTerm);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalEquipmentOpen, setIsModalEquipmentOpen] = useState(false);
+    const [isModalElementOpen, setIsModalElementOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
-    const [selectedCategoryItem, setSelectedCategoryItem] = useState(null);
+    const [selectedElementItem, setSelectedElementItem] = useState(null);
+    const [selectedEquipmentItem, setSelectedEquipmentItem] = useState(null);
 
     const handleOpenModal = (mode, categoryItem = null) => {
         console.log('mode ', mode);
         console.log('categoryitems ', categoryItem);
         setModalMode(mode);
-        setSelectedCategoryItem(categoryItem);
-        setIsModalOpen(true);
+        if(data == 1){
+            setSelectedElementItem(categoryItem);
+            setIsModalEquipmentOpen(true);            
+        }else{
+            setSelectedEquipmentItem(categoryItem);
+            setIsModalElementOpen(true);
+        }
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedCategoryItem(null);
+        setIsModalEquipmentOpen(false);
+        setIsModalElementOpen(false);
+        setSelectedElementItem(null);
+        setSelectedEquipmentItem(null);
     };
 
     const handleSearchChange = (e) => {
@@ -56,18 +67,18 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
 
     return (
         <AuthenticatedLayout user={auth.user} is_admin={auth?.is_admin}>
-            <Head title="CategoryItems" />
+            <Head title="Items" />
             <div className="container mx-auto py-6">
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                 <SearchBar search={search} handleSearchChange={(e) => handleSearchChange(e)} handleSearchSubmit={handleSearchSubmit} />
                 {can.category_item_create && (
-                <AddButton title='Add New Category Item' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
+                <AddButton title='Add New Item' icon="./images/add-icon.svg" onClick={() => handleOpenModal("create")} />
                 )}
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">Category Items <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                   
+                    <h1 className="view-header">Items <small>{auth?.team?.name ?? 'Site Name'}</small></h1>                   
                 </div>
             </header>
 
@@ -182,7 +193,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                 <Pagination links={categoryItems?.links} />
             </div>            
             {/* Modal */}
-            <CategoryItemModal
+            {/* <CategoryItemModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 mode={modalMode}
@@ -192,6 +203,26 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                 type_bools={type_bools}
                 team={auth?.team}
                 type_item={data}
+            /> */}
+            <ElementModal
+                isOpen={isModalEquipmentOpen}
+                onClose={handleCloseModal}
+                mode={modalMode}
+                categoryItem={selectedElementItem}
+                type_inspections={type_inspections}
+                teams={teams}
+                type_bools={type_bools}
+                team={auth?.team}
+                type_item={data}
+            />
+            <EquipmentModal
+                isOpen={isModalElementOpen}
+                onClose={handleCloseModal}
+                mode={modalMode}
+                equipmentItem={selectedEquipmentItem}
+                type_inspections={type_inspections}
+                type_bools={type_bools}
+                team={auth?.team}
             />
             </div>
 
