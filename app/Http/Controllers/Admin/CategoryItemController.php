@@ -29,16 +29,17 @@ class CategoryItemController extends Controller
         $user = auth()->user();
         $teamId = Session::get('team_id');
         $data = $request->get('data', '');
+        $type_items = $data == 1 ? [1, 2] : [3];
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         $categoryItems = CategoryItem::with(['site', 'type', 'certificate_recieved', 'certificate_file', 'identifications'])
             ->where('name', 'like', '%' . $searchTerm . '%')
-            ->where('type_inspection_id', '=', $data)
+            ->whereIn('type_inspection_id', $type_items)
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
-        $type_items = $data == 1 ? [1, 2] : [3];
+
         $type_inspections = TypeInspection::whereIn('id', $type_items)->select('name as label', 'id as value')->get();
         $teams = Team::select('name as label', 'id as value')->get();
         $type_bools = TypeBool::select('name as label', 'id as value')->get();

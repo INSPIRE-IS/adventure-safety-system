@@ -29,6 +29,7 @@ class InspectionScheduleController extends Controller
 
         $user = $request->user();
         $data = $request->get('data', '');
+        $type_items = $data == 1 ? [1, 2] : [3];
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
         setPermissionsTeamId($teamId);
         $searchTerm = $request->get('search', '');
@@ -36,6 +37,7 @@ class InspectionScheduleController extends Controller
         $sortDirection = $request->get('direction', 'asc');
         $inspectionSchedules = InspectionSchedule::with(['site', 'type_inspection', 'user', 'assigned_by', 'category_items'])
             ->where('name', 'like', '%' . $searchTerm . '%')
+            ->whereIn('type_inspection_id', $type_items)
             ->when($teamId, function ($query, $teamId) {
                 $query->where('site_id', $teamId); // Filter by site_id if it's provided
             })
@@ -53,7 +55,7 @@ class InspectionScheduleController extends Controller
         //dd($typeActivities);
         //$type_activities = Team::->get();
 
-        $type_items = $data == 1 ? [1, 2] : [3];
+
         $type_inspections = TypeInspection::whereIn('id', $type_items)->select('name as label', 'id as value')->get();
         //$typeInspections = TypeInspection::select('name as label', 'id as value')->where('name', '!=', 'PPE Inspections')->get();
 
@@ -115,7 +117,8 @@ class InspectionScheduleController extends Controller
         $data['active_date'] = Carbon::parse($data['active_date'])->format('Y-m-d');
         $inspectionSchedule = InspectionSchedule::create($data);
         // $inspectionSchedule->category_items()->sync($request->input('category_items', []));
-        return redirect()->route('admin.inspection-schedules.index');
+        return redirect()->back()->with('success', 'Added successfully.');
+        //return redirect()->route('admin.inspection-schedules.index');
 
         // return redirect()->route('inspection-schedules.index')
         //     ->with('message', ['info' => 'Application redirect year does not match id: ' . $inspectionSchedule->id]);
@@ -134,8 +137,8 @@ class InspectionScheduleController extends Controller
         $data['active_date'] = Carbon::parse($data['active_date'])->format('Y-m-d');
         $inspectionSchedule->update($data);
         $inspectionSchedule->category_items()->sync($request->input('category_items', []));
-
-        return redirect()->route('inspection-schedules.index');
+        return redirect()->back()->with('success', 'Added successfully.');
+        //return redirect()->route('inspection-schedules.index');
     }
 
     public function show(InspectionSchedule $inspectionSchedule)
