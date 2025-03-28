@@ -68,34 +68,35 @@ class EquipmentController extends Controller
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate($pages);
+        //dd($inspections);
 
-        $flattenedData = collect();
+        // $flattenedData = collect();
 
-        foreach ($inspections as $inspection) {
-            //dd($inspection);
-            $assigned_to = $inspection->assigned_to->name ?? 'N/A';
-            foreach ($inspection->inspection_schedule->category_items as $categoryItem) {
-                $flattenedData->push([
-                    'inspection_id' => $inspection->id,
-                    'due_date' => $inspection->due_date,
-                    'complete_date' => $inspection->complete_date,
-                    'status' => $inspection->complete_date ? 'Complete' : (now() > $inspection->due_date ? 'Overdue' : 'Upcoming'),
-                    'inspector' =>  $assigned_to,
-                    'category_item' => $categoryItem->name,
-                    'category_id' => $categoryItem->id,
-                    'created_at' => $inspection->created_at,
-                ]);
-            }
-        }
+        // foreach ($inspections as $inspection) {
+        //     //dd($inspection);
+        //     $assigned_to = $inspection->assigned_to->name ?? 'N/A';
+        //     foreach ($inspection->inspection_schedule->category_items as $categoryItem) {
+        //         $flattenedData->push([
+        //             'inspection_id' => $inspection->id,
+        //             'due_date' => $inspection->due_date,
+        //             'complete_date' => $inspection->complete_date,
+        //             'status' => $inspection->complete_date ? 'Complete' : (now() > $inspection->due_date ? 'Overdue' : 'Upcoming'),
+        //             'inspector' =>  $assigned_to,
+        //             'category_item' => $categoryItem->name,
+        //             'category_id' => $categoryItem->id,
+        //             'created_at' => $inspection->created_at,
+        //         ]);
+        //     }
+        // }
 
-        // Create a new paginator instance manually
-        $page = request('page', 1);
-        $perPage = $pages;
-        $pagedData = $flattenedData->slice(($page - 1) * $perPage, $perPage)->values();
-        $pagination = new LengthAwarePaginator($pagedData, $flattenedData->count(), $perPage, $page, [
-            'path' => request()->url(),
-            'query' => request()->query(),
-        ]);
+        // // Create a new paginator instance manually
+        // $page = request('page', 1);
+        // $perPage = $pages;
+        // $pagedData = $flattenedData->slice(($page - 1) * $perPage, $perPage)->values();
+        // $pagination = new LengthAwarePaginator($pagedData, $flattenedData->count(), $perPage, $page, [
+        //     'path' => request()->url(),
+        //     'query' => request()->query(),
+        // ]);
 
         $sites = Team::select('name as label', 'id as value')->get();
         $typeInspections = TypeInspection::select('name as label', 'id as value')->get();
@@ -141,7 +142,8 @@ class EquipmentController extends Controller
         //dd($pagination);
         /** @disregard P1013 */
         return Inertia::render('Equipment/Index', [
-            'inspections' => $pagination,
+            //'inspections' => $pagination,
+            'inspections' => $inspections,
             'sites' => $sites,
             'typeInspections' => $typeInspections,
             'categoryItems' => $categoryItems,
@@ -188,14 +190,14 @@ class EquipmentController extends Controller
 
         $inspection_id = request('inspection_id');
         //dd($inspection_id);
-        $category_id = request('category_id');
+        //$category_id = request('category_id');
         $user = auth()->user();
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
         $inspection = Inspection::where('id', $inspection_id)->with('assigned_to:id,name,surname')->first();
-        $category_item = CategoryItem::where('id', $category_id)->first();
+        //$category_items = CategoryItem::where('id', $category_id)->first();
         //dd($category_item);
         $inspection_details = EquipmentInspectionDetail::where('inspection_id', $inspection_id)
-            ->where('category_item_id', $category_id)
+            // ->where('category_item_id', $category_id)
             ->with([
                 'category_item:id,name',
                 'category_detail'
@@ -214,18 +216,15 @@ class EquipmentController extends Controller
         return Inertia::render('Equipment/Show', [
             'inspection' => $inspection,
             'inspection_details' => $inspection_details,
-            'category_item' => $category_item,
+            //'category_items' => $category_items,
             'users' => $users,
-            'category_id' => $category_id,
+            // 'category_id' => $category_id,
             'inspection_id' => $inspection_id,
             'can' => [
-                'inspection_show' => auth()->user()->can('inspection_show'),
-                'inspection_edit' => false, //auth()->user()->can('inspection_edit'),
-                'inspection_delete' => false, //auth()->user()->can('inspection_delete'),
-                'inspection_create' => false, //auth()->user()->can('inspection_create'),
-                'inspection_edit_reminder' => true, //auth()->user()->can('inspection_create'),
-                'inspection_edit_inspector' => true, //auth()->user()->can('inspection_create'),
-                'inspection_edit_date' => true, //auth()->user()->can('inspection_create'),
+                'equipment_replace_new' => auth()->user()->can('equipment_replace_new'),
+                'inspection_edit_reminder' => auth()->user()->can('inspection_edit_reminder'),
+                'inspection_edit_inspector' => auth()->user()->can('inspection_edit_inspector'),
+                'inspection_edit_date' => auth()->user()->can('inspection_edit_date'),
             ],
         ]);
     }

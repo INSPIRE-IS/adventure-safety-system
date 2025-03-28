@@ -30,25 +30,60 @@ useEffect(() => {
 
 
 
+// function processInspectionData(insData) {
+//     let count = 0;
+//     let allImages = [];
+
+//     insData.forEach(item => {
+//         // Count non-null conditions
+//         if (item.condition !== null || item.files.length > 0) {
+//             count++;
+//         }
+
+//         // Collect all images
+//         if (item.files && Array.isArray(item.files)) {
+//             allImages.push(...item.files.map(file => file));
+//         }
+//     });
+
+//     return { count, issues, allImages };
+// }
 function processInspectionData(insData) {
-    let count = 0;
-    let allImages = [];
+    let groupedData = {};
 
     insData.forEach(item => {
-        // Count non-null conditions
-        if (item.condition !== null) {
-            count++;
+        const categoryName = item.category_item.name; // Group by category name
+        const categoryDetailName = item.category_detail.name; // Include category detail name
+
+        if (!groupedData[categoryName]) {
+            groupedData[categoryName] = {
+                category_name: categoryName,
+                issues: [],
+                count: 0
+            };
         }
 
-        // Collect all images
-        if (item.files && Array.isArray(item.files)) {
-            allImages.push(...item.files.map(file => file));
+        if (item.condition !== null || (item.files && item.files.length > 0)) {
+            groupedData[categoryName].count++;
+            groupedData[categoryName].issues.push({
+                category_detail_name: categoryDetailName,
+                condition: item.condition,
+                files: item.files.map(file => ({
+                    id: file.id,
+                    file_name: file.file_name,
+                    file_type: file.file_type,
+                    path: file.path,
+                    created_at: file.created_at
+                }))
+            });
         }
     });
 
-    return { count, allImages };
+    return Object.values(groupedData); // Convert object back to an array
 }
 const result = processInspectionData(inspection_details);
+console.log('result', result);
+console.log('inspection_details', inspection_details);
 
 
 const handleOpenManageModal = (mode) => {
@@ -121,7 +156,7 @@ const handleCloseModal = () => {
                 <div className=" pl-[40px] pr-[32px] pt-5 rounded-3xl bg-white">
                     <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6'>
                         <div className="pt-[49px]  pb-[32px] ">               
-                            <h3 className="label-alt-header-3">{inspection_details?.[0]?.category_item?.name}</h3>                    
+                            <h3 className="label-alt-header-3">Inspection #: {inspection.id}</h3>                    
                         </div>
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-start gap-4 mb-6">
                         <EditButton title='Mark as Resolved' width="w-[254px]" height="h-[52px]"  onClick={handleResolveIssue} />
@@ -153,14 +188,32 @@ const handleCloseModal = () => {
                                 </div>
 
                                 {/* Right Section (2/3) */}
-                                <div className="col-span-2 mt-6 grid grid-cols-3 gap-2 justify-end">
-                                    {result.allImages.map((img, index) => (
-                                        <img 
-                                            key={index} 
-                                            src={img?.path} 
-                                            alt={img?.file_name} 
-                                            className="rounded-lg object-cover h-48 w-48" 
-                                        />
+                                <div className="col-span-2 mt-6 mb-6  gap-2 justify-end">
+                                    {result?.map((category, categoryIndex) => (
+                                        <div key={categoryIndex} className="flex flex-col gap-4">
+                                            {/* Category Name Header */}
+                                            <h2 className="text-xl font-semibold">Element Name: {category.category_name} <small>issues: {category.count}</small></h2>
+                                            
+                                            {/* Iterate Over Issues Inside Each Category */}
+                                            {category.issues.map((issue, issueIndex) => (
+                                                <div key={issueIndex} className="flex flex-col gap-2 border-b p-4 rounded-lg shadow-sm">
+                                                    <p className="label-header-4">Reference #: {issue.category_detail_name}</p>
+                                                    <p className="label-comment-text">Condition: {issue.condition ?? 'none specified'}</p>
+                                                    
+                                                    {/* Display Images */}
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        {issue.files?.map((file, fileIndex) => (
+                                                            <img 
+                                                                key={fileIndex} 
+                                                                src={file?.path} 
+                                                                alt={file?.file_name} 
+                                                                className="rounded-lg object-cover h-48 w-48" 
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     ))}
                                 </div>
                             </div>

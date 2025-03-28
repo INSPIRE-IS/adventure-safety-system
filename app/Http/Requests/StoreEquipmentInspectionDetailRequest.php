@@ -14,6 +14,7 @@ class StoreEquipmentInspectionDetailRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // todo: check if user has permission to create equipment inspection detail
         // return Gate::allows('equipment_inspection_detail_create');
         /** @disregard P1013 */
         return true; // auth()->user()->can('equipment_inspection_detail_create');

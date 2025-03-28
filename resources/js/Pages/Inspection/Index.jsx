@@ -209,7 +209,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPer
                                 </button>
                             </th>
                             <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
-                            Equipment
+                            Inspection
                             </th>
                             <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
                             Assigned to
@@ -271,13 +271,13 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPer
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
                                     <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                    <div className="w-full table-text1 ">{inspection.category_item}</div>                                        
-                                    <div className="w-full table-text1 ">Description</div>                                        
+                                    <div className="w-full table-text1 "># {inspection.id}</div>                                        
+                                    {/* <div className="w-full table-text1 ">Description</div>*/}
                                     </div>
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
                                     <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full table-text1 ">{inspection.inspector}</div>                                        
+                                            <div className="w-full table-text1 ">{inspection?.assigned_to?.name}</div>                                        
                                     </div>
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
@@ -310,7 +310,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPer
                                         // >
                                         //     <img src="./images/view-icon.svg" alt="View" width={48} height={48} />
                                         // </button>  
-                                        <button onClick={() => router.get(route('inspections.show', inspection.inspection_id), {category: inspection.category_id})} className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                                        <button onClick={() => router.get(route('inspections.show', inspection.id))} className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
                                             <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Job Card</div>
                                         </button>                                      
                                     )}

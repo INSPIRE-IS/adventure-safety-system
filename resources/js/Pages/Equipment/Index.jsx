@@ -267,17 +267,15 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, periodFilters, se
                         </svg>
                                 
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
-                                    
-                                    <div className="w-[180px] h-[49px] flex-col justify-start text-start gap-[9px] inline-flex  border-r border-gray-300 ">
-                                        <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.category_item}</div>
-                                        <div className="w-full text-[#808191] text-[11px] font-normal font-['Manrope'] leading-[18px]">Description</div>                              
+                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                    <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                                    <div className="w-full table-text1 "># {inspection.id}</div>                                        
+                                    {/* <div className="w-full table-text1 ">Description</div>*/}
                                     </div>
-                                        {/* <div className="w-[50px] h-[0px] origin-top-left -rotate-90 border border-[#cecece]"></div>  */}
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-center justify-start   table-text1   ">
                                     <div className="w-[175px] h-[49px] flex-col justify-center text-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.inspector}</div>                                        
+                                            <div className="w-full text-[#11142d] text-base font-semibold font-['Manrope']">{inspection.assigned_to.name}</div>                                        
                                     </div>
                                 </td>
 
@@ -308,10 +306,10 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm, periodFilters, se
                                         // >
                                         //     <img src="./images/view-icon.svg" alt="View" width={48} height={48} />
                                         // </button>  
-                                        <div onClick={() => router.get(route('equipments.show', inspection.inspection_id), {inspection_id:inspection.inspection_id,category_id: inspection.category_id})}
+                                        <div onClick={() => router.get(route('equipments.show', inspection.id), {inspection_id:inspection.id})}
                                         className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
                                             <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">View Report</div>
-                                        </div>                                      
+                                        </div>                                   
                                     )}
                                     {can.inspection_edit && (
                                         <button
