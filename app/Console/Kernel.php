@@ -21,9 +21,12 @@ class Kernel extends ConsoleKernel
         //     $schedule->command('tasks:create-scheduled')->lastDayOfMonth('00:00')->hourly()->withoutOverlapping();
         // }
 
-        $schedule->command('tasks:create-inspection-scheduled')->dailyAt('06:00')->withoutOverlapping();
-        $schedule->command('tasks:create-drill-scheduled')->dailyAt('06:00')->withoutOverlapping();
-        $schedule->command('tasks:create-post-incident-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        // $schedule->command('tasks:create-inspection-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        // $schedule->command('tasks:create-drill-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        // $schedule->command('tasks:create-post-incident-scheduled')->dailyAt('06:00')->withoutOverlapping();
+        $schedule->command('tasks:create-inspection-scheduled')->everyFiveMinutes()->withoutOverlapping();
+        $schedule->command('tasks:create-drill-scheduled')->everyFiveMinutes()->withoutOverlapping();
+        $schedule->command('tasks:create-post-incident-scheduled')->everyFiveMinutes()->withoutOverlapping();
     }
 
     /**
