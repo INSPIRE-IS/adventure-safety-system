@@ -165,7 +165,7 @@ class HomeApiController extends Controller
         $typeInspectionId = 1;
 
         $safety_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
+            ->with('identifications:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();
@@ -174,7 +174,7 @@ class HomeApiController extends Controller
         $typeInspectionId = 2;
 
         $annual_safety_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
+            ->with('identifications:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();
@@ -183,7 +183,7 @@ class HomeApiController extends Controller
         $typeInspectionId = 3;
 
         $equipment_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
-            ->with('categoryDetails:id,name,category_item_id,in_use_date,out_use_date')
+            ->with('identifications:id,name,category_item_id,in_use_date,out_use_date')
             ->where('site_id', $teamId)
             ->where('type_inspection_id', $typeInspectionId)
             ->get();

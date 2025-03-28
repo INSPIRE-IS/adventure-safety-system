@@ -14,6 +14,7 @@ class StoreIncidentRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // todo: check if user has permission to create incident
         // return Gate::allows('incident_create');
         /** @disregard P1013 */
         return true; // auth()->user()->can('incident_create');
