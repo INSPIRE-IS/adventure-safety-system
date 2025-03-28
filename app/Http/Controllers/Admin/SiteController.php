@@ -47,7 +47,7 @@ class SiteController extends Controller
 
         $typeActivities = TypeActivity::select('name', 'id')->get();
         //dd($typeActivities);
-        //$site  = Team::where('owner_id', auth()->user()->id)->first();
+        //$site  = Team::where('director_id', auth()->user()->id)->first();
         //$roles = Role::get(['id', 'title']);
         //$users = User::where('team_id', $site->id)->get();
         /** @disregard P1013 */
@@ -95,10 +95,10 @@ class SiteController extends Controller
         })->get(); // Get all users with the "author" role      
         $directorUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'director');
-        })->get(); // Get all users with the "owner" role   
+        })->get(); // Get all users with the "director" role   
         $managerUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'manager');
-        })->get(); // Get all users with the "owner" role  
+        })->get(); // Get all users with the "director" role  
 
 
         // now we update the team id to assign the new team to these users or no one will be able to see the new team

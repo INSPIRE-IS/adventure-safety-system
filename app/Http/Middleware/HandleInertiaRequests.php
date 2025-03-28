@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
             if ($team_id == null) {
                 // $team = Team::find($teamId);
                 Log::info('update team id inertia: ' . $team_id);
-                //$is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'owner']);
+                //$is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
                 $team_id = optional($user)->teams->first()->id ?? 0;
                 // if ($team_id == 0 && $is_admin) {
                 //     $team_id = 1;
@@ -94,7 +94,7 @@ class HandleInertiaRequests extends Middleware
             $team = Team::find($team_id); // with('type_activities')->
             $alerts = $user->userAlerts;
             //dd($alerts);
-            $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'owner']);
+            $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
             //dd($team);
             if ($user->isAdminOfTeam(1) || $user->id === 2) {
                 //setPermissionsTeamId(2);
