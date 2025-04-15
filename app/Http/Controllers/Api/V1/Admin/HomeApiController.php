@@ -135,15 +135,19 @@ class HomeApiController extends Controller
             //->whereBetween('drills.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
 
-        $user_alerts = UserAlert::select('id', 'alert_text', 'alert_link', 'alert_param_id')->with([
-            'users:id,name',
-            'users.teams:id,name'
-        ])
-            ->whereHas('users', function ($query) use ($teamId) {
-                $query->whereHas('teams', function ($subQuery) use ($teamId) {
-                    $subQuery->where('team_id', $teamId);
-                });
-            })->get();
+        $user_alerts = UserAlert::select('user_alerts.id', 'alert_text', 'alert_link', 'alert_param_id')
+            ->join('user_user_alert', 'user_alerts.id', '=', 'user_user_alert.user_alert_id')
+            ->join('users', 'users.id', '=', 'user_user_alert.user_id')
+            ->join('team_user', 'users.id', '=', 'team_user.user_id')
+            ->where('user_user_alert.user_id', $userId)
+            ->where('user_user_alert.read', 0)
+            ->where('team_user.team_id', $teamId)
+            ->with([
+                'users:id,name',
+                'users.teams:id,name',
+            ])
+            ->distinct()
+            ->get();
 
 
         return new HomeResource(compact(

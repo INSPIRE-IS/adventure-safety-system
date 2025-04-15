@@ -126,12 +126,15 @@ class CreateInspectionScheduledTasks extends Command
                     SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
                 }
             }
-            $userAlert = UserAlert::create([
-                'alert_text' => $notification,
-                'alert_link' => $alert_link,
-                'alert_param_id' => $inspection->id,
-            ]);
-            $userAlert->users()->sync($users);
+            $userAlert = UserAlert::firstOrCreate(
+                ['alert_param_id' => $inspection->id],
+                [
+                    'alert_text' => $notification,
+                    'alert_link' => $alert_link,
+                ]
+            );
+
+            $userAlert->users()->syncWithoutDetaching($users);
 
             $this->info('inspection: ' . $inspection->id);
         }

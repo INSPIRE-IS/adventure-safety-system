@@ -118,6 +118,16 @@ class CreatePostIncidentScheduledTasks extends Command
             ]);
             $userAlert->users()->sync($users);
 
+            $userAlert = UserAlert::firstOrCreate(
+                ['alert_param_id' => $postincident->id],
+                [
+                    'alert_text' => $notification,
+                    'alert_link' => '/(post_incident)',
+                ]
+            );
+
+            $userAlert->users()->syncWithoutDetaching($users);
+
             $this->info('postincident: ' . $postincident->id);
         }
 

@@ -123,13 +123,15 @@ class CreateDrillScheduledTasks extends Command
                     }
                 }
                 // the alert link is set as menu names in app do not change it will break
-                $userAlert = UserAlert::create([
-                    'alert_text' => $notification,
-                    'alert_link' => '/(rescue)',
-                    'alert_param_id' => $drill->id,
-                ]);
-                $this->info('userAlert: ' . $userAlert->id);
-                $userAlert->users()->sync($users);
+                $userAlert = UserAlert::firstOrCreate(
+                    ['alert_param_id' => $drill->id],
+                    [
+                        'alert_text' => $notification,
+                        'alert_link' => '/(rescue)',
+                    ]
+                );
+
+                $userAlert->users()->syncWithoutDetaching($users);
             } catch (\Exception $e) {
 
                 Log::error("Error sending message to {$drill->assigned_to_id}: " . $e->getMessage());
