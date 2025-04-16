@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Str;
 use Symfony\Component\HttpFoundation\Response;
+use App\Jobs\ProcessUploadedFile;
+use Illuminate\Support\Facades\Auth;
 
 class FilesApiController extends Controller
 {
@@ -23,6 +25,19 @@ class FilesApiController extends Controller
     }
 
     public function store(StoreFileRequest $request)
+    {
+        $data = $request->all();
+        $siteId = auth()->user()->teams->first()->id;
+
+        // Dispatch the job instead of processing now
+        dispatch(new ProcessUploadedFile($data, auth()->id(), $siteId));
+
+        return response()->json([
+            'message' => 'File upload queued successfully',
+        ], 202);
+    }
+
+    public function storeOld(StoreFileRequest $request)
     {
         $data = $request->all();
 

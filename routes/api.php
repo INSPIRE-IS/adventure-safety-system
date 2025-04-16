@@ -56,7 +56,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin'], 
 // });
 
 // , 'namespace' => 'Api\V1\Admin'
-Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']], function () {
+Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum', 'throttle:sync-heavy']], function () {
     // Team
     // Route::post('teams/media', 'TeamApiController@storeMedia')->name('teams.storeMedia');
     Route::apiResource('teams', TeamApiController::class)->except(['create', 'edit']);
