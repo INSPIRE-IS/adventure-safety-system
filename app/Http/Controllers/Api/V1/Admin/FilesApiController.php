@@ -26,11 +26,25 @@ class FilesApiController extends Controller
 
     public function store(StoreFileRequest $request)
     {
-        $data = $request->all();
+        $userId = auth()->id();
         $siteId = auth()->user()->teams->first()->id;
 
-        // Dispatch the job instead of processing now
-        dispatch(new ProcessUploadedFile($data, auth()->id(), $siteId));
+        $uploadedFile = $request->file('file');
+        $fileName = $request->input('file_name') ?? $uploadedFile->getClientOriginalName();
+        $storagePath = $uploadedFile->storeAs('images', $fileName, 'public');
+        $fileUrl = Storage::url($storagePath);
+
+        // Build file metadata for the job
+        $data = [
+            'file_name' => $fileName,
+            'file_type' => $request->input('file_type'),
+            'path' => $fileUrl,
+            'table_name' => $request->input('table_name'),
+            'table_row_id' => $request->input('table_row_id'),
+            'type_file_id' => $request->input('type_file_id'),
+        ];
+
+        dispatch(new ProcessUploadedFile($data, $userId, $siteId));
 
         return response()->json([
             'message' => 'File upload queued successfully',
