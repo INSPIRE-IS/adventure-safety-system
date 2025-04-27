@@ -117,7 +117,7 @@ class InspectionScheduleController extends Controller
         $data = $request->all();
         $data['active_date'] = Carbon::parse($data['active_date'])->format('Y-m-d');
         $inspectionSchedule = InspectionSchedule::create($data);
-        // $inspectionSchedule->category_items()->sync($request->input('category_items', []));
+        //$inspectionSchedule->category_items()->sync($request->input('category_items', []));
         return redirect()->back()->with('success', 'Added successfully.');
         //return redirect()->route('admin.inspection-schedules.index');
 
@@ -137,7 +137,7 @@ class InspectionScheduleController extends Controller
         $data = $request->all();
         $data['active_date'] = Carbon::parse($data['active_date'])->format('Y-m-d');
         $inspectionSchedule->update($data);
-        $inspectionSchedule->category_items()->sync($request->input('category_items', []));
+        //$inspectionSchedule->category_items()->sync($request->input('category_items', []));
         return redirect()->back()->with('success', 'Added successfully.');
         //return redirect()->route('inspection-schedules.index');
     }

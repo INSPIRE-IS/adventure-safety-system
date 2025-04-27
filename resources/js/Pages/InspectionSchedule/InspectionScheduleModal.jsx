@@ -18,7 +18,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
         name: "",
         site_id: auth?.team?.id,        
         type_inspection_id: type_id,   
-        category_items: [],
+        category_items: categoryItems.map((category_item) => category_item.id) || [],
         period_id: "",
         active_date: "",
         assigned_by_id: auth?.user?.id,
@@ -103,6 +103,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("data", data);
+        //return;
         if (mode === "create") {
             post(route("inspection-schedules.store"), {
 

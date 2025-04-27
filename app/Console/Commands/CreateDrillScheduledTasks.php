@@ -45,11 +45,13 @@ class CreateDrillScheduledTasks extends Command
         // Define the period mappings (from 'period_id' => 'description')
         $periods = [
             1 => 'None',
-            2 => '3 Month',
-            3 => '4 Month',
-            4 => '6 Month',
-            5 => '12 Month'
+            2 => 'Monthly',
+            3 => 'Bi-Monthly', // (every 2 months)
+            4 => 'Quarterly', // (every 3 months)
+            5 => 'Semi-Annually', // (every 6 months)
+            6 => 'Annually'
         ];
+
 
         // Fetch all DrillSchedules for today with the same month and day
         $drillSchedules = DrillSchedule::whereMonth('active_date', $today->month)
