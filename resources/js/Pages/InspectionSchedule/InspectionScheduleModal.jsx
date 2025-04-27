@@ -7,15 +7,17 @@ import CustomDatePicker from "@/Components/CustomDatepicker";
 import MultiSelect from "@/Components/MultiSelect";
 import CustomInput1 from "@/Components/CustomInput1";
 
-const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedule = null,site, typeActivities, typeInspections,categoryItems, periods, users }) => {
+const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedule = null,site, typeActivities, typeInspections,categoryItems, periods, users, type_id }) => {
     console.log("mode", mode);
+    console.log("type_id", type_id);
     //console.log("inspectionSchedule", inspectionSchedule);
     const [filteredCategoryItems, setFilteredCategoryItems] = useState([]);
+    const [type, setType] = useState([]);
 
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
         site_id: auth?.team?.id,        
-        type_inspection_id: "",   
+        type_inspection_id: type_id,   
         category_items: [],
         period_id: "",
         active_date: "",
@@ -24,6 +26,11 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
 
     });
     useEffect(() => {
+       if (type_id) {
+            const name = type_id == 1 ? 'Safety' : 'PPE';
+
+            setType(name);
+        }
         if (inspectionSchedule && mode !== "create") {
             setData({
                 name: inspectionSchedule.name || "",
@@ -41,7 +48,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
             //     name: auth?.team?.name || "",
             // });
         }
-    }, [mode,inspectionSchedule]);
+    }, [mode,inspectionSchedule,type_id]);
 
     useEffect(() => {
         if (data.type_inspection_id) {
@@ -114,9 +121,9 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                 <h2 className="text-xl font-bold mb-4">
-                    {mode === "create" && "Create Inspection Schedule"}
-                    {mode === "edit" && "Edit Inspection Schedule"}
-                    {mode === "view" && "View Inspection Schedule"}
+                    {mode === "create" && "Create " + type + " Inspection Schedule"}
+                    {mode === "edit" && "Edit " + type + " Inspection Schedule"}
+                    {mode === "view" && "View " + type + " Inspection Schedule"}
                 </h2>
                 <form onSubmit={handleSubmit}>               
                     <label className="block text-lg font-semibold mb-4">
@@ -131,7 +138,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
                         error={errors.name}
                         options={typeActivities}
                     />
-                    <CustomSelect1
+                    {/* <CustomSelect1
                         label="Type Inspection"
                         name="type_inspection_id"
                         value={data?.type_inspection_id}
@@ -174,7 +181,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
                                 </label>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
                     <CustomSelect1
                         label="Assessment Period (set to none to stop the cron job)"
                         name="period_id"

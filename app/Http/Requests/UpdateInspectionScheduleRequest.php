@@ -42,13 +42,13 @@ class UpdateInspectionScheduleRequest extends FormRequest
                 'required',
                 //'date_format:' . config('panel.date_format'),
             ],
-            'category_items.*' => [
-                'integer',
-            ],
-            'category_items' => [
-                'required',
-                'array',
-            ],
+            // 'category_items.*' => [
+            //     'integer',
+            // ],
+            // 'category_items' => [
+            //     'required',
+            //     'array',
+            // ],
         ];
     }
 }

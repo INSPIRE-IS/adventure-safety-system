@@ -24,10 +24,11 @@ class InspectionSchedule extends Model
 
     public const PERIOD_SELECT = [
         '1' => 'None',
-        '2' => '3 Month',
-        '3' => '4 Month',
-        '4' => '6 Month',
-        '5' => '12 Month',
+        '2' => 'Monthly',
+        '2' => 'Bi-Monthly', // (every 2 months)
+        '3' => 'Quarterly', // (every 3 months)
+        '4' => 'Semi-Annually', // (every 6 months)
+        '5' => 'Annually',
     ];
 
     protected $fillable = [

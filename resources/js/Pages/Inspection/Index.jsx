@@ -236,7 +236,7 @@ const InspectionsIndex = ({auth, inspections, can, searchTerm,periods, searchPer
 
 
                         return(
-                            <tr key={inspection.inspection_id + "-" + inspection.category_id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
+                            <tr key={inspection.id + "-" + inspection.inspection_id + "-" + inspection.category_id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1  ">
                                 <svg
                             onClick={() => handleChecked(inspection.inspection_id, inspection.category_id)}

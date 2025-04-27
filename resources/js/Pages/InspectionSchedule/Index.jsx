@@ -17,11 +17,12 @@ import AddButton from '@/Components/AddButton';
 //     { value: "2", label: "Yes" },
 //   ];
 
-const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, sortColumn, sortDirection, sites,typeActivities,periods, typeInspections, categoryItems, users }) => {
+const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, sortColumn, sortDirection, sites,typeActivities,periods, typeInspections, categoryItems, users, type_id }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on inspectionSchedules ', auth);
     console.log('inspectionSchedules ', inspectionSchedules);
+    //console.log('type_id ', type_id);
     const [search, setSearch] = useState(searchTerm);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
@@ -178,6 +179,7 @@ const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, s
                 categoryItems={categoryItems}
                 periods={periods}
                 users={users}
+                type_id={type_id}
             />
             </div>
 

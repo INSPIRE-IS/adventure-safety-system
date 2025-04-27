@@ -29,6 +29,7 @@ class InspectionScheduleController extends Controller
 
         $user = $request->user();
         $data = $request->get('data', '');
+        //dd($data);
         $type_items = $data == 1 ? [1, 2] : [3];
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
         setPermissionsTeamId($teamId);
@@ -96,7 +97,7 @@ class InspectionScheduleController extends Controller
             'typeInspections' => $type_inspections,
             'categoryItems' => $categoryItems,
             'users' => $users,
-            'data' => $data,
+            'type_id' => $data,
             'searchTerm' => $searchTerm,
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
