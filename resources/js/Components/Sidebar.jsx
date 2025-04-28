@@ -97,12 +97,12 @@ const Sidebar = () => {
                     route: "type-bools.index",
                     permission: "type_bool_access",
                 },
-                {
-                    label: "Type Inspections",
-                    icon: "fas fa-file-signature",
-                    route: "type-inspections.index",
-                    permission: "type_inspection_access",
-                },
+                // {
+                //     label: "Type Inspections",
+                //     icon: "fas fa-file-signature",
+                //     route: "type-inspections.index",
+                //     permission: "type_inspection_access",
+                // },
                 {
                     label: "Element Items",
                     icon: "fas fa-user",

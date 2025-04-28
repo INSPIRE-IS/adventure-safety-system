@@ -14,7 +14,7 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
     const currentImage = categoryItem?.path; 
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
-        type_inspection_id: "",        
+        type_inspection_id: 1,//"",        
         site_id: team?.id,
         in_use_date: new Date().toISOString().split("T")[0],
         out_use_date: "",
@@ -136,6 +136,7 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
                         handleChange={handleChange}
                         errors={errors}
                     />
+                    {/* we are now choosing a period for safety inspection so monthly annually items are by site so they are all inspected
                     <CustomSelect1
                         label="Type"
                         name="type_inspection_id"
@@ -145,7 +146,7 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
                         error={errors.type_inspection_id}
                         options={type_inspections}
                     />
-
+                    */}
                                         {/* Identification Section */}
                     <div className="mt-4 mb-4">
                         <label className="block input-header">
