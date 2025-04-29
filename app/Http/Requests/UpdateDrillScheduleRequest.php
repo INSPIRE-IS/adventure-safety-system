@@ -38,18 +38,18 @@ class UpdateDrillScheduleRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'period' => [
+            'period_id' => [
                 'required',
             ],
             'active_date' => [
                 'required',
-                'date_format:' . config('panel.date_format'),
+                // 'date_format:' . config('panel.date_format'),
             ],
             'assigned_to_id' => [
                 'required',
                 'integer',
             ],
-            'drill_id' => [
+            'type_activity_id' => [
                 'required',
                 'integer',
             ],
