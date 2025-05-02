@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -15,6 +16,7 @@ class AuthController extends Controller
 
         // Simulating login logic
         $credentials = $request->only('email', 'password');
+        Log::info('credentials: ' . $credentials);
 
         if (Auth::attempt($credentials)) { // $credentials['email'] === 'super@super.com' && $credentials['password'] === 'password'
 
