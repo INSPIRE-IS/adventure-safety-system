@@ -10,6 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+
+    public function test(Request $request)
+    {
+        Log::info('test');
+        return response()->json(['message' => 'Test route working!'], 200);
+    }
+
     // Login method
     public function login(Request $request)
     {
@@ -32,7 +39,7 @@ class AuthController extends Controller
                     'location' => $team->location,
                     'activities' => $team->type_activities->select('id', 'name'), // Only include activity names
                 ];
-            });
+            })->Limit(1);
             $roles = $user->roles->map(function ($role) {
                 return [
                     'id' => $role->id,

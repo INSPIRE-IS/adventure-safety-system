@@ -35,9 +35,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/v1/test', function () {
-    return response()->json(['message' => 'Test route working!']);
-});
+Route::get('/v1/test', [AuthController::class, 'test'])->name('test');
+// Route::get('/v1/test', function () {
+//     return response()->json(['message' => 'Test route working!']);
+// });
 
 
 
