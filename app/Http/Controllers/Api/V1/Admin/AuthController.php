@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         // Simulating login logic
         $credentials = $request->only('email', 'password');
-        Log::info('credentials: ' . $credentials);
+        Log::info('credentials: ', $credentials);
 
         if (Auth::attempt($credentials)) { // $credentials['email'] === 'super@super.com' && $credentials['password'] === 'password'
 
@@ -39,7 +39,7 @@ class AuthController extends Controller
                     'location' => $team->location,
                     'activities' => $team->type_activities->select('id', 'name'), // Only include activity names
                 ];
-            })->Limit(1);
+            })->take(1);
             $roles = $user->roles->map(function ($role) {
                 return [
                     'id' => $role->id,
