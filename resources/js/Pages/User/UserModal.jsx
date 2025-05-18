@@ -150,7 +150,7 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) =
                             ))}
                         </div>
                     </div> */}
-                    {/* <div className="mb-4">
+                    {/**/} <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
                             Teams
                         </label>
@@ -184,7 +184,7 @@ const UserModal = ({ isOpen, onClose, mode, user = null, roles, teams, team }) =
                                 </label>
                             ))}
                         </div>
-                    </div> */}
+                    </div> 
                     {/* <CustomCheckbox
                         label="Is Admin"
                         name="is_admin"
