@@ -27,7 +27,7 @@ class InspectionSchedule extends Model
         '2' => 'Monthly',
         '3' => 'Bi-Monthly', // (every 2 months)
         '4' => 'Quarterly', // (every 3 months)
-        '5' => 'Semi-Annually', // (every 6 months)
+        '5' => '6 Monthly', // (every 6 months)
         '6' => 'Annually',
     ];
 
