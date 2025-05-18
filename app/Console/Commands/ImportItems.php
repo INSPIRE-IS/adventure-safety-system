@@ -23,8 +23,12 @@ class ImportItems extends Command
     // The handle method will contain the logic to perform when the command is executed
     public function handle()
     {
-        // Define the array with item names and related details
-        $itemsData = [
+        $type_inspection_id = 1;
+        $site_id = 2;
+        $certificate_recieved_id = 2;
+
+        // Define the array with item names and related details 33 194
+        $itemsData1 = [
             [
                 'item_name' => 'Wobbly Walkway',
                 'details' => ['Pole', 'Platform', 'Combi Rope', 'Decking', 'Belay System', 'Spreader bars', 'Rigging']
@@ -158,22 +162,511 @@ class ImportItems extends Command
                 'details' => ['Pole', 'Platform', 'Combi Rope', 'Stay Cables and Anchor Points', 'Belay System', 'Exit Staircase']
             ]
         ];
+        // 40 264
+        $itemsData = [
+            [
+                "item_name" => "Decline catwalk",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Steel pipe",
+                    "Belay System",
+                    "Spreader bars"
+                ]
+            ],
+            [
+                "item_name" => "1st Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zipline cable",
+                    "Stays and anchors",
+                    "Belay System"
+                ]
+            ],
+            [
+                "item_name" => "Swinging Platform",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Swinging Platforms",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Vertical net",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Poles",
+                    "Belay System",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Burma log",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Log",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "2nd Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zipline cable",
+                    "Belay System",
+                    "Stays and achors"
+                ]
+            ],
+            [
+                "item_name" => "Burma Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Plank Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Rigging",
+                    "Belay System",
+                    "Stay Cables and Anchors",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "3rd Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zipline cable",
+                    "Stays and anchors",
+                    "Belay System"
+                ]
+            ],
+            [
+                "item_name" => "Multi vines",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Foot cable",
+                    "Belay System",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Flat platform",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Decking",
+                    "Stay Cables and Anchors",
+                    "Belay System"
+                ]
+            ],
+            [
+                "item_name" => "Cat walk",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Belay System",
+                    "Spreader bar",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "River raft",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Belay System",
+                    "Rigging",
+                    "Round small poles",
+                    "Spreader bar",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Train tracks",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Tree",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Mine charts",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Decking",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Spreader bars",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Organ pipes",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Stay cables and anchors",
+                    "Logs",
+                    "Spreader bars",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "4th Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Stays and anchors",
+                    "Zipline Cable",
+                    "Belay System"
+                ]
+            ],
+            [
+                "item_name" => "Step across",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Stays and anchors",
+                    "Belay System",
+                    "Spreader bar",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Mixed Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Logs",
+                    "Belay System",
+                    "Spreader Bar",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => " 5th Zip Line",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zip Line Cable",
+                    "Stay Cables and Anchors",
+                    "Belay System"
+                ]
+            ],
+            [
+                "item_name" => "Indi Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Stays and anchors",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Loops postmans walk",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Foot cable",
+                    "Belay System",
+                    "Stepladder",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => " Swinging Tyres",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Tyres",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Spider net",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Spreader bar",
+                    "Belay System",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "6th Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Spreader bars",
+                    "Belay System",
+                    "Zipline cable",
+                    "Stays and anchors"
+                ]
+            ],
+            [
+                "item_name" => "Zig zag",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Timber",
+                    "Belay System",
+                    "Rigging",
+                    "Spreader bars",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Snake Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Snake Bridge",
+                    "Belay System",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Burma Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Rigging",
+                    "Belay System",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "7th Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Stays and anchors",
+                    "Zipline cable",
+                    "Belay System",
+                    "Spreader bars"
+                ]
+            ],
+            [
+                "item_name" => "Hanging logs",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Logs",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Walking deck",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Decking wood",
+                    "Belay System",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Burma logs",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Logs",
+                    "Belay System",
+                    "Spreader bars",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Chop sticks",
+                "details" => [
+                    "Poles",
+                    "Platform",
+                    "Combi Rope",
+                    "Spreader bars",
+                    "Belay System",
+                    "Rigging",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "8th Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zipline cable",
+                    "Stays and anchors",
+                    "Belay system"
+                ]
+            ],
+            [
+                "item_name" => "Indi Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Combi Rope",
+                    "Stays and anchors",
+                    "Belay System",
+                    "Spreader bars",
+                    "Rigging"
+                ]
+            ],
+            [
+                "item_name" => "9th Zipline",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Zipline cable",
+                    "Stays and anchors",
+                    "Rigging",
+                    "Belay system",
+                    "Spreader bars"
+                ]
+            ],
+            [
+                "item_name" => "Plank bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Spreader bars",
+                    "Stays and anchors",
+                    "Belay system",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Indi Bridge",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Spreader bars",
+                    "Rigging",
+                    "Combi rope",
+                    "logs",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Walking deck",
+                "details" => [
+                    "Pole",
+                    "Platform",
+                    "Belay system",
+                    "Steel pipe"
+                ]
+            ],
+            [
+                "item_name" => "Main platform",
+                "details" => [
+                    "Poles",
+                    "Decking ",
+                    "Gates",
+                    "Belay system",
+                    "Combi rope",
+                    "Harness wrack",
+                    "Steel pipe"
+                ]
+            ],
+        ];
 
-        // Loop through each item and insert into the database
+
+        $totalItems = 0;
+        $totalDetails = 0;
+
         foreach ($itemsData as $itemData) {
             // Insert the item name
             //$item = CategoryItem::updateOrCreate(['name' => $itemData['item_name'],'type_inspection_id' => 1,'site_id' => 2],['certificate_recieved_id' => 2]);
-            $item = CategoryItem::create(['name' => $itemData['item_name'], 'type_inspection_id' => 1, 'site_id' => 2, 'certificate_recieved_id' => 2]);
+            $item = CategoryItem::create([
+                'name' => $itemData['item_name'],
+                'type_inspection_id' => $type_inspection_id,
+                'site_id' => $site_id,
+                'certificate_recieved_id' => $certificate_recieved_id
+            ]);
+
+            $detailsCount = 0;
 
             // Loop through each of the item's details and insert them into the 'item_details' table
             foreach ($itemData['details'] as $detail) {
                 //CategoryDetail::updateOrCreate(['category_item_id' => $item->id,'name' => $detail,],['in_use_date' => now(),'out_use_date' => '']);
-                CategoryDetail::updateOrCreate(['category_item_id' => $item->id, 'name' => $detail, 'in_use_date' => now(), 'out_use_date' => '']);
+                CategoryDetail::create([
+                    'category_item_id' => $item->id,
+                    'name' => $detail,
+                    'in_use_date' => now(),
+                    'out_use_date' => ''
+                ]);
+                $detailsCount++;
+                $totalDetails++;
             }
 
-            // Output a success message for this item
-            $this->info("Item '{$itemData['item_name']}' and its details have been imported.");
+            $totalItems++;
+
+            // Output a success message for this item with detail count
+            $this->info("Item '{$itemData['item_name']}' and its {$detailsCount} details have been imported.");
         }
+
+        // Output summary
+        $this->info("Import completed: {$totalItems} items and {$totalDetails} total details imported.");
 
         // Final message when the import is complete
         $this->info('Import completed!');
