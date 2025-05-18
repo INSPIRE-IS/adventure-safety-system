@@ -51,12 +51,12 @@ class ImportUsers extends Command
         }
 
         if (!empty($errors)) {
-            echo "❌ Issues found in CSV:\n";
+            echo "Issues found in CSV:\n";
             foreach ($errors as $error) {
                 echo $error . "\n";
             }
         } else {
-            echo "✅ CSV is properly formatted!";
+            echo "CSV is properly formatted!";
         }
 
         $roles = array_slice($csvData[0], 1); // Extract role names (super, admin, etc.)
