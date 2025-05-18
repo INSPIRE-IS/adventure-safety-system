@@ -13,7 +13,7 @@ const EquipmentModal = ({ isOpen, onClose, mode, equipmentItem = null, team }) =
         certificate_recieved_id: 2,
         identifications: [], // Stores barcodes or numbered items
     });
-
+const [identificationError, setIdentificationError] = useState("");
     const [newIdentification, setNewIdentification] = useState("");
 
     useEffect(() => {
@@ -39,12 +39,24 @@ const EquipmentModal = ({ isOpen, onClose, mode, equipmentItem = null, team }) =
         setData(target, value);
     };
 
-    const handleAddIdentification = () => {
-        if (newIdentification.trim() !== "") {
-            setData("identifications", [...data.identifications, newIdentification.trim()]);
-            setNewIdentification(""); // Reset input field
-        }
-    };
+const handleAddIdentification = () => {
+    const trimmed = newIdentification.trim();
+
+    if (trimmed === "") return;
+
+    const exists = data.identifications.some(
+        (item) => item.toLowerCase() === trimmed.toLowerCase()
+    );
+
+    if (exists) {
+        setIdentificationError(`"${trimmed}" already exists.`);
+        return;
+    }
+
+    setData("identifications", [...data.identifications, trimmed]);
+    setNewIdentification("");
+    setIdentificationError(""); // clear error
+};
 
     const handleRemoveIdentification = (index) => {
         setData(
@@ -98,13 +110,25 @@ const EquipmentModal = ({ isOpen, onClose, mode, equipmentItem = null, team }) =
                             Add Identification
                         </label>
                         <div className="flex items-center space-x-2 mt-2">
-                            <input
-                                type="text"
-                                className="border border-gray-300 rounded p-2 flex-grow"
-                                value={newIdentification}
-                                onChange={(e) => setNewIdentification(e.target.value)}
-                                placeholder="Enter barcode or item number"
-                            />
+                            <div className="flex flex-col w-full">
+                                <input  
+                                    type="text"
+                                    className={`border rounded p-2 flex-grow transition ${
+                                        identificationError
+                                            ? "border-red-500 focus:ring-red-500"
+                                            : "border-gray-300 focus:ring-blue-500"
+                                    }`}
+                                    value={newIdentification}
+                                    onChange={(e) => {
+                                        setNewIdentification(e.target.value);
+                                        if (identificationError) setIdentificationError(""); // clear error on input
+                                    }}
+                                    placeholder="Enter barcode or item number"
+                                />
+                                {identificationError && (
+                                    <p className="text-red-500 text-sm mt-1">{identificationError}</p>
+                                )}
+                            </div>
 
                             <CustomButton
                                 onClick={handleAddIdentification}

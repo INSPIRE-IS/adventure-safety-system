@@ -6,9 +6,11 @@ import CustomSelect1 from "@/Components/CustomSelect1";
 import CustomButton from "@/Components/CustomButton";
 
 
+
 const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspections, type_bools, team, type_item }) => {
     console.log("mode", mode);
     console.log("categoryItem", categoryItem);
+
     //alert(type_item);
     //console.log("type_bools", type_bools);
     const currentImage = categoryItem?.path; 
@@ -22,6 +24,7 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
         identifications: [], // Stores barcodes or numbered items
     });
     const [newIdentification, setNewIdentification] = useState("");
+    const [identificationError, setIdentificationError] = useState("");
 
     useEffect(() => {
         if (categoryItem && mode !== "create") {
@@ -52,10 +55,22 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
     };
 
     const handleAddIdentification = () => {
-        if (newIdentification.trim() !== "") {
-            setData("identifications", [...data.identifications, newIdentification.trim()]);
-            setNewIdentification(""); // Reset input field
+        const trimmed = newIdentification.trim();
+
+        if (trimmed === "") return;
+
+        const exists = data.identifications.some(
+            (item) => item.toLowerCase() === trimmed.toLowerCase()
+        );
+
+        if (exists) {
+            setIdentificationError(`"${trimmed}" already exists.`);
+            return;
         }
+
+        setData("identifications", [...data.identifications, trimmed]);
+        setNewIdentification("");
+        setIdentificationError(""); // clear error
     };
 
     const handleRemoveIdentification = (index) => {
@@ -123,9 +138,9 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[95%] overflow-y-auto">
                 <h2 className="text-xl font-bold mb-4">
-                    {mode === "create" && "Create Element Item"}
-                    {mode === "edit" && "Edit Element Item"}
-                    {mode === "view" && "View Element Item"}
+                    {mode === "create" && "Create Element & Item #"}
+                    {mode === "edit" && "Edit Element & Item #"}
+                    {mode === "view" && "View Element & Item #"}
                 </h2>
                 <form onSubmit={handleSubmit}>
                     <InputText
@@ -153,13 +168,25 @@ const ElementModal = ({ isOpen, onClose, mode, categoryItem = null, type_inspect
                             Add Identification
                         </label>
                         <div className="flex items-center space-x-2 mt-2">
-                            <input
-                                type="text"
-                                className="border border-gray-300 rounded p-2 flex-grow"
-                                value={newIdentification}
-                                onChange={(e) => setNewIdentification(e.target.value)}
-                                placeholder="Enter barcode or item number"
-                            />
+                            <div className="flex flex-col w-full">
+                                <input
+                                    type="text"
+                                    className={`border rounded p-2 flex-grow transition ${
+                                        identificationError
+                                            ? "border-red-500 focus:ring-red-500"
+                                            : "border-gray-300 focus:ring-blue-500"
+                                    }`}
+                                    value={newIdentification}
+                                    onChange={(e) => {
+                                        setNewIdentification(e.target.value);
+                                        if (identificationError) setIdentificationError(""); // clear error on input
+                                    }}
+                                    placeholder="Enter barcode or item number"
+                                />
+                                {identificationError && (
+                                    <p className="text-red-500 text-sm mt-1">{identificationError}</p>
+                                )}
+                            </div>
 
                             <CustomButton
                                 onClick={handleAddIdentification}
