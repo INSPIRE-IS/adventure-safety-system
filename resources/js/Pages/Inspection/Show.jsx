@@ -6,6 +6,7 @@ import ManageModal from '@/Components/ManageModal';
 import EditButton2 from '@/Components/EditButton2';
 import lookupIcon from '@/Utils/lookupIcons';
 import { useToast } from '@/context/ToastProvider';
+import GroupedInspectionList from '@/Components/GroupedInspectionList';
 
 
 
@@ -19,8 +20,8 @@ const InspectionsIndex = ({auth, inspection, inspection_details, can, users,insp
 const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 const [modalMode, setModalMode] = useState("create");
 const [checkedState, setCheckedState] = useState([]);
-console.log('inspection_details',inspection_details);
-console.log('inspection',inspection);
+console.log('inspection_details--------------------',inspection_details);
+console.log('inspection--------------',inspection);
 useEffect(() => {
     setData({
         inspection_id: inspection_id,
@@ -52,8 +53,8 @@ function processInspectionData(insData) {
     let groupedData = {};
 
     insData.forEach(item => {
-        const categoryName = item.category_item.name; // Group by category name
-        const categoryDetailName = item.category_detail.name; // Include category detail name
+        const categoryName = item.category_item?.name || 'Unknown Category';
+        const categoryDetailName = item.category_detail?.name || 'Unknown Detail';
 
         if (!groupedData[categoryName]) {
             groupedData[categoryName] = {
@@ -63,24 +64,28 @@ function processInspectionData(insData) {
             };
         }
 
+        // Always push the detail, even if no condition or files
+        groupedData[categoryName].issues.push({
+            category_detail_name: categoryDetailName,
+            condition: item.condition,
+            files: item.files?.map(file => ({
+                id: file.id,
+                file_name: file.file_name,
+                file_type: file.file_type,
+                path: file.path,
+                created_at: file.created_at
+            })) || []
+        });
+
+        // Only increment count if there IS an issue
         if (item.condition !== null || (item.files && item.files.length > 0)) {
             groupedData[categoryName].count++;
-            groupedData[categoryName].issues.push({
-                category_detail_name: categoryDetailName,
-                condition: item.condition,
-                files: item.files.map(file => ({
-                    id: file.id,
-                    file_name: file.file_name,
-                    file_type: file.file_type,
-                    path: file.path,
-                    created_at: file.created_at
-                }))
-            });
         }
     });
 
-    return Object.values(groupedData); // Convert object back to an array
+    return Object.values(groupedData);
 }
+
 const result = processInspectionData(inspection_details);
 console.log('result', result);
 console.log('inspection_details', inspection_details);
@@ -189,18 +194,18 @@ const handleCloseModal = () => {
 
                                 {/* Right Section (2/3) */}
                                 <div className="col-span-2 mt-6 mb-6  gap-2 justify-end">
-                                    {result?.map((category, categoryIndex) => (
+                                    {/* {result?.map((category, categoryIndex) => (
                                         <div key={categoryIndex} className="flex flex-col gap-4">
-                                            {/* Category Name Header */}
+                                           
                                             <h2 className="text-xl font-semibold">Element Name: {category.category_name} <small>issues: {category.count}</small></h2>
                                             
-                                            {/* Iterate Over Issues Inside Each Category */}
+                                            
                                             {category.issues.map((issue, issueIndex) => (
                                                 <div key={issueIndex} className="flex flex-col gap-2 border-b p-4 rounded-lg shadow-sm">
                                                     <p className="label-header-4">Reference #: {issue.category_detail_name}</p>
                                                     <p className="label-comment-text">Condition: {issue.condition ?? 'none specified'}</p>
                                                     
-                                                    {/* Display Images */}
+                                                    
                                                     <div className="grid grid-cols-2 gap-2">
                                                         {issue.files?.map((file, fileIndex) => (
                                                             <img 
@@ -214,7 +219,8 @@ const handleCloseModal = () => {
                                                 </div>
                                             ))}
                                         </div>
-                                    ))}
+                                    ))} */}
+                                    <GroupedInspectionList groupedInspectionData={result} />
                                 </div>
                             </div>
                         </div>
