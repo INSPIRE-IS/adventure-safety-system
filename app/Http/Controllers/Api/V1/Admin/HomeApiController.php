@@ -53,6 +53,7 @@ class HomeApiController extends Controller
             )
             //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
+            ->where('complete_date', null)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
                 $query->where('type_inspection_id', $typeInspectionId);
@@ -98,6 +99,7 @@ class HomeApiController extends Controller
             )
             //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
+            ->where('complete_date', null)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
                 $query->where('type_inspection_id', $typeInspectionId);
@@ -116,6 +118,7 @@ class HomeApiController extends Controller
             ])
             //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
+            ->where('complete_date', null)
             //->whereBetween('post_incidents.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
 
@@ -132,6 +135,7 @@ class HomeApiController extends Controller
             ])
             //->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
+            ->where('complete_date', null)
             //->whereBetween('drills.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get();
 
