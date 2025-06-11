@@ -21,6 +21,19 @@ const [checkedState, setCheckedState] = useState([]);
 console.log('inspection_details',inspection_details);
 console.log('inspection',inspection);
 console.log('category_item',category_item);
+
+const groupedByCategoryItem = inspection_details.reduce((acc, item) => {
+  const itemId = item.category_item.id;
+  if (!acc[itemId]) {
+    acc[itemId] = {
+      name: item.category_item.name,
+      items: [],
+    };
+  }
+  acc[itemId].items.push(item);
+  return acc;
+}, {});
+
 const categorized = inspection_details.reduce(
     (acc, item) => {
       if (item.condition === 0) acc.good.push(item);
@@ -139,98 +152,16 @@ const data = {
 
                         {/* Table */}
                         <div className="bg-white p-4 rounded-lg shadow-md">
-                            <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-white ">
-                                    <tr className="w-[100%]">
-                                        <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[15%]">
-                                        Title
-                                        </th>
-                                        <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
-                                        Status
-                                        </th>
-                                        <th className="px-6 py-3 table-header2 uppercase tracking-wider  w-[15%]">
-                                        Last Checked
-                                        </th>
-                                        <th className="px-6 py-3 uppercase tracking-wider  w-[30%]">
-                                            
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {inspection_details?.map((item) => {
-                                        console.log("inspection", item);
+                            {Object.entries(groupedByCategoryItem).map(([categoryItemId, group]) => (
+                            <div key={categoryItemId} className="mb-4">
+                                <h2 className="label-header-4 mb-3">{group.name}</h2>
+                                <InspectionTable
+                                items={group.items}
+                                handleReplace={handleReplace}
+                                />
+                            </div>
+                            ))} 
 
-
-
-                                    return(
-                                        <tr key={item.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>   
-
-                                            <td className=" px-6 py-4 whitespace-nowrap items-center justify-center ">
-
-
-                                                <div className="w-[175px] h-[49px] flex-row justify-start items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                                    {item.condition === 0 ? (
-                                                        <svg width="35" height="35" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <g id="Union/New value">
-                                                                <path id="Subtract" fillRule="evenodd" clipRule="evenodd" d="M20.7903 42C32.2724 42 41.5805 32.6919 41.5805 21.2097C41.5805 9.72756 32.2724 0.419434 20.7903 0.419434C9.30812 0.419434 0 9.72756 0 21.2097C0 32.6919 9.30812 42 20.7903 42ZM28.9757 14.1978C29.8084 14.848 29.9433 16.0341 29.2774 16.847L18.9813 29.4124C18.3299 30.2072 17.1497 30.3538 16.3155 29.7428L11.1675 25.9732C10.3145 25.3486 10.1417 24.1672 10.7814 23.3345C11.4211 22.5017 12.6311 22.3329 13.4841 22.9575L17.1352 25.631L26.2624 14.4921C26.9284 13.6793 28.1433 13.5475 28.9757 14.1978Z" fill="#37b36f"/>
-                                                            </g>
-                                                        </svg>
-                                                    ) : (
-                                                        <svg width="35" height="35" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path id="Subtract" fillRule="evenodd" clipRule="evenodd" d="M20.7903 41.7903C32.2724 41.7903 41.5805 32.4821 41.5805 21C41.5805 9.51784 32.2724 0.209717 20.7903 0.209717C9.30812 0.209717 0 9.51784 0 21C0 32.4821 9.30812 41.7903 20.7903 41.7903ZM28.9579 16.0995C29.8601 15.1974 29.8601 13.7347 28.9579 12.8325C28.0558 11.9303 26.593 11.9303 25.6909 12.8325L20.7903 17.7331L15.8898 12.8325C14.9876 11.9303 13.5249 11.9303 12.6227 12.8325C11.7205 13.7347 11.7205 15.1974 12.6227 16.0995L17.5233 21.0001L12.6227 25.9007C11.7206 26.8028 11.7205 28.2655 12.6227 29.1677C13.5249 30.0699 14.9876 30.0698 15.8898 29.1677L20.7903 24.2671L25.6909 29.1677C26.593 30.0698 28.0558 30.0699 28.9579 29.1677C29.8601 28.2655 29.8601 26.8028 28.9579 25.9007L24.0574 21.0001L28.9579 16.0995Z" fill="#FF0000"/>
-                                                        </svg>
-                                                    )}
-                                                    <span className='label-header-4-alt mt-2'>{category_item?.name} {item.category_detail.name}</span>                                          
-                                                </div>
-
-                                            </td>
-                                            <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
-                                                
-                                                <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
-                                                    <div className="w-full label-comment-text mt-2">
-                                                        {item.condition === 0 && "Good"}
-                                                        {item.condition === 1 && "Worn but OK"}
-                                                        {item.condition === 2 && "Failed and Removed"}
-                                                    </div>
-                                                                                    
-                                                </div>
-                                            </td>
-
-
-                                            <td className=" px-6 py-4 whitespace-nowrap text-center justify-center   table-text1   ">
-
-                                                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                                    <div className="w-full label-comment-text mt-2">
-                                                        {item?.created_at?.split(" ")[0]}
-                                                    </div>                                        
-                                                </div>
-                                                    
-                                            </td>
-
-
-
-
-                                            <td className="px-6 py-4 flex flex-row items-center justify-start ">
-
-                                            {item.condition === 2 ? (
-                                                <div onClick={() => handleReplace(item.id,1)}
-                                                className="bg-[#FF0000] w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
-                                                    <div className="text-[#FFFFFF] text-base font-semibold font-['Manrope'] leading-normal">Replace with new</div>
-                                                </div> 
-
-
-                                            ) : (
-                                                <div onClick={() => handleReplace(item.id,2)}
-                                                className="bg-[#FFFFFF] w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
-                                                    <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">Replace with new</div>
-                                                </div> 
-                                            )}
-
-                                            </td>
-                                        </tr>
-                                    )})}
-                                </tbody>
-                            </table>
                         </div>
                     </div>
 
@@ -250,3 +181,78 @@ const data = {
 };
 
 export default InspectionsIndex;
+
+const InspectionTable = ({ items, handleReplace }) => {
+  return (
+    <div className="bg-white px-3 border-b-4 border-gray-100">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-white ">
+            <tr className="w-[100%]">
+                <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[180px]">
+                    Title
+                </th>
+                <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[180px]">
+                    Status
+                </th>
+                <th className="px-6 py-3 text-start table-header2 uppercase tracking-wider  w-[175px]">
+                    Last Checked
+                </th>
+                <th className="px-6 py-3 uppercase tracking-wider  w-[214px]">
+                </th>
+            </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {items.map(item => (
+            <tr key={item.id} className='h-[78px] w-full ' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
+            <td className=" px-6 py-4 whitespace-nowrap items-center justify-center ">
+                <div className="w-[175px] h-[49px] flex-row justify-start items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                    {item.condition === 0 ? (
+                        <svg width="35" height="35" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Union/New value">
+                                <path id="Subtract" fillRule="evenodd" clipRule="evenodd" d="M20.7903 42C32.2724 42 41.5805 32.6919 41.5805 21.2097C41.5805 9.72756 32.2724 0.419434 20.7903 0.419434C9.30812 0.419434 0 9.72756 0 21.2097C0 32.6919 9.30812 42 20.7903 42ZM28.9757 14.1978C29.8084 14.848 29.9433 16.0341 29.2774 16.847L18.9813 29.4124C18.3299 30.2072 17.1497 30.3538 16.3155 29.7428L11.1675 25.9732C10.3145 25.3486 10.1417 24.1672 10.7814 23.3345C11.4211 22.5017 12.6311 22.3329 13.4841 22.9575L17.1352 25.631L26.2624 14.4921C26.9284 13.6793 28.1433 13.5475 28.9757 14.1978Z" fill="#37b36f"/>
+                            </g>
+                        </svg>
+                    ) : (
+                        <svg width="35" height="35" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path id="Subtract" fillRule="evenodd" clipRule="evenodd" d="M20.7903 41.7903C32.2724 41.7903 41.5805 32.4821 41.5805 21C41.5805 9.51784 32.2724 0.209717 20.7903 0.209717C9.30812 0.209717 0 9.51784 0 21C0 32.4821 9.30812 41.7903 20.7903 41.7903ZM28.9579 16.0995C29.8601 15.1974 29.8601 13.7347 28.9579 12.8325C28.0558 11.9303 26.593 11.9303 25.6909 12.8325L20.7903 17.7331L15.8898 12.8325C14.9876 11.9303 13.5249 11.9303 12.6227 12.8325C11.7205 13.7347 11.7205 15.1974 12.6227 16.0995L17.5233 21.0001L12.6227 25.9007C11.7206 26.8028 11.7205 28.2655 12.6227 29.1677C13.5249 30.0699 14.9876 30.0698 15.8898 29.1677L20.7903 24.2671L25.6909 29.1677C26.593 30.0698 28.0558 30.0699 28.9579 29.1677C29.8601 28.2655 29.8601 26.8028 28.9579 25.9007L24.0574 21.0001L28.9579 16.0995Z" fill="#FF0000"/>
+                        </svg>
+                    )}
+                    <span className='label-header-4-alt mt-2'>{item.category_detail.name}</span>                                          
+                </div>
+            </td>
+            <td className=" px-6 py-4 whitespace-nowrap text-start justify-center table-text1 ">
+                <div className="w-[180px] h-[49px] flex-col justify-start items-start gap-[9px] inline-flex  border-r border-gray-300 ">
+                    <div className="w-full label-comment-text mt-2">
+                        {item.condition === 0 && "Good"}
+                        {item.condition === 1 && "Worn but OK"}
+                        {item.condition === 2 && "Failed and Removed"}
+                    </div>                        
+                </div>
+            </td>
+            <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   table-text1   ">
+                <div className="w-[175px] h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
+                    <div className="w-full label-comment-text mt-2">
+                        {item?.created_at?.split(" ")[0]}
+                    </div>                                        
+                </div>
+            </td>
+            <td className="px-6 py-4 flex flex-row items-center justify-start ">
+            {item.condition === 2 ? (
+                <div onClick={() => handleReplace(item.id,1)}
+                className="bg-[#FF0000] w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                    <div className="text-[#FFFFFF] text-base font-semibold font-['Manrope'] leading-normal">Replace with new</div>
+                </div> 
+            ) : (
+                <div onClick={() => handleReplace(item.id,2)}
+                className="bg-[#FFFFFF] w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] inline-flex">
+                    <div className="text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal">Replace with new</div>
+                </div> 
+            )}
+            </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
