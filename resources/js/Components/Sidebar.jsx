@@ -1,7 +1,15 @@
 import React, { act, useEffect, useState } from 'react';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 
-
+  const navLinks = [
+    { name: 'Staff', route: 'users.index', permission: "user_access" },
+    { name: 'Inspection', route: 'inspections.index', permission: "inspection_access" },
+    { name: 'PPE', route: 'equipments.index', permission: "inspection_access" },
+    { name: 'Rescue Drills', route: 'drills.index', permission: "drill_access" },
+    { name: 'Incident', route: 'incidents.index', permission: "incident_access" },
+    { name: 'Complaint Management', route: 'complaints.index', permission: "complaint_access" },
+    { name: 'Site Management', route: 'files.index', permission: "file_access" },
+  ];
 const Sidebar = () => {
     const { auth } = usePage().props;
     const sidebarLinks = [
@@ -12,60 +20,17 @@ const Sidebar = () => {
                 permission: null, // No permission required
             },
             {
-                label: "Staff Management",
+                label: "Inspection",
                 icon: "fas fa-users",
-                permission: "admin_panel_show",
+                permission: "inspection_access",
+                route: 'inspections.index',
                 dropdown: [
-                    {
-                        label: "Permissions",
-                        icon: "fas fa-unlock-alt",
-                        route: "permissions.index",
-                        permission: "permission_access",
-                    },
-                    {
-                        label: "Roles",
-                        icon: "fas fa-briefcase",
-                        route: "roles.index",
-                        permission: "role_access",
-                    },
-                    {
-                        label: "Users",
-                        icon: "fas fa-user",
-                        route: "users.index",
-                        permission: "user_access",
-                    },
-                    {
-                        label: "Sites",
-                        icon: "fas fa-building",
-                        route: "sites.index",
-                        permission: "site_access",
-                    },              
-                    {
-                        label: "User Alerts",
-                        icon: "fas fa-bell",
-                        route: "user-alerts.index",
-                        permission: "user_alert_access",
-                    },
-                    {
-                        label: "Audit Logs",
-                        icon: "fas fa-file-alt",
-                        route: "audit-logs.index",
-                        permission: "audit_log_access",
-                    },
-                ],
-            },
-
-            {
-                label: "Inspection Management",
-                icon: "fas fa-users",
-                permission: "admin_panel_show",
-                dropdown: [
-                    {
-                        label: "Type Cerfitications",
-                        icon: "fas fa-file-signature",
-                        route: "type-bools.index",
-                        permission: "type_bool_access",
-                    },
+                    // {
+                    //     label: "Type Cerfitications",
+                    //     icon: "fas fa-file-signature",
+                    //     route: "type-bools.index",
+                    //     permission: "type_bool_access",
+                    // },
                     // {
                     //     label: "Type Inspections",
                     //     icon: "fas fa-file-signature",
@@ -79,21 +44,21 @@ const Sidebar = () => {
                         param: { data: 1 },
                         permission: "category_item_access",
                     },
+                    // {
+                    //     label: "Element Details",
+                    //     icon: "fas fa-bell",
+                    //     route: "category-details.index",
+                    //     param: { data: 1 },
+                    //     permission: "category_detail_access",
+                    // },
+                    // {
+                    //     label: "Reports",
+                    //     icon: "fas fa-building",
+                    //     route: "inspections.index",
+                    //     permission: "inspection_access",
+                    // },
                     {
-                        label: "Element Details",
-                        icon: "fas fa-bell",
-                        route: "category-details.index",
-                        param: { data: 1 },
-                        permission: "category_detail_access",
-                    },
-                    {
-                        label: "Inspections",
-                        icon: "fas fa-building",
-                        route: "inspections.index",
-                        permission: "inspection_access",
-                    },
-                    {
-                        label: "Inspection Schedule",
+                        label: "Schedules",
                         icon: "fas fa-building",
                         route: "inspection-schedules.index",
                         param: { data: 1 },
@@ -108,9 +73,10 @@ const Sidebar = () => {
                 ],
             },
             {
-                label: "PPE Management",
+                label: "PPE",
                 icon: "fas fa-users",
-                permission: "admin_panel_show",
+                permission: "inspection_access",
+                route: 'equipments.index',
                 dropdown: [
                     // { // this is working it is not implemented on app and on ppe report though and was not part of original scope
                     //     label: "Type Degradation",
@@ -119,29 +85,29 @@ const Sidebar = () => {
                     //     permission: "type_degradation_access",
                     // },
                     {
-                        label: "Equipment Items",
+                        label: "Equipment",
                         icon: "fas fa-user",
-                        route: "category-items.index",
+                        route: "equipment-items.index",
                         param: { data: 3 },
                         permission: "category_item_access",
                     },
+                    // {
+                    //     label: "Equipment List",
+                    //     icon: "fas fa-bell",
+                    //     route: "category-details.index",
+                    //     param: { data: 3 },
+                    //     permission: "category_detail_access",
+                    // },
+                    // {
+                    //     label: "Inspections",
+                    //     icon: "fas fa-building",
+                    //     route: "equipments.index",
+                    //     permission: "inspection_access",
+                    // },
                     {
-                        label: "Equipment Details",
-                        icon: "fas fa-bell",
-                        route: "category-details.index",
-                        param: { data: 3 },
-                        permission: "category_detail_access",
-                    },
-                    {
-                        label: "Inspections",
+                        label: "Schedules",
                         icon: "fas fa-building",
-                        route: "equipments.index",
-                        permission: "inspection_access",
-                    },
-                    {
-                        label: "Inspection Schedule",
-                        icon: "fas fa-building",
-                        route: "inspection-schedules.index",
+                        route: "equipment-schedules.index",
                         param: { data: 3 },
                         permission: "inspection_schedule_access",
                     },
@@ -154,9 +120,10 @@ const Sidebar = () => {
                 ],
             },        
             {
-                label: "Safety Management",
+                label: "Rescue Drills",
                 icon: "fas fa-users",
-                permission: "admin_panel_show",
+                permission: "drill_access",
+                route: 'drills.index',
                 dropdown: [
                     {
                         label: "Type Drills",
@@ -165,17 +132,17 @@ const Sidebar = () => {
                         permission: "type_drill_access",
                     },
                     {
-                        label: "Drill Schedule",
+                        label: "Schedules",
                         icon: "fas fa-briefcase",
                         route: "drill-schedules.index",
                         permission: "drill_schedule_access",
                     },            
-                    {
-                        label: "Drills",
-                        icon: "fas fa-file-alt",
-                        route: "drills.index",
-                        permission: "drill_access",
-                    },  
+                    // {
+                    //     label: "Drill Reports",
+                    //     icon: "fas fa-file-alt",
+                    //     route: "drills.index",
+                    //     permission: "drill_access",
+                    // },  
                     // {
                     //     label: "Drill Details",
                     //     icon: "fas fa-file-alt",
@@ -191,28 +158,29 @@ const Sidebar = () => {
                 ],
             },
             {
-                label: "Incident Management",
+                label: "Incident",
                 icon: "fas fa-users",
-                permission: "admin_panel_show",
+                permission: "incident_access",
+                route: 'incidents.index',
                 dropdown: [
-                    {
-                        label: "Incident Type",
-                        icon: "fas fa-unlock-alt",
-                        route: "type-incidents.index",
-                        permission: "type_incident_access",
-                    },
-                    {
-                        label: "Incident",
-                        icon: "fas fa-briefcase",
-                        route: "incidents.index",
-                        permission: "incident_access",
-                    },
-                    {
-                        label: "Question Types",
-                        icon: "fas fa-bell",
-                        route: "type-questions.index",
-                        permission: "type_question_access",
-                    },
+                    // {
+                    //     label: "Incident Type",
+                    //     icon: "fas fa-unlock-alt",
+                    //     route: "type-incidents.index",
+                    //     permission: "type_incident_access",
+                    // },
+                    // {
+                    //     label: "Incident Reports",
+                    //     icon: "fas fa-briefcase",
+                    //     route: "incidents.index",
+                    //     permission: "incident_access",
+                    // },
+                    // {
+                    //     label: "Question Types",
+                    //     icon: "fas fa-bell",
+                    //     route: "type-questions.index",
+                    //     permission: "type_question_access",
+                    // },
                     {
                         label: "Post Incident Schedule",
                         icon: "fas fa-building",
@@ -234,22 +202,67 @@ const Sidebar = () => {
                 ],
             },
             {
-                label: "Files Management",
+                label: "Site",
                 icon: "fas fa-users",
-                permission: "admin_panel_show",
+                permission: "site_access",
+                route: 'sites.index',
                 dropdown: [
+                    // {
+                    //     label: "Type Files",
+                    //     icon: "fas fa-unlock-alt",
+                    //     route: "type-files.index",
+                    //     permission: "type_file_access",
+                    // },
                     {
-                        label: "Type Files",
-                        icon: "fas fa-unlock-alt",
-                        route: "type-files.index",
-                        permission: "type_file_access",
-                    },
-                    {
-                        label: "Files",
+                        label: "Documents",
                         icon: "fas fa-briefcase",
                         route: "files.index",
                         permission: "file_access",
                     },
+                ],
+            },
+                        {
+                label: "Staff",
+                icon: "fas fa-users",
+                permission: "user_access",
+                route: 'users.index',
+                dropdown: [
+                    // {
+                    //     label: "Permissions",
+                    //     icon: "fas fa-unlock-alt",
+                    //     route: "permissions.index",
+                    //     permission: "permission_access",
+                    // },
+                    // {
+                    //     label: "Roles",
+                    //     icon: "fas fa-briefcase",
+                    //     route: "roles.index",
+                    //     permission: "role_access",
+                    // },
+                    // {
+                    //     label: "Users",
+                    //     icon: "fas fa-user",
+                    //     route: "users.index",
+                    //     permission: "user_access",
+                    // },
+                    // {
+                    //     label: "Sites",
+                    //     icon: "fas fa-building",
+                    //     route: "sites.index",
+                    //     permission: "site_access",
+                    // },              
+                    // {
+                    //     label: "User Alerts",
+                    //     icon: "fas fa-bell",
+                    //     route: "user-alerts.index",
+                    //     permission: "user_alert_access",
+                    // },
+                    // {
+                    //     label: "Audit Logs",
+                    //     icon: "fas fa-file-alt",
+                    //     route: "audit-logs.index",
+                    //     permission: "audit_log_access",
+                    // },
                 ],
             },
         // {
@@ -314,10 +327,15 @@ const Sidebar = () => {
     }
     }, []);
 
-    const toggleParentSection = (idx) => {
+    const toggleParentSection = (idx, routeName) => {
+      //alert(routeName);
     const newVal = openParentSection === idx ? null : idx;
     setOpenParentSection(newVal);
     localStorage.setItem('openParentSection', newVal);
+    router.get(route(routeName), {}, {
+      preserveScroll: true,
+      preserveState: true,
+    });
     };
 
     const toggleSites = () => {
@@ -432,7 +450,7 @@ const handleNavigation = (routeName, params = {}) => {
       {link.dropdown ? (
         <>
           <button
-            onClick={() => toggleParentSection(idx)} // 👈 Only toggles menu open/close
+            onClick={() => toggleParentSection(idx, link.route)} // 👈 Only toggles menu open/close
             className={`flex  items-center px-4 py-2 w-full text-left hover:bg-gray-700 ${
               openParentSection == idx ? 'font-inter text-[16px] leading-[100%] tracking-[-0.28px] text-[#F6C546] font-bold' : 'sidebar-links'
             }`}

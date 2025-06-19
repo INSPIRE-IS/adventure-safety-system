@@ -6,7 +6,7 @@ import AlertModal from './AlertModal';
 
 const Header = () => {
   const { auth } = usePage().props;
-  console.log('auth header', auth);
+  console.log('auth--------------- header', auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
@@ -15,13 +15,13 @@ const Header = () => {
   const { url } = usePage(); // Get the current URL
 
   const navLinks = [
-    { name: 'Staff Management', route: 'users.index', permission: "user_access" },
-    { name: 'Inspection Management', route: 'inspections.index', permission: "inspection_access" },
-    { name: 'PPE Management', route: 'equipments.index', permission: "inspection_access" },
-    { name: 'Safety Management', route: 'drills.index', permission: "drill_access" },
-    { name: 'Incident Management', route: 'incidents.index', permission: "incident_access" },
-    { name: 'Complaint Management', route: 'complaints.index', permission: "complaint_access" },
-    { name: 'Site Management', route: 'files.index', permission: "file_access" },
+    { name: 'Staff', route: 'users.index', permission: "user_access" },
+    { name: 'Inspection', route: 'inspections.index', permission: "inspection_access" },
+    { name: 'PPE', route: 'equipments.index', permission: "inspection_access" },
+    { name: 'Rescue Drills', route: 'drills.index', permission: "drill_access" },
+    { name: 'Incident', route: 'incidents.index', permission: "incident_access" },
+    { name: 'Complaint', route: 'complaints.index', permission: "complaint_access" },
+    { name: 'Document', route: 'files.index', permission: "file_access" },
   ];
 
   const handleOpenUserModal = () => {
@@ -73,8 +73,9 @@ const Header = () => {
       </button>
 
       {/* Center Section: Navigation Links */}
+          {auth?.permissions?.includes('header_panel_show') && ( <>
       {isMenuOpen ? <NavMenu isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} auth={auth} /> : <NavTop isMenuOpen={isMenuOpen} navLinks={navLinks} url={url} auth={auth} />}
-
+          </>)}
       {/* Right Section: Icons */}
       <div className="hidden lg:flex items-center space-x-4">
         <button onClick={handleLogout} className="w-[45px] h-[45px] bg-[#c6c7cb] rounded-full flex items-center justify-center hover:bg-gray-200">
