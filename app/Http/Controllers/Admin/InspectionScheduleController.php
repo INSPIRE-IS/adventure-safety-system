@@ -97,7 +97,7 @@ class InspectionScheduleController extends Controller
             'typeInspections' => $type_inspections,
             'categoryItems' => $categoryItems,
             'users' => $users,
-            'type_id' => $data,
+            'data' => $data,
             'searchTerm' => $searchTerm,
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,

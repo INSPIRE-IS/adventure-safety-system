@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\PostIncidentScheduleController;
 use App\Http\Controllers\Admin\DrillController;
 use App\Http\Controllers\Admin\DrillDetailController;
 use App\Http\Controllers\Admin\EquipmentController;
+use App\Http\Controllers\Admin\EquipmentItemController;
+use App\Http\Controllers\Admin\EquipmentScheduleController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PostIncidentDetailController;
 use App\Http\Controllers\Admin\SystemCalendarController;
@@ -93,7 +95,7 @@ Route::middleware('auth')->group(function () {
     // Team
     //Route::post('teams/parse-csv-import', 'SiteController@parseCsvImport')->name('teams.parseCsvImport');
     // Route::post('teams/process-csv-import', 'SiteController@processCsvImport')->name('teams.processCsvImport');
-    //Route::get('sites/change/{site_id}', [SiteController::class, 'change'])->name('sites.change');
+    //Route::get('sites/change/{site_id}', [SiteController::class, 'change'])->name('sites.change');EquipmentScheduleController
 
 
     Route::get('/sites/{site_id}/change', [SiteController::class, 'change'])->name('sites.change');
@@ -117,6 +119,9 @@ Route::middleware('auth')->group(function () {
     // Category Items
     Route::resource('category-items', CategoryItemController::class)->except(['create', 'edit']);
 
+    // Category Items
+    Route::resource('equipment-items', EquipmentItemController::class)->except(['create', 'edit']);
+
     // Category Detail
     Route::resource('category-details', CategoryDetailController::class)->except(['create', 'edit']);
 
@@ -132,6 +137,9 @@ Route::middleware('auth')->group(function () {
 
     // Inspection Schedule
     Route::resource('inspection-schedules', InspectionScheduleController::class)->except(['create', 'edit']);
+
+    // Inspection Schedule
+    Route::resource('equipment-schedules', EquipmentScheduleController::class)->except(['create', 'edit']);
 
     // Inspection User Assigned
     Route::resource('inspection-user-assigneds', InspectionUserAssignedController::class)->except(['create', 'edit']);

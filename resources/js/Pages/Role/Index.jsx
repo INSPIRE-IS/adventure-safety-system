@@ -76,8 +76,8 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                             <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('roles.index', { 
-                                    sort: 'name', 
-                                    direction: sortColumn === 'name' && sortDirection === 'asc' ? 'desc' : 'asc' 
+                                    sort: 'alt_name', 
+                                    direction: sortColumn === 'alt_name' && sortDirection === 'asc' ? 'desc' : 'asc' 
                                 })} 
                                 className="flex flex-row justify-between items-center"
                             >
@@ -101,7 +101,7 @@ const RolesIndex = ({auth, roles, permissions, can, searchTerm, sortColumn, sort
                             <tr key={role.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
                                     <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
-                                            <div className="w-full table-text1 ">{role.name}</div>                                        
+                                            <div className="w-full table-text1 ">{role.alt_name}</div>                                        
                                     </div>
                                 </td>
                                 <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">

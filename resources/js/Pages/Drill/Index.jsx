@@ -71,7 +71,7 @@ const DrillsIndex = ({auth, drills, can, searchTerm, searchPeriod, searchMonth, 
             </div>
             <header className="mb-6 flex items-center justify-between w-[100%]">
                 <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">{auth?.team?.name ?? 'Site Name'}</h1>                    
+                    <h1 className="view-header">Drill Reports {auth?.team?.name ?? 'Site Name'}</h1>                    
                 </div>
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                     {can.drill_edit_reminder && (

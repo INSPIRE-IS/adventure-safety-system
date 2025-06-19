@@ -123,7 +123,7 @@ const UsersIndex = ({auth, users, roles, teams, can, searchTerm, sortColumn, sor
                                             <div className="w-full max-h-[100px] overflow-y-auto table-text1 ">
                                             {user?.roles.map((role) => 
                                             (
-                                            <h4 className="table-text2">{role.name}</h4>
+                                            <h4 key={role.id} className="table-text2">{role.alt_name}</h4>
                                             )
                                         )}
                                         </div>                                        

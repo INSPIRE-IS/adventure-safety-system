@@ -64,7 +64,7 @@ const IncidentsIndex = ({auth, incidents, sites,typeIncidents, can, searchTerm, 
             </div>
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">               
-                    <h1 className="view-header">{auth?.team?.name ?? 'Site Name'}</h1>                    
+                    <h1 className="view-header">Incident Reports {auth?.team?.name ?? 'Site Name'}</h1>                    
                 </div>
             </header>
 

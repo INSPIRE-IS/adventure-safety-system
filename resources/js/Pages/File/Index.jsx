@@ -58,6 +58,9 @@ const FilesIndex = ({auth, Files, roles, teams, can, searchTerm, sortColumn, sor
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                 <SearchBar search={search} handleSearchChange={(e) => handleSearchChange(e)} handleSearchSubmit={handleSearchSubmit} />
+                {/* {can.file_create && (
+                <AddButton title='Add Site' width={28} height={28} icon="./images/add-document.svg" onClick={() => router.get(route('sites.index'))} />
+                )} */}
                 {can.file_create && (
                 <AddButton title='Upload new document' width={28} height={28} icon="./images/add-document.svg" onClick={() => handleOpenModal("create")} />
                 )}

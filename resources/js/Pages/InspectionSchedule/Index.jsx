@@ -17,12 +17,12 @@ import AddButton from '@/Components/AddButton';
 //     { value: "2", label: "Yes" },
 //   ];
 
-const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, sortColumn, sortDirection, sites,typeActivities,periods, typeInspections, categoryItems, users, type_id }) => {
+const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, sortColumn, sortDirection, sites,typeActivities,periods, typeInspections, categoryItems, users, data }) => {
     //const { auth } = usePage().props;
     //const { destroy } = useForm();
     console.log('auth on inspectionSchedules ', auth);
     console.log('inspectionSchedules ', inspectionSchedules);
-    //console.log('type_id ', type_id);
+    //console.log('data ', data);
     const [search, setSearch] = useState(searchTerm);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("create");
@@ -78,7 +78,7 @@ const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, s
             <header className="mb-6 flex items-center justify-between w-[95%]">
                 <div className="flex flex-col  items-right">
                     <h3 className="view-sub-header">{auth?.team?.name ?? 'Site Name'}</h3>               
-                    <h1 className="view-header">Inspection Schedules</h1>                    
+                    <h1 className="view-header">{data == 1 ? 'Inspection Schedules ' : 'PPE Inspection Schedule '}  </h1>                    
                 </div>
             </header>
 
@@ -179,7 +179,7 @@ const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, s
                 categoryItems={categoryItems}
                 periods={periods}
                 users={users}
-                type_id={type_id}
+                data={data}
             />
             </div>
 

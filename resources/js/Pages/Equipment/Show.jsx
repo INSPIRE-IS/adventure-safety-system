@@ -18,9 +18,17 @@ const InspectionsIndex = ({auth, inspection, category_item, inspection_details, 
 const [isManageModalOpen, setIsManageModalOpen] = useState(false);
 const [modalMode, setModalMode] = useState("create");
 const [checkedState, setCheckedState] = useState([]);
-console.log('inspection_details',inspection_details);
-console.log('inspection',inspection);
-console.log('category_item',category_item);
+// console.log('inspection_details',inspection_details);
+// console.log('inspection',inspection);
+// console.log('category_item',category_item);
+const [openTables, setOpenTables] = useState({});
+
+const toggleTable = (itemId) => {
+  setOpenTables((prev) => ({
+    ...prev,
+    [itemId]: !prev[itemId],
+  }));
+};
 
 const groupedByCategoryItem = inspection_details.reduce((acc, item) => {
   const itemId = item.category_item.id;
@@ -28,11 +36,19 @@ const groupedByCategoryItem = inspection_details.reduce((acc, item) => {
     acc[itemId] = {
       name: item.category_item.name,
       items: [],
+      good: 0,
+      worn: 0,
+      failed: 0,
     };
   }
   acc[itemId].items.push(item);
+  if (item.condition === 0) acc[itemId].good++;
+  else if (item.condition === 1) acc[itemId].worn++;
+  else if (item.condition === 2) acc[itemId].failed++;
   return acc;
 }, {});
+
+console.log('groupedByCategoryItem',groupedByCategoryItem);
 
 const categorized = inspection_details.reduce(
     (acc, item) => {
@@ -152,15 +168,69 @@ const data = {
 
                         {/* Table */}
                         <div className="bg-white p-4 rounded-lg shadow-md">
-                            {Object.entries(groupedByCategoryItem).map(([categoryItemId, group]) => (
-                            <div key={categoryItemId} className="mb-4">
-                                <h2 className="label-header-4 mb-3">{group.name}</h2>
-                                <InspectionTable
-                                items={group.items}
-                                handleReplace={handleReplace}
-                                />
-                            </div>
-                            ))} 
+{Object.entries(groupedByCategoryItem).map(([categoryItemId, group]) => {
+  const isOpen = openTables[categoryItemId];
+  const errorCount = group.items.filter(item => item.condition > 0).length;
+
+  return (
+    <div key={categoryItemId} className="mb-8 border rounded-lg">
+      <button
+        onClick={() => toggleTable(categoryItemId)}
+        className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200"
+      >
+        <span className="label-header-4">{group.name}</span>
+        <div className="flex items-center gap-4">
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    group.items.length > 0 ? 'bg-[#3e3e4b] text-[#f6c546]' : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                   Total {group.items.length}
+                </span>
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    group.good > 0 ? 'bg-[#C8E6C9] text-black' : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {group.good} Good
+                </span>
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    group.worn > 0 ? 'bg-[#EBA53566] text-black' : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {group.worn} Worn
+                </span>
+
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    group.failed > 0 ? 'bg-[#FFC7C7] text-black' : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {group.failed} Failed
+                </span>
+          <svg
+            className={`w-5 h-5 transform transition-transform ${
+              isOpen ? 'rotate-90' : ''
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </button>
+
+      {isOpen && (
+        <div className="p-4">
+          <InspectionTable items={group.items} handleReplace={handleReplace} />
+        </div>
+      )}
+    </div>
+  );
+})}
+
 
                         </div>
                     </div>
