@@ -211,6 +211,15 @@ export default {
                     fontWeight: '400',
                     lineHeight: '145%',
                 },
+                '.select-text': {
+                    color: '#ffffff',
+                    fontFeatureSettings: "'liga' off, 'clig' off",
+                    fontFamily: 'Manrope, sans-serif',
+                    fontSize: '14px',
+                    fontStyle: 'normal',
+                    fontWeight: '400',
+                    lineHeight: '145%',
+                },
                 '.search-text1': {
                     color: '#B0B7C3',
                     fontFeatureSettings: "'liga' off, 'clig' off",

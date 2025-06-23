@@ -150,7 +150,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
                     />*/}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">
-                        Categorys
+                        Equipment
                         </label>
                         <div
                             className="mt-1 border border-gray-300 rounded-md p-2 w-full overflow-y-scroll flex flex-wrap gap-2"
