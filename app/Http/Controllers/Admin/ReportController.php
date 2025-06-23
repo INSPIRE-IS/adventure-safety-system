@@ -26,31 +26,29 @@ class ReportController extends Controller
         return $pdf->stream('monthly_report.pdf');
     }
 
-
+    // PPE Report
     public function equipment(Request $request)
     {
         //dd($request);
-        $inspection_id = 8; // $request->input('inspection_id');
+        $inspection_id = $request->input('inspection_id');
 
-        $inspection = Inspection::with('assigned_to')->findOrFail($inspection_id);
+        $inspection = Inspection::with('site', 'assigned_to')->findOrFail($inspection_id);
         $inspection_details = EquipmentInspectionDetail::where('inspection_id', $inspection_id)
             ->with(['category_item:id,name', 'category_detail'])
             ->get();
         /** @disregard P1009 */
         $pdf = PDF::loadView('reports.inspection-pdf', compact('inspection', 'inspection_details'));
 
-        return $pdf->download("inspection-report-{$inspection_id}.pdf");
+        return $pdf->stream("inspection-report-{$inspection_id}.pdf");
+        //return $pdf->download("inspection-report-{$inspection_id}.pdf");
     }
-
-
-
-
+    // Elements Monthly Safety Inspection Report
     public function inspection(Request $request)
     {
         //dd($request->all());
         $inspection_id = $request->input('inspection_id');
 
-        $inspection = Inspection::with('assigned_to')->findOrFail($inspection_id);
+        $inspection = Inspection::with('site', 'assigned_to')->findOrFail($inspection_id);
 
         $inspection_details = SafetyInspectionDetail::where('inspection_id', $inspection->id)
             ->with(['files', 'category_item:id,name', 'category_detail'])

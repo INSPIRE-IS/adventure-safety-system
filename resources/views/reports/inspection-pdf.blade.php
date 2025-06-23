@@ -62,12 +62,18 @@
             padding: 8px;
             margin-top: 20px;
         }
+
+        .label {
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
 
-    <h2>Inspection Report - {{ $inspection->id }}</h2>
+    <h2>PPE Inspection Report</h2>
+    <p><strong>Site Name:</strong> {{ $inspection->site->name }}</p>
+    <p><span class="label">Inspection #:</span> {{ $inspection->id }}</p>
     <p><strong>Inspector:</strong> {{ $inspection->assigned_to->name ?? 'N/A' }}</p>
     <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($inspection->complete_date)->toDateString() }}</p>
 

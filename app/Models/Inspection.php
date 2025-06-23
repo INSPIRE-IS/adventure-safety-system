@@ -151,7 +151,7 @@ class Inspection extends Model
 
     public function site()
     {
-        return $this->belongsTo(Team::class, 'id', 'site_id');
+        return $this->belongsTo(Team::class, 'site_id');
     }
 
     public function type_inspection()

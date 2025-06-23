@@ -132,6 +132,13 @@ const data = {
                         {can.inspection_edit_date && (
                         <EditButton2 title='Update Inspection Date' width="w-[254px]" height="h-[52px]" icon={lookupIcon("clock_setting_gear")} onClick={() => handleOpenManageModal("change")} />
                         )}
+                        <a
+  href={route('reports.equipment', { inspection_id: inspection.id })}
+  target="_blank"
+  className="w-[214px] h-[52px] px-6 py-[9px] rounded-xl border border-[#d0d0d0] justify-center items-center gap-[126px] hover:bg-[#f8bf2d] hover:text-black text-[#bfbfbf] text-base font-semibold font-['Manrope'] leading-normal inline-flex"
+>
+  Download Report
+</a>
                     </div>
                 </header>
 

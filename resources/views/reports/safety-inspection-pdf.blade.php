@@ -58,6 +58,7 @@
 
     <div class="header">
         <h2>Safety Inspection Report</h2>
+        <p><span class="label">Site Name:</span> {{ $inspection->site->name }}</p>
         <p><span class="label">Inspection #:</span> {{ $inspection->id }}</p>
         <p><span class="label">Inspector:</span> {{ $inspection->assigned_to->name ?? 'N/A' }}</p>
         <p><span class="label">Completed:</span> {{ \Carbon\Carbon::parse($inspection->complete_date)->toDateString() }}

@@ -207,8 +207,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/report', [ReportController::class, 'generateReport']);
-    Route::get('/report/equipment', [ReportController::class, 'equipment'])->name('equipment');
+    Route::get('/reports/report', [ReportController::class, 'reports.generateReport']);
+    Route::get('/reports/equipment', [ReportController::class, 'equipment'])->name('reports.equipment');
     Route::get('/reports/inspection', [ReportController::class, 'inspection'])->name('reports.inspection');
 
     //Route::get('system-calendar', 'SystemCalendarController@index')->name('calendar.index');
