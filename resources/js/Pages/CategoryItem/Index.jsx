@@ -100,7 +100,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
-                            <th className="px-6 py-3 table-header uppercase tracking-wider">
+                            {/* <th className="px-6 py-3 table-header uppercase tracking-wider">
                             <Link 
                                 href={route('category-items.index', { 
                                     data: data,
@@ -128,7 +128,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                             </th>
                             <th className="px-6 py-3 text-left table-header uppercase tracking-wider">
                                     Certification Recieved
-                            </th>
+                            </th> */}
                             <th className="px-6 py-3 uppercase tracking-wider">
                                 
                             </th>
@@ -142,7 +142,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                             <div className="w-full table-text1 ">{categoryItem.name}</div>                                        
                                     </div>
                                 </td>
-                                <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
+                                {/* <td className=" px-6 py-4 whitespace-nowrap text-start justify-center   ">
                                     <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
                                             <div className="w-full table-text1 ">{categoryItem.site.name}</div>                                        
                                     </div>
@@ -156,7 +156,7 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                                     <div className="w-full h-[49px] flex-col justify-center items-start gap-[9px] inline-flex border-r border-gray-300 ">
                                             <div className="w-full table-text1 ">{categoryItem.certificate_recieved.name}</div>                                        
                                     </div>
-                                </td>
+                                </td> */}
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.category_item_show && (
                                         <button
