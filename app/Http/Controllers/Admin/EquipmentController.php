@@ -223,8 +223,8 @@ class EquipmentController extends Controller
             'can' => [
                 'equipment_replace_new' => auth()->user()->can('equipment_replace_new'),
                 'inspection_edit_reminder' => auth()->user()->can('inspection_edit_reminder'),
-                'inspection_edit_inspector' => auth()->user()->can('inspection_edit_inspector'),
-                'inspection_edit_date' => auth()->user()->can('inspection_edit_date'),
+                'inspection_edit_inspector' => false, // auth()->user()->can('inspection_edit_inspector'),
+                'inspection_edit_date' => false, // auth()->user()->can('inspection_edit_date'),
             ],
         ]);
     }

@@ -162,8 +162,8 @@ class DrillController extends Controller
                 'drill_delete' => auth()->user()->can('drill_delete'),
                 'drill_create' => auth()->user()->can('drill_create'),
                 'drill_edit_reminder' => auth()->user()->can('drill_edit_reminder'),
-                'drill_edit_inspector' => auth()->user()->can('drill_edit_inspector'),
-                'drill_edit_date' => auth()->user()->can('drill_edit_date'),
+                'drill_edit_inspector' => false, // auth()->user()->can('drill_edit_inspector'),
+                'drill_edit_date' => false, // auth()->user()->can('drill_edit_date'),
             ],
         ]);
     }

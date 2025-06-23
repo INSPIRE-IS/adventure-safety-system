@@ -231,8 +231,8 @@ class InspectionController extends Controller
                 'inspection_resolve' => auth()->user()->can('inspection_resolve'),
                 'inspection_esculate' => auth()->user()->can('inspection_esculate'),
                 'inspection_edit_reminder' => auth()->user()->can('inspection_edit_reminder'),
-                'inspection_edit_inspector' => auth()->user()->can('inspection_edit_inspector'),
-                'inspection_edit_date' => auth()->user()->can('inspection_edit_date'),
+                'inspection_edit_inspector' => false, // auth()->user()->can('inspection_edit_inspector'),
+                'inspection_edit_date' => false, // auth()->user()->can('inspection_edit_date'),
             ],
         ]);
     }
