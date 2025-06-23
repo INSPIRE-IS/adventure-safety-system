@@ -30,8 +30,8 @@
         }
 
         .images img {
-            height: 100px;
-            width: auto;
+            height: 10px;
+            width: 10px;
             margin: 5px;
         }
 
@@ -101,7 +101,8 @@
                         @if (count($issue['files']) > 0)
                             <div class="images">
                                 @foreach ($issue['files'] as $file)
-                                    <img src="{{ public_path($file['path']) }}" alt="{{ $file['file_name'] }}">
+                                    <img src="{{ public_path($file['path']) }}" alt="{{ $file['file_name'] }}"
+                                        width="100" height="100" />
                                 @endforeach
                             </div>
                         @endif

@@ -55,7 +55,7 @@ class ReportController extends Controller
         $inspection_details = SafetyInspectionDetail::where('inspection_id', $inspection->id)
             ->with(['files', 'category_item:id,name', 'category_detail'])
             ->get();
-        //dd($inspection_details);
+        // dd($inspection_details[5]);
         // Group data similar to React logic
         $groupedData = [];
         $issueCount = 0;
@@ -79,7 +79,7 @@ class ReportController extends Controller
                     return [
                         'file_name' => $file->file_name,
                         'file_type' => $file->file_type,
-                        'path' => 'storage/' . $file->path, // assumes file is in public/storage
+                        'path' => $file->path, // 'storage/' . $file->path, // assumes file is in public/storage
                         'created_at' => $file->created_at
                     ];
                 })->toArray()
@@ -90,6 +90,8 @@ class ReportController extends Controller
                 $issueCount++;
             }
         }
+        //dd($groupedData);
+
         /** @disregard P1009 */
         $pdf = PDF::loadView('reports.safety-inspection-pdf', [
             'inspection' => $inspection,
