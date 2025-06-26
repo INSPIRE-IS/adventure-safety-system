@@ -36,6 +36,8 @@ class ReportController extends Controller
         $inspection_details = EquipmentInspectionDetail::where('inspection_id', $inspection_id)
             ->with(['category_item:id,name', 'category_detail'])
             ->get();
+
+        //dd($inspection_details);
         /** @disregard P1009 */
         $pdf = PDF::loadView('reports.inspection-pdf', compact('inspection', 'inspection_details'));
 

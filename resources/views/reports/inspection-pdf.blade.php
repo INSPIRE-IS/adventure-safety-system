@@ -78,24 +78,6 @@
     <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($inspection->complete_date)->toDateString() }}</p>
 
     {{-- <div class="section summary-boxes">
-        <div class="total">
-            <p>Total Checked</p>
-            <h3>{{ $inspection_details->count() }}</h3>
-        </div>
-        <div class="good">
-            <p>Good</p>
-            <h3>{{ $inspection_details->where('condition', 0)->count() }}</h3>
-        </div>
-        <div class="worn">
-            <p>Worn but OK</p>
-            <h3>{{ $inspection_details->where('condition', 1)->count() }}</h3>
-        </div>
-        <div class="failed">
-            <p>Failed and Removed</p>
-            <h3>{{ $inspection_details->where('condition', 2)->count() }}</h3>
-        </div>
-    </div> --}}
-    <div class="section summary-boxes">
         <table>
             <thead>
                 <tr>
@@ -115,7 +97,7 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div> --}}
 
 
 
@@ -123,8 +105,29 @@
         $grouped = $inspection_details->groupBy('category_item.name');
     @endphp
 
-    @foreach ($grouped as $categoryName => $items)
-        <div class="group-title">{{ $categoryName }} (Total: {{ count($items) }})</div>
+    @php
+        // Group by category name
+        $grouped = $inspection_details->groupBy('category_item.name')->map(function ($items) {
+            return [
+                'items' => $items,
+                'total' => $items->count(),
+                'good' => $items->where('condition', 0)->count(),
+                'worn' => $items->where('condition', 1)->count(),
+                'failed' => $items->where('condition', 2)->count(),
+            ];
+        });
+    @endphp
+
+
+    @foreach ($grouped as $categoryName => $data)
+        <div class="group-title">
+            {{ $categoryName }}
+            (Total: {{ $data['total'] }},
+            Good: {{ $data['good'] }},
+            Worn: {{ $data['worn'] }},
+            Failed: {{ $data['failed'] }})
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -134,7 +137,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($items as $item)
+                @foreach ($data['items'] as $item)
                     <tr>
                         <td>{{ $item->category_detail->name }}</td>
                         <td>
