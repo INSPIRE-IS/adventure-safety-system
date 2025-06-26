@@ -227,18 +227,18 @@ const Sidebar = () => {
                 permission: "user_access",
                 route: 'users.index',
                 dropdown: [
-                    // {
-                    //     label: "Permissions",
-                    //     icon: "fas fa-unlock-alt",
-                    //     route: "permissions.index",
-                    //     permission: "permission_access",
-                    // },
-                    // {
-                    //     label: "Roles",
-                    //     icon: "fas fa-briefcase",
-                    //     route: "roles.index",
-                    //     permission: "role_access",
-                    // },
+                    {
+                        label: "Permissions",
+                        icon: "fas fa-unlock-alt",
+                        route: "permissions.index",
+                        permission: "permission_access",
+                    },
+                    {
+                        label: "Roles",
+                        icon: "fas fa-briefcase",
+                        route: "roles.index",
+                        permission: "role_access",
+                    },
                     // {
                     //     label: "Users",
                     //     icon: "fas fa-user",
@@ -251,18 +251,18 @@ const Sidebar = () => {
                     //     route: "sites.index",
                     //     permission: "site_access",
                     // },              
-                    // {
-                    //     label: "User Alerts",
-                    //     icon: "fas fa-bell",
-                    //     route: "user-alerts.index",
-                    //     permission: "user_alert_access",
-                    // },
-                    // {
-                    //     label: "Audit Logs",
-                    //     icon: "fas fa-file-alt",
-                    //     route: "audit-logs.index",
-                    //     permission: "audit_log_access",
-                    // },
+                    {
+                        label: "User Alerts",
+                        icon: "fas fa-bell",
+                        route: "user-alerts.index",
+                        permission: "user_alert_access",
+                    },
+                    {
+                        label: "Audit Logs",
+                        icon: "fas fa-file-alt",
+                        route: "audit-logs.index",
+                        permission: "audit_log_access",
+                    },
                 ],
             },
         // {
