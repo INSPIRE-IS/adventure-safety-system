@@ -89,7 +89,13 @@ class ReportController extends Controller
             }
         }
         //dd($groupedData);
-
+        // if ($request->input('preview') === 'true') {
+        //     return view('reports.safety-inspection-pdf', [
+        //         'inspection' => $inspection,
+        //         'groupedData' => $groupedData,
+        //         'issueCount' => $issueCount
+        //     ]);
+        // }
         /** @disregard P1009 */
         $pdf = PDF::loadView('reports.safety-inspection-pdf', [
             'inspection' => $inspection,
@@ -99,5 +105,6 @@ class ReportController extends Controller
 
         return $pdf->stream("safety-inspection-{$inspection->id}.pdf");
         //return $pdf->download("safety-inspection-{$inspection->id}.pdf");
+        //return view('admin.bookingDetails.index', compact('bookingDetails'));
     }
 }
