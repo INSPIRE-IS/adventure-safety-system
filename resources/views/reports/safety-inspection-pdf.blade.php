@@ -88,7 +88,7 @@
 
             @foreach ($category['issues'] as $issue)
                 <div class="box">
-                    <h4>Reference: {{ $issue['category_detail_name'] }}
+                    <h4>{{ $issue['category_detail_name'] }}
                         <span class="label">Condition:</span>
                         @if ($issue['condition'] === null && count($issue['files']) <= 0)
                             <span class="icon">
