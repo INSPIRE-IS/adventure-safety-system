@@ -10,7 +10,7 @@ const InspectionModal = ({ isOpen, onClose, mode, inspection = null, sites, type
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
         category_item_id: "",
-        type_inspection_id: "",
+        type_inspection_id: 1,
         site_id: "",
         period_id: "",
         user_id: "",

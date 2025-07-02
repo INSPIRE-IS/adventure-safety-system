@@ -180,6 +180,7 @@ const InspectionSchedulesIndex = ({auth, inspectionSchedules, can, searchTerm, s
                 periods={periods}
                 users={users}
                 data={data}
+                type_id = '1'
             />
             </div>
 
