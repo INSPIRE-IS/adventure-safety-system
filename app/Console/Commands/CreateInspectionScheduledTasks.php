@@ -33,12 +33,12 @@ class CreateInspectionScheduledTasks extends Command
      */
     public function handle()
     {
+        $debug = 0;
         // TEST 
         // php artisan app:create-inspection-scheduled-tasks
         // php artisan tasks:create-inspection-scheduled
 
-        //Log::info('Scheduled tasks created at ' . now());
-        $this->info('Scheduled tasks created at ' . now());
+        if ($debug == 1) Log::info('InspectionSchedule tasks created at ' . now());
         // Get today's date for comparison
         $today = Carbon::today();
 
@@ -52,13 +52,18 @@ class CreateInspectionScheduledTasks extends Command
             6 => 'Annually'
         ];
 
-        // Fetch all InspectionSchedules for today with the same month and day
-        $inspectionSchedules = InspectionSchedule::whereMonth('active_date', $today->month)
+        // Fetch all InspectionSchedules for today with the same month and day then every month same day moving forward
+        $inspectionSchedules = InspectionSchedule::where('active_date', '<=', $today)
             ->whereDay('active_date', $today->day)
             ->get();
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->year);
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->month);
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->day);
+        if ($debug == 1) Log::info($inspectionSchedules);
+
         //$this->info('Scheduled tasks created at ' . now());
         foreach ($inspectionSchedules as $inspectionSchedule) {
-            $this->info('InspectionSchedule: ' . $inspectionSchedule->id);
+            if ($debug == 1) Log::info('InspectionSchedule: ' . $inspectionSchedule->id);
             // Get the period ID and the corresponding period
             $periodId = $inspectionSchedule->period_id;
             $period = $periods[$periodId] ?? 'None';
@@ -89,6 +94,7 @@ class CreateInspectionScheduledTasks extends Command
                 ->first();
             //$this->info('inspection: ' . $inspection->id);
             // If no inspection exists, create a new one
+
             if (!$inspection) {
                 $inspection = new Inspection();
                 $inspection->inspection_schedule_id = $inspectionSchedule->id;
@@ -97,47 +103,46 @@ class CreateInspectionScheduledTasks extends Command
                 $inspection->due_date = $dueDate;
                 $inspection->site_id = $inspectionSchedule->site_id;
                 $inspection->save();
+
+                $typeInspection = TypeInspection::find($inspection->type_inspection_id);
+                $name = $typeInspection->name ?? "Inspection";
+                // this link is set as menu names in app do not change it will break
+                $alert_link = "(/monthly_safety)";
+                if ($inspection->type_inspection_id == 2) {
+                    $alert_link = "(/anual_safety)";
+                }
+                if ($inspection->type_inspection_id == 3) {
+                    $alert_link = "(/ppe)";
+                }
+                $subject = "You have been assigned to a " . $name . ".";
+                $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection before " . $inspection->due_date . ".";
+                $notification = "Please note that you have been assigned to a " . $name . ".";
+
+                $users = array_filter([$inspection->assigned_to_id]); // [4, 5, 6];
+                if (!empty($users)) {
+                    $recipients = User::whereIn('id', $users)->get();
+
+                    foreach ($recipients as $user) {
+                        Log::info("Sending message to: {$user->id}");
+                        //dd($message);
+                        SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
+                    }
+                }
+                $userAlert = UserAlert::firstOrCreate(
+                    ['alert_param_id' => $inspection->id],
+                    [
+                        'alert_text' => $notification,
+                        'alert_link' => $alert_link,
+                    ]
+                );
+
+                $userAlert->users()->syncWithoutDetaching($users);
             } else {
                 // If the inspection exists, update the due date
                 $inspection->due_date = $dueDate;
                 $inspection->save();
             }
-
-            $typeInspection = TypeInspection::find($inspection->type_inspection_id);
-            $name = $typeInspection->name ?? "Inspection";
-            // this link is set as menu names in app do not change it will break
-            $alert_link = "(/monthly_safety)";
-            if ($inspection->type_inspection_id == 2) {
-                $alert_link = "(/anual_safety)";
-            }
-            if ($inspection->type_inspection_id == 3) {
-                $alert_link = "(/ppe)";
-            }
-            $subject = "You have been assigned to a " . $name . ".";
-            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the inspection before " . $inspection->due_date . ".";
-            $notification = "Please note that you have been assigned to a " . $name . ".";
-
-            $users = array_filter([$inspection->assigned_to_id]); // [4, 5, 6];
-            if (!empty($users)) {
-                $recipients = User::whereIn('id', $users)->get();
-
-                foreach ($recipients as $user) {
-                    Log::info("Sending message to: {$user->id}");
-                    //dd($message);
-                    SendMessageJob::dispatch($user->id, $inspection->site_id, $subject, $message);
-                }
-            }
-            $userAlert = UserAlert::firstOrCreate(
-                ['alert_param_id' => $inspection->id],
-                [
-                    'alert_text' => $notification,
-                    'alert_link' => $alert_link,
-                ]
-            );
-
-            $userAlert->users()->syncWithoutDetaching($users);
-
-            $this->info('inspection: ' . $inspection->id);
+            if ($debug == 1) Log::info('inspection: ' . $inspection->id);
         }
 
         // foreach ($inspectionSchedule as $schedule) {

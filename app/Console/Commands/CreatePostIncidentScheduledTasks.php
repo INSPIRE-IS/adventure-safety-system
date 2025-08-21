@@ -33,12 +33,12 @@ class CreatePostIncidentScheduledTasks extends Command
      */
     public function handle()
     {
+        $debug = 0;
         // TEST 
         // php artisan app:create-postincident-scheduled-tasks
         // php artisan tasks:create-postincident-scheduled
 
-        //Log::info('Scheduled tasks created at ' . now());
-        $this->info('Scheduled tasks created at ' . now());
+        if ($debug == 1) Log::info('PostIncidentSchedule tasks created at ' . now());
         // Get today's date for comparison
         $today = Carbon::today();
 
@@ -49,10 +49,15 @@ class CreatePostIncidentScheduledTasks extends Command
         ];
 
         // Fetch all PostIncidentSchedules for today with the same month and day
-        $postIncidentSchedules = PostIncidentSchedule::whereMonth('active_date', $today->month)
+
+        $postIncidentSchedules = PostIncidentSchedule::where('active_date', '<=', $today)
             ->whereDay('active_date', $today->day)
             ->get();
-        //$this->info('Scheduled tasks created at ' . now());
+
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->year);
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->month);
+        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->day);
+        if ($debug == 1) Log::info($postIncidentSchedules);
         foreach ($postIncidentSchedules as $postincidentSchedule) {
             $this->info('PostIncidentSchedule: ' . $postincidentSchedule->id);
             // Get the period ID and the corresponding period
@@ -87,48 +92,47 @@ class CreatePostIncidentScheduledTasks extends Command
                 $postincident->due_date = $dueDate;
                 $postincident->site_id = $postincidentSchedule->site_id;
                 $postincident->save();
+
+                $typeIncident = TypeIncident::find($postincident->type_incident_id);
+                $name = $typeIncident->name ?? "Inspection";
+
+                $subject = "You have been assigned to a " . $name . ".";
+                $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the post incident before " . $postincident->due_date . ".";
+                $notification = "Please note that you have been assigned to a " . $name . ".";
+
+                $users = array_filter([$postincident->assigned_to_id]); // [4, 5, 6];
+                if (!empty($users)) {
+                    $recipients = User::whereIn('id', $users)->get();
+
+                    foreach ($recipients as $user) {
+                        Log::info("Sending message to: {$user->id}");
+                        //dd($message);
+                        SendMessageJob::dispatch($user->id, $postincident->site_id, $subject, $message);
+                    }
+                }
+                // the alert link is set as menu names in app do not change it will break
+                $userAlert = UserAlert::create([
+                    'alert_text' => $notification,
+                    'alert_link' => '/(rescue)',
+                    'alert_param_id' => $postincident->id,
+                ]);
+                $userAlert->users()->sync($users);
+
+                $userAlert = UserAlert::firstOrCreate(
+                    ['alert_param_id' => $postincident->id],
+                    [
+                        'alert_text' => $notification,
+                        'alert_link' => '/(post_incident)',
+                    ]
+                );
+
+                $userAlert->users()->syncWithoutDetaching($users);
             } else {
                 // If the postincident exists, update the due date
                 $postincident->due_date = $dueDate;
                 $postincident->save();
             }
-
-            $typeIncident = TypeIncident::find($postincident->type_incident_id);
-            $name = $typeIncident->name ?? "Inspection";
-
-            $subject = "You have been assigned to a " . $name . ".";
-            $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the post incident before " . $postincident->due_date . ".";
-            $notification = "Please note that you have been assigned to a " . $name . ".";
-
-            $users = array_filter([$postincident->assigned_to_id]); // [4, 5, 6];
-            if (!empty($users)) {
-                $recipients = User::whereIn('id', $users)->get();
-
-                foreach ($recipients as $user) {
-                    Log::info("Sending message to: {$user->id}");
-                    //dd($message);
-                    SendMessageJob::dispatch($user->id, $postincident->site_id, $subject, $message);
-                }
-            }
-            // the alert link is set as menu names in app do not change it will break
-            $userAlert = UserAlert::create([
-                'alert_text' => $notification,
-                'alert_link' => '/(rescue)',
-                'alert_param_id' => $postincident->id,
-            ]);
-            $userAlert->users()->sync($users);
-
-            $userAlert = UserAlert::firstOrCreate(
-                ['alert_param_id' => $postincident->id],
-                [
-                    'alert_text' => $notification,
-                    'alert_link' => '/(post_incident)',
-                ]
-            );
-
-            $userAlert->users()->syncWithoutDetaching($users);
-
-            $this->info('postincident: ' . $postincident->id);
+            if ($debug == 1) Log::info('postincident: ' . $postincident->id);
         }
 
         // foreach ($postincidentSchedule as $schedule) {
