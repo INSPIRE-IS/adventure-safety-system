@@ -102,6 +102,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
     Route::apiResource('complaints', ComplaintApiController::class)->except(['create', 'edit']);
     // UserAlert
     Route::apiResource('user-alerts', UserAlertApiController::class)->except(['create', 'edit']);
+    // AppError
+    Route::apiResource('app-errors', UserAlertApiController::class)->except(['create', 'edit']);
 
     // Incident Instructor // pivot table for Incident
     //Route::apiResource('incident-instructors', IncidentInstructorApiController::class)->except(['create', 'edit']); 
