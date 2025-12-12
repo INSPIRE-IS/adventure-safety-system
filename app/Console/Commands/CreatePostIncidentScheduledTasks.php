@@ -50,48 +50,42 @@ class CreatePostIncidentScheduledTasks extends Command
 
         // Fetch all PostIncidentSchedules for today with the same month and day
 
-        $postIncidentSchedules = PostIncidentSchedule::where('active_date', '<=', $today)
-            ->whereDay('active_date', $today->day)
+        $postIncidentSchedules = PostIncidentSchedule::whereDate('active_date', $today)
+            ->whereNull('deleted_at')
             ->get();
+        if ($debug == 1) Log::info("Found {$postIncidentSchedules->count()} PostIncidentSchedule(s) due today ({$today})");
 
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->year);
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->month);
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->day);
-        if ($debug == 1) Log::info($postIncidentSchedules);
-        foreach ($postIncidentSchedules as $postincidentSchedule) {
-            $this->info('PostIncidentSchedule: ' . $postincidentSchedule->id);
+        foreach ($postIncidentSchedules as $schedule) {
+            if ($debug == 1) Log::info("Processing PostIncidentSchedule ID: {$schedule->id}");
             // Get the period ID and the corresponding period
-            $periodId = $postincidentSchedule->period_id;
-            $period = $periods[$periodId] ?? 'None';
-            $activeDate = Carbon::parse($postincidentSchedule['active_date']);
-            $dueDate = clone $activeDate;
+            $period = $periods[$schedule->period_id] ?? 'None';
+            $activeDate = Carbon::parse($schedule->active_date);
+            $dueDate = $activeDate->copy();
 
             // Calculate the due date based on the period
             //$dueDate = null;
-            if ($period == 'Once') {
-                $dueDate->addDays(1);
-            }
-            // $this->info('postincident: ' . $dueDate);
-            // die();
-            // If the period is 'None', skip the due date calculation
-            if ($period == 'None') {
+            if ($period === 'Once') {
+                $dueDate->addDay();
+            } elseif ($period === 'None') {
+                Log::info("PostIncidentSchedule {$schedule->id} has no period. Skipping.");
                 continue;
             }
 
             // Check if an postincident already exists for this schedule
-            $postincident = PostIncident::where('post_incident_schedule_id', $postincidentSchedule->id)
-                ->where('assigned_to_id', $postincidentSchedule->assigned_to_id)
+            $postIncident = PostIncident::where('post_incident_schedule_id', $schedule->id)
+                ->where('assigned_to_id', $schedule->assigned_to_id)
+                ->where('due_date', $dueDate)
                 ->first();
             //$this->info('postincident: ' . $postincident->id);
             // If no postincident exists, create a new one
             if (!$postincident) {
                 $postincident = new PostIncident();
-                $postincident->type_incident_id = $postincidentSchedule->type_incident_id;
-                $postincident->post_incident_schedule_id = $postincidentSchedule->id;
-                $postincident->assigned_to_id = $postincidentSchedule->assigned_to_id;
-                $postincident->due_date = $dueDate;
-                $postincident->site_id = $postincidentSchedule->site_id;
-                $postincident->save();
+                $postIncident->type_incident_id = $schedule->type_incident_id;
+                $postIncident->post_incident_schedule_id = $schedule->id;
+                $postIncident->assigned_to_id = $schedule->assigned_to_id;
+                $postIncident->due_date = $dueDate;
+                $postIncident->site_id = $schedule->site_id;
+                $postIncident->save();
 
                 $typeIncident = TypeIncident::find($postincident->type_incident_id);
                 $name = $typeIncident->name ?? "Inspection";
@@ -127,17 +121,25 @@ class CreatePostIncidentScheduledTasks extends Command
                 );
 
                 $userAlert->users()->syncWithoutDetaching($users);
-            } else {
-                // If the postincident exists, update the due date
-                $postincident->due_date = $dueDate;
-                $postincident->save();
             }
+            // else {
+            //     // If the postincident exists, update the due date
+            //     $postincident->due_date = $dueDate;
+            //     $postincident->save();
+            // }
             if ($debug == 1) Log::info('postincident: ' . $postincident->id);
+
+
+            // we dont need to do anything once it was sent as i is a once off
+
+            // For 'Once', move active_date forward by 1 day for testing (or mark as completed in real app)            
+            // if ($period === 'Once') {
+            //     $schedule->active_date = $activeDate->addDay();
+            //     $schedule->save();
+            //     Log::info("Updated PostIncidentSchedule ID {$schedule->id} next active_date to {$schedule->active_date}");
+            // }            
         }
 
-        // foreach ($postincidentSchedule as $schedule) {
-        //     //Log::info('PostIncidentSchedule: ' . $schedule->id);
-        //     $this->info('PostIncidentSchedule: ' . $schedule);
-        // }
+        Log::info("---- Finished PostIncident Scheduler ----");
     }
 }

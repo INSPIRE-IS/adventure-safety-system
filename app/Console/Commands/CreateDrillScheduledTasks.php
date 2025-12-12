@@ -48,40 +48,49 @@ class CreateDrillScheduledTasks extends Command
             2 => 'Monthly',
             3 => 'Bi-Monthly', // (every 2 months)
             4 => 'Quarterly', // (every 3 months)
-            5 => 'Semi-Annually', // (every 6 months)
+            5 => '6 Monthly', // (every 6 months)
             6 => 'Annually'
         ];
 
 
         // Fetch all DrillSchedules for today with the same month and day
 
-        $drillSchedules = DrillSchedule::where('active_date', '<=', $today)
-            ->whereDay('active_date', $today->day)
+        $drillSchedules = DrillSchedule::whereDate('active_date', $today)
+            ->whereNull('deleted_at')
             ->get();
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->year);
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->month);
-        if ($debug == 1) Log::info('Scheduled tasks created at ' . $today->day);
-        if ($debug == 1) Log::info($drillSchedules);
+
+        if ($debug == 1) Log::info("Found {$drillSchedules->count()} drill schedule(s) due today ({$today})");
 
         //$this->info('Scheduled tasks created at ' . now());
-        foreach ($drillSchedules as $drillSchedule) {
-            $this->info('DrillSchedule: ' . $drillSchedule->id);
+        foreach ($drillSchedules as $schedule) {
+            $this->info("Processing DrillSchedule ID: {$schedule->id}");
             // Get the period ID and the corresponding period
-            $periodId = $drillSchedule->period_id;
-            $period = $periods[$periodId] ?? 'None';
-            $activeDate = Carbon::parse($drillSchedule['active_date']);
-            $dueDate = clone $activeDate;
+            $period = $periods[$schedule->period_id] ?? 'None';
+            $activeDate = Carbon::parse($schedule->active_date);
+            $dueDate = $activeDate->copy();
 
             // Calculate the due date based on the period
             //$dueDate = null;
-            if ($period == '3 Month') {
-                $dueDate->addMonths(3);
-            } elseif ($period == '4 Month') {
-                $dueDate->addMonths(4);
-            } elseif ($period == '6 Month') {
-                $dueDate->addMonths(6);
-            } elseif ($period == '12 Month') {
-                $dueDate->addMonths(12);
+            switch ($period) {
+                case 'Monthly':
+                    $dueDate->addMonth();
+                    break;
+                case 'Bi-Monthly':
+                    $dueDate->addMonths(2);
+                    break;
+                case 'Quarterly':
+                    $dueDate->addMonths(3);
+                    break;
+                case '6 Monthly':
+                    $dueDate->addMonths(6);
+                    break;
+                case 'Annually':
+                    $dueDate->addYear();
+                    break;
+                case 'None':
+                default:
+                    Log::info("DrillSchedule {$schedule->id} has no period. Skipping.");
+                    continue 2;
             }
             // $this->info('drill: ' . $dueDate);
             // die();
@@ -91,25 +100,26 @@ class CreateDrillScheduledTasks extends Command
             }
 
             // Check if an drill already exists for this schedule
-            $drill = Drill::where('drill_schedule_id', $drillSchedule->id)
-                ->where('assigned_to_id', $drillSchedule->assigned_to_id)
+            $drill = Drill::where('drill_schedule_id', $schedule->id)
+                ->where('due_date', $dueDate)
+                ->where('assigned_to_id', $schedule->assigned_to_id)
                 ->first();
             //$this->info('drill: ' . $drill->id);
             // If no drill exists, create a new one
             if (!$drill) {
                 $drill = new Drill();
-                $drill->assigned_to_id = $drillSchedule->assigned_to_id;
+                $drill->assigned_to_id = $schedule->assigned_to_id;
                 $drill->due_date = $dueDate;
-                $drill->site_id = $drillSchedule->site_id;
-                $drill->drill_schedule_id = $drillSchedule->id;
-                $drill->type_activity_id = $drillSchedule->type_activity_id;
-                $drill->type_drill_id = $drillSchedule->type_drill_id;
+                $drill->site_id = $schedule->site_id;
+                $drill->drill_schedule_id = $schedule->id;
+                $drill->type_activity_id = $schedule->type_activity_id;
+                $drill->type_drill_id = $schedule->type_drill_id;
                 $drill->save();
-
+                Log::info("Created new Drill ID {$drill->id}");
                 try {
 
-                    $typeInspection = TypeDrill::find($drill->type_drill_id);
-                    $name = $typeInspection->name ?? "Safety Drill";
+                    $typeDrill = TypeDrill::find($drill->type_drill_id);
+                    $name = $typeDrill->name ?? "Safety Drill";
 
                     $subject = "You have been assigned to a " . $name . ".";
                     $message = "Please note that you have been assigned to a " . $name . ". <br/> Please complete the safety drill before " . $drill->due_date . ".";
@@ -139,13 +149,37 @@ class CreateDrillScheduledTasks extends Command
 
                     Log::error("Error sending message to {$drill->assigned_to_id}: " . $e->getMessage());
                 }
-            } else {
-                // If the drill exists, update the due date
-                $drill->due_date = $dueDate;
-                $drill->save();
             }
+            // else {
+            //     // If the drill exists, update the due date
+            //     $drill->due_date = $dueDate;
+            //     $drill->save();
+            //     if ($debug == 1) Log::info("Updated existing Drill ID {$drill->id}");
+            // }
             if ($debug == 1) Log::info('type_drill_id: ' . $drill->type_drill_id);
-            if ($debug == 1) Log::info('drill: ' . $drill->id);
+            $nextActiveDate = $activeDate->copy();
+            switch ($period) {
+                case 'Monthly':
+                    $nextActiveDate->addMonth();
+                    break;
+                case 'Bi-Monthly':
+                    $nextActiveDate->addMonths(2);
+                    break;
+                case 'Quarterly':
+                    $nextActiveDate->addMonths(3);
+                    break;
+                case 'Semi-Annually':
+                    $nextActiveDate->addMonths(6);
+                    break;
+                case 'Annually':
+                    $nextActiveDate->addYear();
+                    break;
+            }
+            $schedule->active_date = $nextActiveDate;
+            $schedule->save();
+
+            if ($debug == 1) Log::info("Updated DrillSchedule ID {$schedule->id} next active_date to {$nextActiveDate}");
         }
+        Log::info("---- Finished Drill Scheduler ----");
     }
 }
