@@ -66,27 +66,27 @@ class CreateInspectionScheduledTasks extends Command
             $dueDate = $activeDate->copy();
 
             // Calculate due date based on period
-            switch ($period) {
-                case 'Monthly':
-                    $dueDate->addMonth();
-                    break;
-                case 'Bi-Monthly':
-                    $dueDate->addMonths(2);
-                    break;
-                case 'Quarterly':
-                    $dueDate->addMonths(3);
-                    break;
-                case '6 Monthly':
-                    $dueDate->addMonths(6);
-                    break;
-                case 'Annually':
-                    $dueDate->addYear();
-                    break;
-                case 'None':
-                default:
-                    Log::info("Schedule {$schedule->id} has no period. Skipping.");
-                    continue 2; // skip to next schedule
-            }
+            // switch ($period) {
+            //     case 'Monthly':
+            //         $dueDate->addMonth();
+            //         break;
+            //     case 'Bi-Monthly':
+            //         $dueDate->addMonths(2);
+            //         break;
+            //     case 'Quarterly':
+            //         $dueDate->addMonths(3);
+            //         break;
+            //     case '6 Monthly':
+            //         $dueDate->addMonths(6);
+            //         break;
+            //     case 'Annually':
+            //         $dueDate->addYear();
+            //         break;
+            //     case 'None':
+            //     default:
+            //         Log::info("Schedule {$schedule->id} has no period. Skipping.");
+            //         continue 2; // skip to next schedule
+            // }
             // $this->info('inspection: ' . $dueDate);
             // die();
             // If the period is 'None', skip the due date calculation
@@ -96,7 +96,7 @@ class CreateInspectionScheduledTasks extends Command
 
             // Check if an inspection already exists for this schedule
             $inspection = Inspection::where('inspection_schedule_id', $schedule->id)
-                ->where('due_date', $dueDate)
+                ->where('due_date', $dueDate->addMonth())
                 ->where('assigned_to_id', $schedule->assigned_to_id)
                 ->whereNull('deleted_at')
                 ->first();
@@ -108,7 +108,7 @@ class CreateInspectionScheduledTasks extends Command
                 $inspection->inspection_schedule_id = $schedule->id;
                 $inspection->type_inspection_id = $schedule->type_inspection_id;
                 $inspection->assigned_to_id = $schedule->assigned_to_id;
-                $inspection->due_date = $dueDate;
+                $inspection->due_date = $dueDate->addMonth();
                 $inspection->site_id = $schedule->site_id;
                 $inspection->save();
 

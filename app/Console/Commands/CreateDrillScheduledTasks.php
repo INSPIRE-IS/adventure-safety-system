@@ -71,27 +71,27 @@ class CreateDrillScheduledTasks extends Command
 
             // Calculate the due date based on the period
             //$dueDate = null;
-            switch ($period) {
-                case 'Monthly':
-                    $dueDate->addMonth();
-                    break;
-                case 'Bi-Monthly':
-                    $dueDate->addMonths(2);
-                    break;
-                case 'Quarterly':
-                    $dueDate->addMonths(3);
-                    break;
-                case '6 Monthly':
-                    $dueDate->addMonths(6);
-                    break;
-                case 'Annually':
-                    $dueDate->addYear();
-                    break;
-                case 'None':
-                default:
-                    Log::info("DrillSchedule {$schedule->id} has no period. Skipping.");
-                    continue 2;
-            }
+            // switch ($period) {
+            //     case 'Monthly':
+            //         $dueDate->addMonth();
+            //         break;
+            //     case 'Bi-Monthly':
+            //         $dueDate->addMonths(2);
+            //         break;
+            //     case 'Quarterly':
+            //         $dueDate->addMonths(3);
+            //         break;
+            //     case '6 Monthly':
+            //         $dueDate->addMonths(6);
+            //         break;
+            //     case 'Annually':
+            //         $dueDate->addYear();
+            //         break;
+            //     case 'None':
+            //     default:
+            //         Log::info("DrillSchedule {$schedule->id} has no period. Skipping.");
+            //         continue 2;
+            // }
             // $this->info('drill: ' . $dueDate);
             // die();
             // If the period is 'None', skip the due date calculation
@@ -101,7 +101,7 @@ class CreateDrillScheduledTasks extends Command
 
             // Check if an drill already exists for this schedule
             $drill = Drill::where('drill_schedule_id', $schedule->id)
-                ->where('due_date', $dueDate)
+                ->where('due_date', $dueDate->addMonth())
                 ->where('assigned_to_id', $schedule->assigned_to_id)
                 ->first();
             //$this->info('drill: ' . $drill->id);
@@ -109,7 +109,7 @@ class CreateDrillScheduledTasks extends Command
             if (!$drill) {
                 $drill = new Drill();
                 $drill->assigned_to_id = $schedule->assigned_to_id;
-                $drill->due_date = $dueDate;
+                $drill->due_date = $dueDate->addMonth();
                 $drill->site_id = $schedule->site_id;
                 $drill->drill_schedule_id = $schedule->id;
                 $drill->type_activity_id = $schedule->type_activity_id;
