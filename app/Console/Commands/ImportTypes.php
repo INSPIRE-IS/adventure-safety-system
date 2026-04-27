@@ -30,11 +30,10 @@ class ImportTypes extends Command
         TypeInspection::create(['name' => 'Annual Safety Inspection']); // safety inspection        
         TypeInspection::create(['name' => 'PPE Inspections']); // equipment inspection
 
-        TypeDrill::create(['name' => 'Fire Fighting']);
-        TypeDrill::create(['name' => 'Evacuation']);
-        TypeDrill::create(['name' => 'CPR']);
-        TypeDrill::create(['name' => 'Rescue']);
-        TypeDrill::create(['name' => 'Belay to Ground']);
+        TypeDrill::create(['name' => 'Normal Client Belay']);
+        TypeDrill::create(['name' => 'Lever Hoist Belay']);
+        TypeDrill::create(['name' => 'Self Belay']);
+        TypeDrill::create(['name' => 'Zipline Retrieval']);
 
 
         TypeBool::create(['name' => 'Yes']);
