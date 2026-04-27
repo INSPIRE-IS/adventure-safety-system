@@ -23,7 +23,15 @@ class ComplaintApiController extends Controller
 
     public function store(StoreComplaintRequest $request)
     {
-        Log::info('store complaint-------------------------------------', [$request->all()]);
+        Log::info('ComplaintApiController.store', [
+            'auth_user_id' => $request->user()?->id,
+            'payload_keys' => array_keys($request->all()),
+            'site_id' => $request->input('site_id'),
+            'user_id' => $request->input('user_id'),
+            'complaint_date' => $request->input('complaint_date'),
+            'title_len' => strlen((string) $request->input('title', '')),
+            'description_len' => strlen((string) $request->input('description', '')),
+        ]);
         $complaint = Complaint::updateOrCreate(
             [
                 'site_id' => $request->site_id,

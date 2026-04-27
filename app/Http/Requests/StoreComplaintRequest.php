@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class StoreComplaintRequest extends FormRequest
 {
@@ -44,5 +46,29 @@ class StoreComplaintRequest extends FormRequest
             //     'integer',
             // ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $payloadKeys = array_keys($this->all());
+
+        Log::warning('StoreComplaintRequest validation failed', [
+            'route' => $this->route()?->getName(),
+            'path' => $this->path(),
+            'method' => $this->method(),
+            'content_type' => $this->header('Content-Type'),
+            'expects_json' => $this->expectsJson(),
+            'is_json' => $this->isJson(),
+            'auth_user_id' => $this->user()?->id,
+            'payload_keys' => $payloadKeys,
+            'site_id' => $this->input('site_id'),
+            'user_id' => $this->input('user_id'),
+            'complaint_date' => $this->input('complaint_date'),
+            'description_present' => $this->has('description'),
+            'description_len' => strlen((string) $this->input('description', '')),
+            'errors' => $validator->errors()->toArray(),
+        ]);
+
+        parent::failedValidation($validator);
     }
 }
