@@ -20,6 +20,12 @@ const Sidebar = () => {
                 permission: null, // No permission required
             },
             {
+                label: "Help Center",
+                icon: "fas fa-question-circle",
+                route: "help-center.index",
+                permission: null, // Visible to all admin/sidebar users
+            },
+            {
                 label: "Inspection",
                 icon: "fas fa-users",
                 permission: "inspection_access",

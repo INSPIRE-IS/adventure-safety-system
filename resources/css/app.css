@@ -54,3 +54,87 @@
   .react-time-picker__inputGroup {
     font-size: 16px !important;
   }
+
+  /* Help Center markdown rendering */
+  .help-md {
+    color: #3E3E4B;
+    font-family: Manrope, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .help-md h1,
+  .help-md h2,
+  .help-md h3,
+  .help-md h4 {
+    color: #323B4B;
+    font-family: Manrope, sans-serif;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .help-md h1 {
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .help-md h2 {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .help-md h3 {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .help-md p {
+    margin: 8px 0;
+  }
+
+  .help-md ul,
+  .help-md ol {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  .help-md ul {
+    list-style: disc;
+  }
+
+  .help-md ol {
+    list-style: decimal;
+  }
+
+  .help-md li {
+    margin: 4px 0;
+  }
+
+  .help-md a {
+    color: #F6C546;
+    text-decoration: underline;
+  }
+
+  .help-md code {
+    background: #FBF9F7;
+    border: 1px solid #E4E4E4;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+  }
+
+  .help-md pre {
+    background: #FBF9F7;
+    border: 1px solid #E4E4E4;
+    border-radius: 12px;
+    padding: 12px;
+    overflow-x: auto;
+  }
+
+  .help-md pre code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }

@@ -40,6 +40,7 @@ use App\Http\Controllers\Admin\PostIncidentDetailController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SystemCalendarController;
 use App\Http\Controllers\Admin\TypeDegradationController;
+use App\Http\Controllers\HelpCenterController;
 use App\Models\TypeDegradation;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('/', 'HomeController@index')->name('home');
     // Permissions
     Route::get('dashboard', [HomeController::class, 'index'])->name('dashboard');
+    Route::get('help-center', [HelpCenterController::class, 'index'])->name('help-center.index');
     Route::resource('permissions', PermissionController::class);
 
     // Roles

@@ -22,6 +22,7 @@ const Header = () => {
     { name: 'Incident', route: 'incidents.index', permission: "incident_access" },
     { name: 'Complaint', route: 'complaints.index', permission: "complaint_access" },
     { name: 'Document', route: 'files.index', permission: "file_access" },
+    ...(!auth?.is_admin ? [{ name: 'Help Center', route: 'help-center.index', permission: null }] : []),
   ];
 
   const handleOpenUserModal = () => {
