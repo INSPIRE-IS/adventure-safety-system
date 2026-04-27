@@ -36,7 +36,18 @@ class HomeApiController extends Controller
         //dd($request);
         //abort_if(Gate::denies('inspection_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $userId = auth('api')->user()->id;
+        $requestedTeamId = $request->input('team_id');
         $teamId = auth('api')->user()->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if (auth('api')->user()->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
         $typeInspectionId = 1;
         $safety_inspections = Inspection::select('id', 'due_date', 'complete_date', 'closing_comment', 'inspection_schedule_id', 'assigned_to_id', 'photo_file_id', 'signature_file_id', 'site_id')
             ->with(
@@ -169,7 +180,18 @@ class HomeApiController extends Controller
         //dd($request);
         //abort_if(Gate::denies('inspection_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $userId = auth('api')->user()->id;
+        $requestedTeamId = $request->input('team_id');
         $teamId = auth('api')->user()->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if (auth('api')->user()->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
         $typeInspectionId = 1;
 
         $safety_inspection_item_details = CategoryItem::select('id', 'name', 'site_id', 'type_inspection_id', 'certificate_recieved_id', 'certificate_file_id')
