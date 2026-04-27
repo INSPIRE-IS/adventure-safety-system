@@ -168,7 +168,7 @@ class CreateDrillScheduledTasks extends Command
                 case 'Quarterly':
                     $nextActiveDate->addMonths(3);
                     break;
-                case 'Semi-Annually':
+                case '6 Monthly':
                     $nextActiveDate->addMonths(6);
                     break;
                 case 'Annually':
