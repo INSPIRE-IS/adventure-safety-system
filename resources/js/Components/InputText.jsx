@@ -1,25 +1,26 @@
-const InputText = ({ title, field, value,mode, handleChange, errors }) => {
+const InputText = ({ title, field, value, mode, handleChange, errors, required = false, type = "text" }) => {
+    const fieldError = errors?.[field];
     return (
         <div className="mb-4">
             <label
-                htmlFor="name"
+                htmlFor={field}
                 className="block input-header"
             >
                 {title}
             </label>
             <input
-                type="text"
+                type={type}
                 id={field}
                 name={field}
                 value={value}
                 onChange={(e) => handleChange(field, e.target.value)}
-                className={`mt-1 block w-full ${errors.name ? "border-red-500" : "border-gray-300"} shadow-sm input-text rounded-xl`}
+                className={`mt-1 block w-full ${fieldError ? "border-red-500" : "border-gray-300"} shadow-sm input-text rounded-xl`}
                 disabled={mode === "view"}
-                required
+                required={required}
             />
-            {errors.name && (
+            {fieldError && (
                 <p className="text-red-500 text-sm mt-2">
-                    {errors.name}
+                    {fieldError}
                 </p>
             )}
         </div>

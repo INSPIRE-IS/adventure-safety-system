@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useForm } from "@inertiajs/react";
 import InputText from "@/Components/InputText";
 import MultiSelect from "@/Components/MultiSelect";
@@ -9,6 +10,10 @@ const SiteModal = ({ isOpen, onClose, mode, site = null, typeActivities }) => {
     console.log("typeActivities", typeActivities);
     const [preview, setPreview] = useState("./images/logo.png");
     const [logo, setLogo] = useState("");
+    const [availableTypeActivities, setAvailableTypeActivities] = useState(typeActivities ?? []);
+    const [newActivityName, setNewActivityName] = useState("");
+    const [addingActivity, setAddingActivity] = useState(false);
+    const [newActivityError, setNewActivityError] = useState("");
 
     const { data, setData, post, put, errors, reset, processing } = useForm({
         id: "",
@@ -41,6 +46,10 @@ const SiteModal = ({ isOpen, onClose, mode, site = null, typeActivities }) => {
         }
     }, [mode,site]);
 
+    useEffect(() => {
+        setAvailableTypeActivities(typeActivities ?? []);
+    }, [typeActivities]);
+
     const handleChange = (target, value) => {
         // if(target == 'phone'){
         //     //isValid = /^\+27\d{9}$/.test(value);
@@ -54,6 +63,52 @@ const SiteModal = ({ isOpen, onClose, mode, site = null, typeActivities }) => {
         setData(target, value);
        //setData((prev) => ({ ...prev, [name]: value }));
         //setData("name", e.target.value);
+    };
+
+    const handleAddActivity = async () => {
+        setNewActivityError("");
+
+        const trimmed = (newActivityName || "").trim();
+        if (!trimmed) {
+            setNewActivityError("Activity name is required.");
+            return;
+        }
+
+        try {
+            setAddingActivity(true);
+            const response = await axios.post(route("sites.type-activities.store"), { name: trimmed });
+            const created = response?.data;
+
+            if (!created?.id) {
+                setNewActivityError("Failed to add activity.");
+                return;
+            }
+
+            setAvailableTypeActivities((prev) => {
+                const list = Array.isArray(prev) ? prev : [];
+                const exists = list.some((activity) => String(activity.id) === String(created.id));
+                return exists ? list : [...list, created];
+            });
+
+            setData((prev) => {
+                const current = Array.isArray(prev.type_activities) ? prev.type_activities : [];
+                const exists = current.some((id) => String(id) === String(created.id));
+                return {
+                    ...prev,
+                    type_activities: exists ? current : [...current, created.id],
+                };
+            });
+
+            setNewActivityName("");
+        } catch (error) {
+            const message =
+                error?.response?.data?.errors?.name?.[0] ||
+                error?.response?.data?.message ||
+                "Failed to add activity.";
+            setNewActivityError(message);
+        } finally {
+            setAddingActivity(false);
+        }
     };
 
     const handleSubmit = (e) => {
@@ -235,14 +290,43 @@ const SiteModal = ({ isOpen, onClose, mode, site = null, typeActivities }) => {
 
                         <CustomDropzoneUploader1 onUpload={HandleFile} />                    
                     </div>                 
+
+                    <div className="mb-4">
+                        <label className="block input-header">Add Activity</label>
+                        <div className="mt-1 flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={newActivityName}
+                                onChange={(e) => setNewActivityName(e.target.value)}
+                                className="block w-full shadow-sm input-text rounded-xl border border-gray-300"
+                                placeholder="e.g. Zipline"
+                                disabled={mode === "view" || addingActivity}
+                            />
+                            <button
+                                type="button"
+                                onClick={handleAddActivity}
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60"
+                                disabled={mode === "view" || addingActivity}
+                            >
+                                Add
+                            </button>
+                        </div>
+                        {newActivityError && (
+                            <p className="text-red-500 text-sm mt-1">{newActivityError}</p>
+                        )}
+                    </div>
+
                     <MultiSelect
                         title="Type Activities"
-                        fields={typeActivities}
+                        fields={availableTypeActivities}
                         allFields={data.type_activities}
                         mode={mode}
                         handleIsChecked={handleIsChecked}
                         handleCheckChange={handleCheckChange}
                     />
+                    {errors.type_activities && (
+                        <p className="text-red-500 text-sm mt-1">{errors.type_activities}</p>
+                    )}
 
                     <div className="flex justify-end space-x-2">
                         <button

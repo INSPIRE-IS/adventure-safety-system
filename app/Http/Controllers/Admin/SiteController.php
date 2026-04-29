@@ -177,6 +177,40 @@ class SiteController extends Controller
         return redirect()->route('sites.index');
     }
 
+    public function storeTypeActivity(Request $request)
+    {
+        /** @disregard P1013 */
+        abort_if(
+            !auth()->user()->can('site_create') && !auth()->user()->can('site_edit'),
+            Response::HTTP_FORBIDDEN,
+            '403 Forbidden'
+        );
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $name = trim($validated['name']);
+        $normalized = mb_strtolower($name);
+
+        $typeActivity = TypeActivity::withTrashed()
+            ->whereRaw('LOWER(name) = ?', [$normalized])
+            ->first();
+
+        if ($typeActivity) {
+            if ($typeActivity->trashed()) {
+                $typeActivity->restore();
+            }
+        } else {
+            $typeActivity = TypeActivity::create(['name' => $name]);
+        }
+
+        return response()->json([
+            'id' => $typeActivity->id,
+            'name' => $typeActivity->name,
+        ]);
+    }
+
     public function show(Team $team)
     {
         //abort_if(Gate::denies('type_drill_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');

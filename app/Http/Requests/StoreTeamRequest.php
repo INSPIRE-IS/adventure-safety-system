@@ -47,6 +47,15 @@ class StoreTeamRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'type_activities' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'type_activities.*' => [
+                'integer',
+                'exists:type_activities,id',
+            ],
         ];
     }
 }

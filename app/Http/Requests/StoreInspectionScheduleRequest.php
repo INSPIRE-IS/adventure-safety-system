@@ -38,6 +38,10 @@ class StoreInspectionScheduleRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'type_activity_id' => [
+                'required',
+                'integer',
+            ],
             'active_date' => [
                 'required',
                 //'date_format:' . config('panel.date_format'),

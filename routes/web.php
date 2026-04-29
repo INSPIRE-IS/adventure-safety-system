@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/sites/{site_id}/change', [SiteController::class, 'change'])->name('sites.change');
+    Route::post('/sites/type-activities', [SiteController::class, 'storeTypeActivity'])->name('sites.type-activities.store');
     Route::resource('sites', SiteController::class)->except(['create', 'edit']);
 
     // Audit Logs

@@ -16,6 +16,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
 
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
+        type_activity_id: "",
         site_id: auth?.team?.id,        
         type_inspection_id: type_id,   
         category_items: categoryItems.map((category_item) => category_item.id) || [],
@@ -34,6 +35,7 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
         if (inspectionSchedule && mode !== "create") {
             setData({
                 name: inspectionSchedule.name || "",
+                type_activity_id: inspectionSchedule.type_activity_id || "",
                 category_item_id: inspectionSchedule.category_item_id || "",
                 category_items: inspectionSchedule.category_items.map((category_item) => category_item.id) || [], //inspectionSchedule.category_items.map((category_item) => category_item.id),
                 type_inspection_id: inspectionSchedule.type_inspection_id || "",
@@ -79,6 +81,17 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
         setData({ ...data, [target]: value });
         console.log("data", data);
         //setData("name", e.target.value);
+    };
+
+    const handleActivityChange = (event) => {
+        const selectedId = event.target.value;
+        const selected = typeActivities?.find((activity) => String(activity.value) === String(selectedId));
+
+        setData((prev) => ({
+            ...prev,
+            type_activity_id: selectedId,
+            name: selected?.label ?? prev.name,
+        }));
     };
 
     const handleIsChecked = (check_array, check_id) => {
@@ -132,11 +145,11 @@ const InspectionScheduleModal = ({ auth, isOpen, onClose, mode, inspectionSchedu
                     </label>
                     <CustomSelect1
                         label="Activity"
-                        name="name"
-                        value={data?.name}
+                        name="type_activity_id"
+                        value={data?.type_activity_id}
                         mode={mode}
-                        onChange={(e) => handleChange(e.target.name, e.target.value)}
-                        error={errors.name}
+                        onChange={handleActivityChange}
+                        error={errors.type_activity_id}
                         options={typeActivities}
                     />
                     {/* <CustomSelect1

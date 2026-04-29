@@ -49,7 +49,15 @@ class UpdateTeamRequest extends FormRequest
             'email' => 'nullable|email',
             'website' => 'nullable|url',
             //'image' => 'nullable|image|max:10240', // Ensure the file is an image and <10MB
-            'type_activities' => 'array',
+            'type_activities' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'type_activities.*' => [
+                'integer',
+                'exists:type_activities,id',
+            ],
         ];
     }
 }
