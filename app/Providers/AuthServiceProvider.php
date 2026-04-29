@@ -30,9 +30,8 @@ class AuthServiceProvider extends ServiceProvider
                 $user->unsetRelation('roles')->unsetRelation('permissions');
             }
 
-            // Allow is_admin as a fallback in case team-scoped roles are not set for this request.
             /** @disregard P1013 */
-            return (bool) $user->is_admin || $user->hasAnyRole(['super', 'admin', 'director', 'author']);
+            return $user->hasAnyRole(['super']);
         });
     }
 }

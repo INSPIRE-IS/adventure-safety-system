@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('help_questions')) {
+            return;
+        }
+
         Schema::create('help_questions', function (Blueprint $table) {
             $table->id();
             $table->string('question');
@@ -44,4 +48,3 @@ return new class extends Migration
         Schema::enableForeignKeyConstraints();
     }
 };
-

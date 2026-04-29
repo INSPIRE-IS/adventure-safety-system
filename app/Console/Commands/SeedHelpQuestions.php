@@ -39,6 +39,7 @@ class SeedHelpQuestions extends Command
             ['name' => 'Documents', 'order_id' => 60, 'role_slugs' => null],
             ['name' => 'Staff', 'order_id' => 70, 'role_slugs' => ['super', 'admin', 'director', 'manager']],
             ['name' => 'Admin', 'order_id' => 100, 'role_slugs' => ['super', 'admin', 'author', 'director']],
+            ['name' => 'Observability', 'order_id' => 110, 'role_slugs' => ['super']],
         ];
 
         $this->info('Seeding Help Center categories...');
@@ -555,6 +556,23 @@ php artisan tasks:create-inspection-scheduled
 php artisan tasks:create-drill-scheduled
 php artisan tasks:create-post-incident-scheduled
 ```
+MD
+            ],
+            [
+                'category' => 'Observability',
+                'question' => 'What is Laravel Pulse and who can access it?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## What it is
+Laravel Pulse is the built-in server observability dashboard (slow requests, database queries, jobs, cache, etc).
+
+## Access
+- Route: `/pulse`
+- Super users only.
+
+## Notes
+- Pulse data is server-side and should not be shared publicly.
+- Ensure migrations are run before accessing Pulse on a new deploy.
 MD
             ],
         ];

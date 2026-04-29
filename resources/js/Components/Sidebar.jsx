@@ -19,6 +19,14 @@ const Sidebar = () => {
                 route: "dashboard",
                 permission: null, // No permission required
             },
+            ...(auth?.roles?.includes('super')
+                ? [{
+                    label: "Pulse",
+                    icon: "fas fa-heartbeat",
+                    href: "/pulse",
+                    permission: null,
+                }]
+                : []),
             {
                 label: "Help Center",
                 icon: "fas fa-question-circle",
@@ -453,7 +461,21 @@ const handleNavigation = (routeName, params = {}) => {
 
   return (
     <li key={idx}>
-      {link.dropdown ? (
+      {link.href ? (
+        <a
+          href={link.href}
+          className="flex sidebar-links items-center px-4 py-2 hover:bg-gray-700"
+          onClick={() => {
+            setSelectedSubLink(link.href);
+            localStorage.setItem('selectedSubLink', link.href);
+            setOpenParentSection(null); // close dropdowns
+            localStorage.setItem('openParentSection', null);
+          }}
+        >
+          <i className={`mr-3 ${link.icon}`} />
+          {link.label}
+        </a>
+      ) : link.dropdown ? (
         <>
           <button
             onClick={() => toggleParentSection(idx, link.route)} // 👈 Only toggles menu open/close
