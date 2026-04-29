@@ -80,6 +80,16 @@ const CategoryItemsIndex = ({auth,data, categoryItems, type_inspections, teams, 
                 <div className="flex flex-col  items-right">               
                     <h1 className="view-header">{data == 1 ? 'Elements ' : 'PPE Equipment List '} <small> {auth?.team?.name ?? 'Site Name'}</small></h1>                   
                 </div>
+                {data == 1 && can?.category_item_create && (
+                    <div className="flex gap-3">
+                        <Link
+                            href={route('category-items.import.inspection')}
+                            className="bg-[#F6C546] hover:bg-[#f8bf2d] px-4 py-2 rounded-xl button-text1"
+                        >
+                            Import / Export
+                        </Link>
+                    </div>
+                )}
             </header>
 
             {/* CategoryItems Table */}

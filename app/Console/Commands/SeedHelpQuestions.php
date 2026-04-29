@@ -157,6 +157,26 @@ If you do not see a site switcher, you probably only have access to one site.
 MD
             ],
             [
+                'category' => 'Sites',
+                'question' => 'Who is automatically added when a new Site is created?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Default site creators
+When a new site is created, the app automatically grants access to:
+- `super`
+- `director`
+
+These roles are treated as **site creators**.
+
+## What happens
+- The user is attached to the new site (team membership).
+- The role is assigned for that new site (team-scoped role).
+
+## Everyone else
+Other roles (manager/operation/assistant/etc.) are **not** auto-added and must be added via **Staff** management.
+MD
+            ],
+            [
                 'category' => 'Inspections',
                 'question' => 'What are "Element Items" and how are they used?',
                 'is_internal' => true,
@@ -176,6 +196,59 @@ Element Items are the things you inspect (courses, lines, platforms, equipment, 
 
 ## Access
 - Requires permission: `category_item_access`
+MD
+            ],
+            [
+                'category' => 'Inspections',
+                'question' => 'How do I import/export Element Items?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Where
+- Admin Panel → **Inspection** → **Element Items**
+- Click **Import / Export**
+
+## Workflow
+1. Download the template (CSV) or export your current list.
+2. Edit in Excel or Google Sheets.
+3. Upload the file → preview warnings.
+4. Confirm → apply import.
+
+## Required columns
+Your CSV header must include:
+- `item_name`
+- `detail_name`
+
+## Notes
+- Imports apply to the **currently selected Site**.
+- Import will restore soft-deleted items/details and add missing details.
+- Import does not delete items that are missing from your sheet.
+MD
+            ],
+            [
+                'category' => 'PPE',
+                'question' => 'How do I import/export PPE Equipment?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Where
+- Admin Panel → **PPE** → **Equipment**
+- Click **Import / Export**
+
+## Workflow
+1. Download the template (CSV) or export your current list.
+2. Edit in Excel or Google Sheets.
+3. Upload the file → preview warnings.
+4. Confirm → apply import.
+
+## Required columns
+Your CSV header must include:
+- `item_name`
+- `detail_name`
+
+## Rules
+- Imports apply to the currently selected Site.
+- Each PPE item must have at least 1 detail/identification row.
+- Import restores soft-deleted items/details and adds missing details.
+- Import does not delete items that are missing from your sheet.
 MD
             ],
             [
@@ -278,11 +351,33 @@ MD
 Drill Types are templates like Fire Fighting, Evacuation, CPR, etc.
 They are used when creating Drill Schedules and Drill tasks.
 
+## Important (site scoping)
+Drill Types are currently **global** (shared across all sites).
+Drill Schedules and Drill tasks are **site-scoped**.
+
 ## Where
 - Admin Panel -> **Rescue Drills** -> **Type Drills**
 
 ## Access
 - Requires permission: `type_drill_access`
+MD
+            ],
+            [
+                'category' => 'Rescue Drills',
+                'question' => 'Do we need an importer for Rescue Drills?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Current model (today)
+- Drill Types are global (shared across all sites).
+- Drill Schedules are per-site (they generate the drill tasks sent to mobile).
+
+## What this means for importing
+- Importing Drill Types would change the list for **every** site, so it should be **super-only** and used carefully.
+- Importing Drill Schedules makes more sense if each site needs its own schedule plan (site-scoped).
+
+## Recommendation
+If we add an importer, start with a **Drill Schedules importer** (per site).
+If we ever need site-specific drill types, we must first change the data model (make Drill Types site-scoped or add a site mapping layer).
 MD
             ],
             [
@@ -368,6 +463,20 @@ MD
 
 ## Notes
 If you cannot see **Staff**, ask an admin to grant access or assign the correct role.
+MD
+            ],
+            [
+                'category' => 'Staff',
+                'question' => 'Why can’t I see director users?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Intended visibility
+- Managers should not see directors in the Staff list.
+- Directors and super users can see directors.
+
+## If it looks wrong
+- Confirm you are on the correct Site.
+- Ask a super user to verify your role and permissions for this site.
 MD
             ],
             [

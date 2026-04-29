@@ -45,6 +45,24 @@
 - All BA/design choices should reflect senior-level UI/UX and senior-marketer thinking (clarity, conversion, and user trust).
 - Default to the best possible UI/UX unless there is a clear constraint.
 
+
+### Bash / Laravel Tinker Rules
+
+Always output the simplest valid, directly executable command.
+
+Strict rules:
+- No unnecessary escaping (never use backslashes unless required)
+- Never escape semicolons in PHP code
+- Use double quotes for bash, single quotes inside PHP
+- Output must be a single-line command
+
+Correct:
+php artisan tinker --execute="echo 'ok';"
+
+Incorrect:
+php artisan tinker --execute='echo \ok\;'
+php artisan tinker --execute="echo ok\;"
+
 ## Project summary
 - Laravel 10 + Inertia (React) app for managing safety operations: inspections, equipment checks, drills, incidents, post-incident follow-ups, files, and reporting.
 - Web UI lives in `resources/js` (Inertia pages/components); server-side logic is in `app/Http/Controllers/Admin`.

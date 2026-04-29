@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\TypeInspectionController;
 use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\TypeFileController;
 use App\Http\Controllers\Admin\CategoryItemController;
+use App\Http\Controllers\Admin\CategoryItemImportController;
 use App\Http\Controllers\Admin\CategoryDetailController;
 use App\Http\Controllers\Admin\ComplaintController;
 use App\Http\Controllers\Admin\SafetyInspectionDetailController;
@@ -121,9 +122,19 @@ Route::middleware('auth')->group(function () {
 
     // Category Items
     Route::resource('category-items', CategoryItemController::class)->except(['create', 'edit']);
+    Route::get('category-items/import/inspection', [CategoryItemImportController::class, 'inspection'])->name('category-items.import.inspection');
+    Route::get('category-items/import/inspection/template', [CategoryItemImportController::class, 'inspectionTemplate'])->name('category-items.import.inspection.template');
+    Route::get('category-items/import/inspection/export', [CategoryItemImportController::class, 'inspectionExport'])->name('category-items.import.inspection.export');
+    Route::post('category-items/import/inspection/preview', [CategoryItemImportController::class, 'inspectionPreview'])->name('category-items.import.inspection.preview');
+    Route::post('category-items/import/inspection/apply', [CategoryItemImportController::class, 'inspectionApply'])->name('category-items.import.inspection.apply');
 
     // Category Items
     Route::resource('equipment-items', EquipmentItemController::class)->except(['create', 'edit']);
+    Route::get('equipment-items/import/ppe', [CategoryItemImportController::class, 'ppe'])->name('equipment-items.import.ppe');
+    Route::get('equipment-items/import/ppe/template', [CategoryItemImportController::class, 'ppeTemplate'])->name('equipment-items.import.ppe.template');
+    Route::get('equipment-items/import/ppe/export', [CategoryItemImportController::class, 'ppeExport'])->name('equipment-items.import.ppe.export');
+    Route::post('equipment-items/import/ppe/preview', [CategoryItemImportController::class, 'ppePreview'])->name('equipment-items.import.ppe.preview');
+    Route::post('equipment-items/import/ppe/apply', [CategoryItemImportController::class, 'ppeApply'])->name('equipment-items.import.ppe.apply');
 
     // Category Detail
     Route::resource('category-details', CategoryDetailController::class)->except(['create', 'edit']);
