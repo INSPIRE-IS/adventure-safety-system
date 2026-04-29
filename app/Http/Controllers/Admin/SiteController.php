@@ -33,15 +33,24 @@ class SiteController extends Controller
         $user = auth()->user();
         //dd($user->hasAnyRole(['admin', 'super']));
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+        setPermissionsTeamId($teamId);
+        // spatie/laravel-permission unsetRelation
+        /** @disregard P1013 */
+        $user->unsetRelation('roles')->unsetRelation('permissions');
 
-        $sites  = Team::with(['type_activities:id,name'])
-            ->where('name', 'like', '%' . $searchTerm . '%')
-            ->where('id', $teamId)
-            // ->when(!$user->hasAnyRole(['admin', 'super']), function ($query) use ($teamId) {
-            //     $query->whereHas('teams', function ($subQuery) use ($teamId) {
-            //         $subQuery->where('id', $teamId);
-            //     });
-            // })
+        $sitesQuery = Team::with(['type_activities:id,name'])
+            ->where('name', 'like', '%' . $searchTerm . '%');
+
+        // "Site creators" can view all sites; other users only see sites they belong to.
+        // spatie/laravel-permission hasAnyRole
+        /** @disregard P1013 */
+        if (!$user->hasAnyRole(['super', 'director'])) {
+            $sitesQuery->whereHas('users', function ($query) use ($user) {
+                $query->where('users.id', $user->id);
+            });
+        }
+
+        $sites = $sitesQuery
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(10);
 
@@ -82,50 +91,28 @@ class SiteController extends Controller
         }
         $team = Team::create($request->all());
         $team->type_activities()->sync($request->input('type_activities', []));
-        // spatie permission with teams reuires us to first find users with the logged in user's team id
-        $teams = Team::pluck('id')->toArray(); // Get all team IDs
+        // spatie permission with teams requires us to find "site creator" users in the CURRENT team context,
+        // then explicitly grant them membership + role access in the NEW team.
         $superUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'super');
         })->get(); // Get all users with the "super" role   
-        $adminUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'admin');
-        })->get(); // Get all users with the "super" role    
-        $authorUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'author');
-        })->get(); // Get all users with the "author" role      
         $directorUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'director');
         })->get(); // Get all users with the "director" role   
-        $managerUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'manager');
-        })->get(); // Get all users with the "director" role  
 
 
         // now we update the team id to assign the new team to these users or no one will be able to see the new team
         setPermissionsTeamId($team->id);
         foreach ($superUsers as $superUser) {
-            $superUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $superUser->teams()->syncWithoutDetaching([$team->id]); // Add this new team without removing existing ones
+            $superUser->unsetRelation('roles')->unsetRelation('permissions');
             $superUser->assignRole('super'); // Assign 'super' role for Team
         }
 
-        foreach ($adminUsers as $adminUser) {
-            $adminUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
-            $adminUser->assignRole('admin'); // Assign 'admin' role for Team
-        }
-
-        foreach ($authorUsers as $authorUser) {
-            $authorUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
-            $authorUser->assignRole('author'); // Assign 'author' role for Team
-        }
-
         foreach ($directorUsers as $directorUser) {
-            $directorUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
+            $directorUser->teams()->syncWithoutDetaching([$team->id]); // Add this new team without removing existing ones
+            $directorUser->unsetRelation('roles')->unsetRelation('permissions');
             $directorUser->assignRole('director'); // Assign 'director' role for Team
-        }
-
-        foreach ($managerUsers as $managerUser) {
-            $managerUser->teams()->syncWithoutDetaching($teams); // Add missing teams without removing existing ones
-            $managerUser->assignRole('manager'); // Assign 'manager' role for Team
         }
 
         if ($saveImage) {

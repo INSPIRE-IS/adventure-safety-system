@@ -42,7 +42,7 @@ class UserController extends Controller
                 $query->whereIn('name', ['super', 'admin', 'author']);
             })
             // unless user has this role do not show users with this role
-            ->when(!$user->hasAnyRole(['director']), function ($query) { // 'author', 
+            ->when(!$user->hasAnyRole(['director', 'super']), function ($query) { // 'author', 
                 $query->whereDoesntHave('roles', function ($subQuery) {
                     $subQuery->whereIn('name', ['director']);
                 });
