@@ -74,6 +74,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Inspections
     Route::apiResource('inspections', InspectionsApiController::class)->except(['create', 'edit']);
+    Route::post('inspections/{inspection}/verify-upload', [InspectionsApiController::class, 'verifyUpload'])->name('inspections.verifyUpload');
 
     // Safety Inspection Detail
     Route::apiResource('safety-inspection-details', SafetyInspectionDetailApiController::class)->except(['create', 'edit']);

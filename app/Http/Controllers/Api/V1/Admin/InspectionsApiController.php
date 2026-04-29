@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInspectionRequest;
 use App\Http\Requests\UpdateInspectionRequest;
+use App\Http\Requests\VerifyInspectionUploadRequest;
 use App\Http\Resources\Admin\InspectionResource;
+use App\Models\File;
 use App\Models\Inspection;
+use App\Models\SafetyInspectionDetail;
 use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
@@ -86,6 +89,150 @@ class InspectionsApiController extends Controller
         // return (new InspectionResource($inspection))
         //     ->response()
         //     ->setStatusCode(Response::HTTP_ACCEPTED);
+    }
+
+    public function verifyUpload(VerifyInspectionUploadRequest $request, Inspection $inspection)
+    {
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $requestedTeamId = $request->input('team_id');
+        $teamId = $user->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if ($user->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
+
+        if ((int) $inspection->site_id !== (int) $teamId) {
+            abort(Response::HTTP_FORBIDDEN, 'Inspection does not belong to user team');
+        }
+
+        $detailKeys = $request->input('detail_keys', []);
+        $fileKeys = $request->input('file_keys', []);
+
+        $details = SafetyInspectionDetail::query()
+            ->where('site_id', $teamId)
+            ->where('inspection_id', $inspection->id)
+            ->get(['id', 'category_item_id', 'category_detail_id']);
+
+        $detailsByKey = [];
+        foreach ($details as $detail) {
+            $detailsByKey[$detail->category_item_id . '-' . $detail->category_detail_id] = $detail;
+        }
+
+        $missingDetailKeys = [];
+        foreach ($detailKeys as $key) {
+            $lookupKey = ((int) $key['category_item_id']) . '-' . ((int) $key['category_detail_id']);
+            if (!array_key_exists($lookupKey, $detailsByKey)) {
+                $missingDetailKeys[] = [
+                    'category_item_id' => (int) $key['category_item_id'],
+                    'category_detail_id' => (int) $key['category_detail_id'],
+                ];
+            }
+        }
+
+        $missingFileKeys = [];
+        $expectedFilePairs = [];
+        $expectedDetailIds = [];
+        $expectedTypeFileIds = [];
+
+        foreach ($fileKeys as $key) {
+            $lookupKey = ((int) $key['category_item_id']) . '-' . ((int) $key['category_detail_id']);
+
+            if (!array_key_exists($lookupKey, $detailsByKey)) {
+                $missingFileKeys[] = [
+                    'category_item_id' => (int) $key['category_item_id'],
+                    'category_detail_id' => (int) $key['category_detail_id'],
+                    'type_file_id' => (int) $key['type_file_id'],
+                    'reason' => 'missing_detail',
+                ];
+                continue;
+            }
+
+            $detailId = (int) $detailsByKey[$lookupKey]->id;
+            $typeFileId = (int) $key['type_file_id'];
+            $pairKey = $detailId . '-' . $typeFileId;
+
+            $expectedFilePairs[$pairKey] = [
+                'category_item_id' => (int) $key['category_item_id'],
+                'category_detail_id' => (int) $key['category_detail_id'],
+                'type_file_id' => $typeFileId,
+            ];
+
+            $expectedDetailIds[$detailId] = true;
+            $expectedTypeFileIds[$typeFileId] = true;
+        }
+
+        $expectedDetailIdsList = array_map('intval', array_keys($expectedDetailIds));
+        $expectedTypeFileIdsList = array_map('intval', array_keys($expectedTypeFileIds));
+
+        $existingFiles = [];
+        if (count($expectedFilePairs) > 0) {
+            $existingFiles = File::query()
+                ->where('site_id', $teamId)
+                ->where('table_name', 'safety_inspection_details')
+                ->whereIn('table_row_id', $expectedDetailIdsList)
+                ->whereIn('type_file_id', $expectedTypeFileIdsList)
+                ->get(['table_row_id', 'type_file_id'])
+                ->toArray();
+        }
+
+        $existingFilePairs = [];
+        foreach ($existingFiles as $file) {
+            $existingFilePairs[((int) $file['table_row_id']) . '-' . ((int) $file['type_file_id'])] = true;
+        }
+
+        foreach ($expectedFilePairs as $pairKey => $meta) {
+            if (!array_key_exists($pairKey, $existingFilePairs)) {
+                $missingFileKeys[] = $meta + ['reason' => 'missing_file'];
+            }
+        }
+
+        $expectedDetailsCount = $request->input('expected_details_count');
+        $expectedFilesCount = $request->input('expected_files_count');
+
+        $detailsOk = count($missingDetailKeys) === 0;
+        $filesOk = count($missingFileKeys) === 0;
+
+        if ($expectedDetailsCount !== null && $expectedDetailsCount !== '') {
+            $detailsOk = $detailsOk && ((int) $expectedDetailsCount === (int) $details->count());
+        }
+
+        if ($expectedFilesCount !== null && $expectedFilesCount !== '') {
+            $filesOk = $filesOk && ((int) $expectedFilesCount === (int) count($existingFilePairs));
+        }
+
+        $ok = $detailsOk && $filesOk;
+        $pending = !$ok && ($inspection->complete_date !== null);
+
+        return response()->json([
+            'ok' => $ok,
+            'pending' => $pending,
+            'inspection_id' => (int) $inspection->id,
+            'site_id' => (int) $teamId,
+            'header' => [
+                'complete_date' => $inspection->complete_date,
+            ],
+            'details' => [
+                'expected_count' => $expectedDetailsCount,
+                'actual_count' => (int) $details->count(),
+                'missing_keys' => $missingDetailKeys,
+            ],
+            'files' => [
+                'expected_count' => $expectedFilesCount,
+                'expected_pairs_count' => (int) count($expectedFilePairs),
+                'actual_pairs_count' => (int) count($existingFilePairs),
+                'missing_keys' => $missingFileKeys,
+            ],
+        ], Response::HTTP_OK);
     }
 
     public function destroy(Inspection $inspection)

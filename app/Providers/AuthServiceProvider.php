@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -21,6 +22,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::define('viewPulse', function (User $user) {
+            $teamId = session('team_id');
+            if ($teamId) {
+                setPermissionsTeamId((int) $teamId);
+                /** @disregard P1013 */
+                $user->unsetRelation('roles')->unsetRelation('permissions');
+            }
+
+            // Allow is_admin as a fallback in case team-scoped roles are not set for this request.
+            /** @disregard P1013 */
+            return (bool) $user->is_admin || $user->hasAnyRole(['super', 'admin', 'director', 'author']);
+        });
     }
 }
