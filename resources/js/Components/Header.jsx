@@ -22,6 +22,9 @@ const Header = () => {
     { name: 'Incident', route: 'incidents.index', permission: "incident_access" },
     { name: 'Complaint', route: 'complaints.index', permission: "complaint_access" },
     { name: 'Document', route: 'files.index', permission: "file_access" },
+    ...(auth?.roles?.includes('super') || auth?.user?.roles?.some((r) => r?.name === 'super')
+      ? [{ name: 'Pulse', href: '/pulse', permission: null }]
+      : []),
     ...(!auth?.is_admin ? [{ name: 'Help Center', route: 'help-center.index', permission: null }] : []),
   ];
 
@@ -130,9 +133,9 @@ const NavTop = ({isMenuOpen, navLinks, url, auth}) => {
           return(
           <li key={link.name} className="header-links">
             <Link
-              href={route(link.route)}
+              href={link.href ?? route(link.route)}
               className={`hover:text-[#f6c546] cursor-pointer ${
-                url.replace('/', '') === link.route.replace('.index', '') ? 'text-[#f6c546] font-bold text-base' : ''
+                link.route && url.replace('/', '') === link.route.replace('.index', '') ? 'text-[#f6c546] font-bold text-base' : ''
               }`}
             >
               {link.name.split(' ').map((word, index) => (
@@ -169,7 +172,7 @@ const NavMenu = ({isMenuOpen, navLinks, url, auth}) => {
             }
             `}>
             <Link
-              href={route(link.route)}
+              href={link.href ?? route(link.route)}
               className={`hover:text-blue-500 cursor-pointer ${
                 url === link.route ? 'text-blue-500 font-bold' : ''
               }`}

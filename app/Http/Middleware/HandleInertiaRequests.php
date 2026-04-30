@@ -86,9 +86,10 @@ class HandleInertiaRequests extends Middleware
             // });
             //$teams = Team::all()->pluck('id', 'name');
             //dd($teams);
-            $permissions = $user->getAllPermissions()->pluck('name');
+            $permissions = $user->getAllPermissions()->pluck('name')->values()->all();
 
-            $roles = $user->getRoleNames()->pluck('name');
+            // getRoleNames() already returns a collection of role name strings.
+            $roles = $user->getRoleNames()->values()->all();
             //$permissions = $user->getAllPermissionsAttribute();
             //dd($permissions);
             $team = Team::find($team_id); // with('type_activities')->

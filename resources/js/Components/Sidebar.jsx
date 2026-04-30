@@ -19,7 +19,7 @@ const Sidebar = () => {
                 route: "dashboard",
                 permission: null, // No permission required
             },
-            ...(auth?.roles?.includes('super')
+            ...(auth?.roles?.includes('super') || auth?.user?.roles?.some((r) => r?.name === 'super')
                 ? [{
                     label: "Pulse",
                     icon: "fas fa-heartbeat",
