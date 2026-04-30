@@ -62,7 +62,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            //->where('assigned_to_id', $userId)
+            ->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             ->where('complete_date', null)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
@@ -85,7 +85,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            //->where('assigned_to_id', $userId)
+            ->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->whereHas('inspection_schedule', function ($query) use ($typeInspectionId) {
@@ -108,7 +108,7 @@ class HomeApiController extends Controller
                     'signature_file:id,path,type_file_id,row'
                 ]
             )
-            //->where('assigned_to_id', $userId)
+            ->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             ->where('complete_date', null)
             //->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
@@ -127,7 +127,7 @@ class HomeApiController extends Controller
                 'report_file:id,path,type_file_id,row',
                 'post_incident_details'
             ])
-            //->where('assigned_to_id', $userId)
+            ->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             ->where('complete_date', null)
             //->whereBetween('post_incidents.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
@@ -144,7 +144,7 @@ class HomeApiController extends Controller
                 'signature_file:id,path,type_file_id,row',
                 'drill_details'
             ])
-            //->where('assigned_to_id', $userId)
+            ->where('assigned_to_id', $userId)
             ->where('site_id', $teamId)
             ->where('complete_date', null)
             //->whereBetween('drills.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
