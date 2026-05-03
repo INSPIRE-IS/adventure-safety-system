@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
+use App\Http\Requests\VerifyComplaintUploadRequest;
 use App\Http\Resources\Admin\ComplaintResource;
 use App\Models\Complaint;
 use Gate;
@@ -51,6 +52,64 @@ class ComplaintApiController extends Controller
         return (new ComplaintResource($complaint))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    public function verifyUpload(VerifyComplaintUploadRequest $request, Complaint $complaint)
+    {
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $requestedTeamId = $request->input('team_id');
+        $teamId = $user->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if ($user->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
+
+        if ((int) $complaint->site_id !== (int) $teamId) {
+            abort(Response::HTTP_FORBIDDEN, 'Complaint does not belong to user team');
+        }
+
+        if ((int) $complaint->user_id !== (int) $user->id) {
+            abort(Response::HTTP_FORBIDDEN, 'Complaint does not belong to user');
+        }
+
+        $uuid = (string) $request->input('uuid');
+        if ((string) $complaint->uuid !== $uuid) {
+            return response()->json([
+                'ok' => false,
+                'reason' => 'uuid_mismatch',
+                'complaint_id' => (int) $complaint->id,
+                'site_id' => (int) $teamId,
+            ], Response::HTTP_OK);
+        }
+
+        $descriptionOk = trim((string) $complaint->description) !== '';
+        $dateOk = $complaint->complaint_date !== null;
+
+        $ok = $descriptionOk && $dateOk;
+
+        return response()->json([
+            'ok' => $ok,
+            'complaint_id' => (int) $complaint->id,
+            'site_id' => (int) $teamId,
+            'header' => [
+                'uuid' => (string) $complaint->uuid,
+                'complaint_date' => $complaint->complaint_date,
+            ],
+            'required' => [
+                'description_ok' => $descriptionOk,
+                'complaint_date_ok' => $dateOk,
+            ],
+        ], Response::HTTP_OK);
     }
 
     public function show(Complaint $complaint)

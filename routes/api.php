@@ -75,6 +75,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
     // Inspections
     Route::apiResource('inspections', InspectionsApiController::class)->except(['create', 'edit']);
     Route::post('inspections/{inspection}/verify-upload', [InspectionsApiController::class, 'verifyUpload'])->name('inspections.verifyUpload');
+    Route::post('inspections/{inspection}/verify-upload-ppe', [InspectionsApiController::class, 'verifyPpeUpload'])->name('inspections.verifyPpeUpload');
 
     // Safety Inspection Detail
     Route::apiResource('safety-inspection-details', SafetyInspectionDetailApiController::class)->except(['create', 'edit']);
@@ -87,6 +88,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Drills
     Route::apiResource('drills', DrillsApiController::class)->except(['create', 'edit']);
+    Route::post('drills/{drill}/verify-upload', [DrillsApiController::class, 'verifyUpload'])->name('drills.verifyUpload');
     // Drill Detail
     Route::apiResource('drill-details', DrillDetailApiController::class)->except(['create', 'edit']);
 
@@ -98,9 +100,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
 
     // Incident
     Route::apiResource('incidents', IncidentApiController::class)->except(['create', 'edit']);
+    Route::post('incidents/{incident}/verify-upload', [IncidentApiController::class, 'verifyUpload'])->name('incidents.verifyUpload');
 
     // Complaint
     Route::apiResource('complaints', ComplaintApiController::class)->except(['create', 'edit']);
+    Route::post('complaints/{complaint}/verify-upload', [ComplaintApiController::class, 'verifyUpload'])->name('complaints.verifyUpload');
     // UserAlert
     Route::apiResource('user-alerts', UserAlertApiController::class)->except(['create', 'edit']);
     // AppError

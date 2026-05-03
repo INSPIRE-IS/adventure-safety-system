@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInspectionRequest;
 use App\Http\Requests\UpdateInspectionRequest;
+use App\Http\Requests\VerifyEquipmentInspectionUploadRequest;
 use App\Http\Requests\VerifyInspectionUploadRequest;
 use App\Http\Resources\Admin\InspectionResource;
+use App\Models\EquipmentInspectionDetail;
 use App\Models\File;
 use App\Models\Inspection;
 use App\Models\SafetyInspectionDetail;
@@ -231,6 +233,73 @@ class InspectionsApiController extends Controller
                 'expected_pairs_count' => (int) count($expectedFilePairs),
                 'actual_pairs_count' => (int) count($existingFilePairs),
                 'missing_keys' => $missingFileKeys,
+            ],
+        ], Response::HTTP_OK);
+    }
+
+    public function verifyPpeUpload(VerifyEquipmentInspectionUploadRequest $request, Inspection $inspection)
+    {
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $requestedTeamId = $request->input('team_id');
+        $teamId = $user->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if ($user->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
+
+        if ((int) $inspection->site_id !== (int) $teamId) {
+            abort(Response::HTTP_FORBIDDEN, 'Inspection does not belong to user team');
+        }
+
+        $detailKeys = $request->input('detail_keys', []);
+
+        $details = EquipmentInspectionDetail::query()
+            ->where('site_id', $teamId)
+            ->where('inspection_id', $inspection->id)
+            ->get(['identity', 'category_item_id', 'category_detail_id']);
+
+        $existingKeys = [];
+        foreach ($details as $detail) {
+            $existingKeys[((string) $detail->identity) . '-' . ((int) $detail->category_item_id) . '-' . ((int) $detail->category_detail_id)] = true;
+        }
+
+        $missingDetailKeys = [];
+        foreach ($detailKeys as $key) {
+            $lookupKey = ((string) $key['identity']) . '-' . ((int) $key['category_item_id']) . '-' . ((int) $key['category_detail_id']);
+            if (!array_key_exists($lookupKey, $existingKeys)) {
+                $missingDetailKeys[] = [
+                    'identity' => (string) $key['identity'],
+                    'category_item_id' => (int) $key['category_item_id'],
+                    'category_detail_id' => (int) $key['category_detail_id'],
+                ];
+            }
+        }
+
+        $expectedDetailsCount = $request->input('expected_details_count');
+
+        $detailsOk = count($missingDetailKeys) === 0;
+        if ($expectedDetailsCount !== null && $expectedDetailsCount !== '') {
+            $detailsOk = $detailsOk && ((int) $expectedDetailsCount === (int) $details->count());
+        }
+
+        return response()->json([
+            'ok' => $detailsOk,
+            'inspection_id' => (int) $inspection->id,
+            'site_id' => (int) $teamId,
+            'details' => [
+                'expected_count' => $expectedDetailsCount,
+                'actual_count' => (int) $details->count(),
+                'missing_keys' => $missingDetailKeys,
             ],
         ], Response::HTTP_OK);
     }

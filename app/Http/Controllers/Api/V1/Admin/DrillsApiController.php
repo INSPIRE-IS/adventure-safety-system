@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDrillRequest;
 use App\Http\Requests\UpdateDrillRequest;
+use App\Http\Requests\VerifyDrillUploadRequest;
 use App\Http\Resources\Admin\DrillResource;
 use App\Models\Drill;
+use App\Models\DrillDetail;
+use App\Models\DrillMember;
 use Carbon\Carbon;
 use Gate;
 use Illuminate\Http\Request;
@@ -52,6 +55,96 @@ class DrillsApiController extends Controller
         return (new DrillResource($drill))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    public function verifyUpload(VerifyDrillUploadRequest $request, Drill $drill)
+    {
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $requestedTeamId = $request->input('team_id');
+        $teamId = $user->teams->first()->id;
+
+        if ($requestedTeamId !== null && $requestedTeamId !== '') {
+            $requestedTeamId = (int) $requestedTeamId;
+
+            if ($user->teams->contains('id', $requestedTeamId)) {
+                $teamId = $requestedTeamId;
+            } else {
+                abort(Response::HTTP_FORBIDDEN, 'Invalid team_id for user');
+            }
+        }
+
+        if ((int) $drill->site_id !== (int) $teamId) {
+            abort(Response::HTTP_FORBIDDEN, 'Drill does not belong to user team');
+        }
+
+        $instructorId = (int) $request->input('instructor_id');
+
+        $detail = DrillDetail::query()
+            ->where('site_id', $teamId)
+            ->where('drill_id', $drill->id)
+            ->where('instructor_id', $instructorId)
+            ->first();
+
+        $detailOk = $detail !== null;
+
+        $memberUuids = $request->input('member_uuids', []);
+        $missingMemberUuids = [];
+
+        if (is_array($memberUuids) && count($memberUuids) > 0) {
+            $existing = DrillMember::query()
+                ->where('site_id', $teamId)
+                ->where('drill_id', $drill->id)
+                ->whereIn('uuid', $memberUuids)
+                ->pluck('uuid')
+                ->toArray();
+
+            $existingSet = [];
+            foreach ($existing as $uuid) {
+                $existingSet[(string) $uuid] = true;
+            }
+
+            foreach ($memberUuids as $uuid) {
+                if (!array_key_exists((string) $uuid, $existingSet)) {
+                    $missingMemberUuids[] = (string) $uuid;
+                }
+            }
+        }
+
+        $expectedMembersCount = $request->input('expected_members_count');
+        $actualMembersCount = DrillMember::query()
+            ->where('site_id', $teamId)
+            ->where('drill_id', $drill->id)
+            ->count();
+
+        $membersOk = count($missingMemberUuids) === 0;
+        if ($expectedMembersCount !== null && $expectedMembersCount !== '') {
+            $membersOk = $membersOk && ((int) $actualMembersCount >= (int) $expectedMembersCount);
+        }
+
+        $ok = $detailOk && $membersOk;
+
+        return response()->json([
+            'ok' => $ok,
+            'drill_id' => (int) $drill->id,
+            'site_id' => (int) $teamId,
+            'header' => [
+                'complete_date' => $drill->complete_date,
+            ],
+            'detail' => [
+                'instructor_id' => $instructorId,
+                'ok' => $detailOk,
+            ],
+            'members' => [
+                'expected_count' => $expectedMembersCount,
+                'actual_count' => (int) $actualMembersCount,
+                'missing_uuids' => $missingMemberUuids,
+                'ok' => $membersOk,
+            ],
+        ], Response::HTTP_OK);
     }
 
     public function show(Drill $drill)
