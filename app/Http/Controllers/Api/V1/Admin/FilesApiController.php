@@ -26,8 +26,17 @@ class FilesApiController extends Controller
 
     public function store(StoreFileRequest $request)
     {
-        $userId = auth()->id();
-        $siteId = auth()->user()->teams->first()->id;
+                $user = $request->user();
+        $userId = (int) ($user?->id ?? 0);
+
+        $requestedSiteIdRaw = $request->input('site_id');
+        $requestedSiteId = ($requestedSiteIdRaw !== null && $requestedSiteIdRaw !== '') ? (int) $requestedSiteIdRaw : 0;
+
+        $siteId = (int) ($user?->teams?->first()?->id ?? 0);
+        if ($requestedSiteId > 0) {
+            abort_if(!$user || !$user->teams->contains('id', $requestedSiteId), Response::HTTP_FORBIDDEN, 'Invalid site_id for user');
+            $siteId = $requestedSiteId;
+        }
 
         $uploadedFile = $request->file('file');
         $fileName = $request->input('file_name') ?? $uploadedFile->getClientOriginalName();
