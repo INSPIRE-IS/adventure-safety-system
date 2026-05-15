@@ -45,23 +45,52 @@ class InspectionsApiController extends Controller
             ->whereBetween('inspections.due_date', [Carbon::now(), Carbon::now()->addMonths(3)])
             ->get());
     }
-
     public function store(StoreInspectionRequest $request)
     {
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.store.start', [
+                'auth_user_id' => $request->user()?->id,
+                'site_id' => (int) $request->input('site_id'),
+                'id' => $request->input('id'),
+                'inspection_schedule_id' => $request->input('inspection_schedule_id'),
+                'complete_date' => $request->input('complete_date'),
+                'closing_comment_len' => strlen((string) $request->input('closing_comment', '')),
+                'payload_keys' => array_keys($request->all()),
+            ]);
+        }
 
-        //$inspection = Inspection::create($request->all());
+        try {
+            $inspection = Inspection::updateOrCreate(
+                [
+                    'site_id' => $request->site_id,
+                    'id' => $request->id,
+                    'inspection_schedule_id' => $request->inspection_schedule_id,
+                ],
+                [
+                    'complete_date' => $request->complete_date,
+                    'closing_comment' => $request->closing_comment,
+                ]
+            );
+        } catch (\Throwable $e) {
+            Log::error('mobile.inspections.store.error', [
+                'auth_user_id' => $request->user()?->id,
+                'site_id' => (int) $request->input('site_id'),
+                'id' => $request->input('id'),
+                'inspection_schedule_id' => $request->input('inspection_schedule_id'),
+                'message' => $e->getMessage(),
+            ]);
 
-        $inspection = Inspection::updateOrCreate(
-            [
-                'site_id' => $request->site_id,
-                'id' => $request->id,
-                'inspection_schedule_id' => $request->inspection_schedule_id,
-            ],
-            [
-                'complete_date' => $request->complete_date,
-                'closing_comment' => $request->closing_comment,
-            ]
-        );
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.store.ok', [
+                'auth_user_id' => $request->user()?->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $inspection->site_id,
+                'complete_date' => $inspection->complete_date,
+            ]);
+        }
 
         return (new InspectionResource($inspection))
             ->response()
@@ -77,20 +106,41 @@ class InspectionsApiController extends Controller
 
     public function update(UpdateInspectionRequest $request, Inspection $inspection)
     {
-        //dd($request);
-        $request->merge(['complete_date' => Carbon::parse($request->complete_date)->format('Y-m-d H:i:s')]);
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.update.start', [
+                'auth_user_id' => $request->user()?->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $inspection->site_id,
+                'payload_keys' => array_keys($request->all()),
+                'complete_date_raw' => $request->input('complete_date'),
+                'closing_comment_len' => strlen((string) $request->input('closing_comment', '')),
+            ]);
+        }
+
         try {
+            $request->merge(['complete_date' => Carbon::parse($request->complete_date)->format('Y-m-d H:i:s')]);
             $inspection->update($request->all());
-        } catch (\Exception $e) {
-            //return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-            Log::error($e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('mobile.inspections.update.error', [
+                'auth_user_id' => $request->user()?->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $inspection->site_id,
+                'message' => $e->getMessage(),
+            ]);
+
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.update.ok', [
+                'auth_user_id' => $request->user()?->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $inspection->site_id,
+                'complete_date' => $inspection->complete_date,
+            ]);
+        }
+
         return response()->json($inspection, 202);
-        // return (new InspectionResource($inspection))
-        //     ->response()
-        //     ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
     public function verifyUpload(VerifyInspectionUploadRequest $request, Inspection $inspection)
@@ -215,6 +265,24 @@ class InspectionsApiController extends Controller
         $ok = $detailsOk && $filesOk;
         $pending = !$ok && ($inspection->complete_date !== null);
 
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.verify_upload', [
+                'auth_user_id' => $user->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $teamId,
+                'ok' => $ok,
+                'pending' => $pending,
+                'expected_detail_keys_count' => count($detailKeys),
+                'expected_file_keys_count' => count($fileKeys),
+                'expected_details_count' => $expectedDetailsCount,
+                'actual_details_count' => (int) $details->count(),
+                'missing_detail_keys_count' => count($missingDetailKeys),
+                'expected_files_count' => $expectedFilesCount,
+                'actual_file_pairs_count' => (int) count($existingFilePairs),
+                'missing_file_keys_count' => count($missingFileKeys),
+            ]);
+        }
+
         return response()->json([
             'ok' => $ok,
             'pending' => $pending,
@@ -290,6 +358,19 @@ class InspectionsApiController extends Controller
         $detailsOk = count($missingDetailKeys) === 0;
         if ($expectedDetailsCount !== null && $expectedDetailsCount !== '') {
             $detailsOk = $detailsOk && ((int) $expectedDetailsCount === (int) $details->count());
+        }
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.inspections.verify_ppe_upload', [
+                'auth_user_id' => $user->id,
+                'inspection_id' => (int) $inspection->id,
+                'site_id' => (int) $teamId,
+                'ok' => $detailsOk,
+                'expected_keys_count' => count($detailKeys),
+                'expected_details_count' => $expectedDetailsCount,
+                'actual_details_count' => (int) $details->count(),
+                'missing_keys_count' => count($missingDetailKeys),
+            ]);
         }
 
         return response()->json([

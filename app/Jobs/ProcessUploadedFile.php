@@ -2,16 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Models\File;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use App\Models\File;
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ProcessUploadedFile implements ShouldQueue
 {
@@ -30,10 +27,18 @@ class ProcessUploadedFile implements ShouldQueue
 
     public function handle()
     {
-        // $filePath = storage_path("app/{$this->tempPath}");
-        // $fileName = $this->data['file_name'];
-        // $fileType = $this->data['file_type'];
-        File::updateOrCreate(
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.files.job.start', [
+                'user_id' => $this->userId,
+                'site_id' => $this->siteId,
+                'table_name' => $this->data['table_name'] ?? null,
+                'table_row_id' => $this->data['table_row_id'] ?? null,
+                'type_file_id' => $this->data['type_file_id'] ?? null,
+                'file_name' => $this->data['file_name'] ?? null,
+            ]);
+        }
+
+        $file = File::updateOrCreate(
             [
                 'site_id' => $this->siteId,
                 'table_name' => $this->data['table_name'],
@@ -47,27 +52,16 @@ class ProcessUploadedFile implements ShouldQueue
             ]
         );
 
-        // Validate the input
-        // if (!file_exists($filePath)) {
-        //     throw new \Exception("Temporary file not found at $filePath");
-        // }
-
-        // $storagePath = 'images/' . $fileName;
-        // Storage::disk('public')->put($storagePath, file_get_contents($filePath));
-        // $fileUrl = Storage::url($storagePath);
-
-        // File::updateOrCreate(
-        //     [
-        //         'site_id' => $this->siteId,
-        //         'table_name' => $this->data['table_name'],
-        //         'table_row_id' => $this->data['table_row_id'],
-        //         'type_file_id' => $this->data['type_file_id'],
-        //     ],
-        //     [
-        //         'file_name' => $fileName,
-        //         'file_type' => $fileType,
-        //         'path' => $fileUrl,
-        //     ]
-        // );
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.files.job.stored', [
+                'id' => (int) $file->id,
+                'was_recently_created' => (bool) $file->wasRecentlyCreated,
+                'site_id' => (int) $file->site_id,
+                'table_name' => (string) $file->table_name,
+                'table_row_id' => (int) $file->table_row_id,
+                'type_file_id' => (int) $file->type_file_id,
+                'path' => (string) $file->path,
+            ]);
+        }
     }
 }

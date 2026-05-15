@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\File;
-use Gate;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class StoreFileRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ class StoreFileRequest extends FormRequest
     {
         // return Gate::allows('file_create');
         /** @disregard P1013 */
-        return true; // auth()->user()->can('file_create');
+        return true;
     }
 
     /**
@@ -46,7 +45,6 @@ class StoreFileRequest extends FormRequest
             'table_name' => [
                 'string',
             ],
-
             'table_row_id' => [
                 'integer',
             ],
@@ -55,5 +53,33 @@ class StoreFileRequest extends FormRequest
                 'integer',
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if (config('app.mobile_upload_debug')) {
+            $uploadedFile = $this->file('file');
+
+            Log::warning('StoreFileRequest validation failed', [
+                'route' => $this->route()?->getName(),
+                'path' => $this->path(),
+                'method' => $this->method(),
+                'content_type' => $this->header('Content-Type'),
+                'expects_json' => $this->expectsJson(),
+                'auth_user_id' => $this->user()?->id,
+                'payload_keys' => array_keys($this->all()),
+                'site_id' => $this->input('site_id'),
+                'table_name' => $this->input('table_name'),
+                'table_row_id' => $this->input('table_row_id'),
+                'type_file_id' => $this->input('type_file_id'),
+                'file_name' => $this->input('file_name'),
+                'file_type' => $this->input('file_type'),
+                'upload_size' => $uploadedFile?->getSize(),
+                'upload_mime' => $uploadedFile?->getMimeType(),
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        parent::failedValidation($validator);
     }
 }

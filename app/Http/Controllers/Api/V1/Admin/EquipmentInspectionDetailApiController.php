@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateEquipmentInspectionDetailRequest;
 use App\Http\Resources\Admin\EquipmentInspectionDetailResource;
 use App\Models\EquipmentInspectionDetail;
 use Gate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,8 +22,18 @@ class EquipmentInspectionDetailApiController extends Controller
 
     public function store(StoreEquipmentInspectionDetailRequest $request)
     {
-        Log::info('store');
-        Log::info('store', [$request->all()]);
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.equipment_inspection_details.store', [
+                'auth_user_id' => $request->user()?->id,
+                'site_id' => (int) $request->site_id,
+                'inspection_id' => (int) $request->inspection_id,
+                'identity' => (string) $request->id,
+                'category_item_id' => (int) $request->category_item_id,
+                'category_detail_id' => (int) $request->category_detail_id,
+                'condition' => $request->condition,
+            ]);
+        }
+
         $equipmentInspectionDetail = EquipmentInspectionDetail::updateOrCreate(
             [
                 'site_id' => $request->site_id,
@@ -37,6 +46,18 @@ class EquipmentInspectionDetailApiController extends Controller
                 'condition' => $request->condition,
             ]
         );
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.equipment_inspection_details.stored', [
+                'id' => (int) $equipmentInspectionDetail->id,
+                'was_recently_created' => (bool) $equipmentInspectionDetail->wasRecentlyCreated,
+                'site_id' => (int) $equipmentInspectionDetail->site_id,
+                'inspection_id' => (int) $equipmentInspectionDetail->inspection_id,
+                'identity' => (string) $equipmentInspectionDetail->identity,
+                'category_item_id' => (int) $equipmentInspectionDetail->category_item_id,
+                'category_detail_id' => (int) $equipmentInspectionDetail->category_detail_id,
+            ]);
+        }
 
         return (new EquipmentInspectionDetailResource($equipmentInspectionDetail))
             ->response()

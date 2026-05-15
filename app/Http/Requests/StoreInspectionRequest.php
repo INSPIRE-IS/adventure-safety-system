@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Inspection;
-use Gate;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class StoreInspectionRequest extends FormRequest
 {
@@ -15,7 +14,7 @@ class StoreInspectionRequest extends FormRequest
     public function authorize(): bool
     {
         /** @disregard P1013 */
-        return true; // auth()->user()->can('inspection_create');
+        return true;
     }
 
     /**
@@ -39,5 +38,29 @@ class StoreInspectionRequest extends FormRequest
                 'nullable',
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if (config('app.mobile_upload_debug')) {
+            Log::warning('StoreInspectionRequest validation failed', [
+                'route' => $this->route()?->getName(),
+                'path' => $this->path(),
+                'method' => $this->method(),
+                'content_type' => $this->header('Content-Type'),
+                'expects_json' => $this->expectsJson(),
+                'auth_user_id' => $this->user()?->id,
+                'payload_keys' => array_keys($this->all()),
+                'site_id' => $this->input('site_id'),
+                'id' => $this->input('id'),
+                'inspection_schedule_id' => $this->input('inspection_schedule_id'),
+                'due_date' => $this->input('due_date'),
+                'complete_date' => $this->input('complete_date'),
+                'closing_comment_len' => strlen((string) $this->input('closing_comment', '')),
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        parent::failedValidation($validator);
     }
 }

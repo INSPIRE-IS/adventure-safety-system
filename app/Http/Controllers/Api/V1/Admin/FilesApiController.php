@@ -6,14 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Resources\Admin\FileResource;
+use App\Jobs\ProcessUploadedFile;
 use App\Models\File;
 use Gate;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Str;
 use Symfony\Component\HttpFoundation\Response;
-use App\Jobs\ProcessUploadedFile;
-use Illuminate\Support\Facades\Auth;
 
 class FilesApiController extends Controller
 {
@@ -26,7 +24,7 @@ class FilesApiController extends Controller
 
     public function store(StoreFileRequest $request)
     {
-                $user = $request->user();
+        $user = $request->user();
         $userId = (int) ($user?->id ?? 0);
 
         $requestedSiteIdRaw = $request->input('site_id');
@@ -38,22 +36,51 @@ class FilesApiController extends Controller
             $siteId = $requestedSiteId;
         }
 
+        $tableName = (string) $request->input('table_name');
+        $tableRowId = (int) $request->input('table_row_id');
+        $typeFileId = (int) $request->input('type_file_id');
+
         $uploadedFile = $request->file('file');
         $fileName = $request->input('file_name') ?? $uploadedFile->getClientOriginalName();
         $storagePath = $uploadedFile->storeAs('images', $fileName, 'public');
         $fileUrl = Storage::url($storagePath);
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.files.upload.start', [
+                'auth_user_id' => $userId,
+                'requested_site_id' => $requestedSiteId,
+                'resolved_site_id' => $siteId,
+                'table_name' => $tableName,
+                'table_row_id' => $tableRowId,
+                'type_file_id' => $typeFileId,
+                'file_name' => $fileName,
+                'upload_size' => $uploadedFile?->getSize(),
+                'upload_mime' => $uploadedFile?->getMimeType(),
+            ]);
+        }
 
         // Build file metadata for the job
         $data = [
             'file_name' => $fileName,
             'file_type' => $request->input('file_type'),
             'path' => $fileUrl,
-            'table_name' => $request->input('table_name'),
-            'table_row_id' => $request->input('table_row_id'),
-            'type_file_id' => $request->input('type_file_id'),
+            'table_name' => $tableName,
+            'table_row_id' => $tableRowId,
+            'type_file_id' => $typeFileId,
         ];
 
         dispatch(new ProcessUploadedFile($data, $userId, $siteId));
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.files.upload.queued', [
+                'auth_user_id' => $userId,
+                'site_id' => $siteId,
+                'table_name' => $tableName,
+                'table_row_id' => $tableRowId,
+                'type_file_id' => $typeFileId,
+                'path' => $fileUrl,
+            ]);
+        }
 
         return response()->json([
             'message' => 'File upload queued successfully',

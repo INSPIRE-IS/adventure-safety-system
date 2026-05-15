@@ -2,28 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Models\SafetyInspectionDetail;
-use Gate;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class StoreSafetyInspectionDetailRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        // todo: check if user has permission to create safety inspection detail
         /** @disregard P1013 */
-        return true; //  auth()->user()->can('safety_inspection_detail_create');
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules()
     {
         return [
@@ -44,5 +34,26 @@ class StoreSafetyInspectionDetailRequest extends FormRequest
                 'integer',
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if (config('app.mobile_upload_debug')) {
+            Log::warning('StoreSafetyInspectionDetailRequest validation failed', [
+                'route' => $this->route()?->getName(),
+                'path' => $this->path(),
+                'method' => $this->method(),
+                'content_type' => $this->header('Content-Type'),
+                'auth_user_id' => $this->user()?->id,
+                'payload_keys' => array_keys($this->all()),
+                'site_id' => $this->input('site_id'),
+                'inspection_id' => $this->input('inspection_id'),
+                'category_item_id' => $this->input('category_item_id'),
+                'category_detail_id' => $this->input('category_detail_id'),
+                'errors' => $validator->errors()->toArray(),
+            ]);
+        }
+
+        parent::failedValidation($validator);
     }
 }

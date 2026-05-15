@@ -44,6 +44,8 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+
+    'mobile_upload_debug' => (bool) env('MOBILE_UPLOAD_DEBUG', false),
     /*
     |--------------------------------------------------------------------------
     | Application URL

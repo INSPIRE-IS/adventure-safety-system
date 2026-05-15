@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateSafetyInspectionDetailRequest;
 use App\Http\Resources\Admin\SafetyInspectionDetailResource;
 use App\Models\SafetyInspectionDetail;
 use Gate;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class SafetyInspectionDetailApiController extends Controller
@@ -22,8 +22,17 @@ class SafetyInspectionDetailApiController extends Controller
 
     public function store(StoreSafetyInspectionDetailRequest $request)
     {
-        //dd($request->all());
-        //$safetyInspectionDetail = SafetyInspectionDetail::create($request->all());
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.safety_inspection_details.store', [
+                'auth_user_id' => $request->user()?->id,
+                'site_id' => (int) $request->site_id,
+                'inspection_id' => (int) $request->inspection_id,
+                'category_item_id' => (int) $request->category_item_id,
+                'category_detail_id' => (int) $request->category_detail_id,
+                'condition' => $request->condition,
+            ]);
+        }
+
         $safetyInspectionDetail = SafetyInspectionDetail::updateOrCreate(
             [
                 'site_id' => $request->site_id,
@@ -35,6 +44,17 @@ class SafetyInspectionDetailApiController extends Controller
                 'condition' => $request->condition,
             ]
         );
+
+        if (config('app.mobile_upload_debug')) {
+            Log::info('mobile.safety_inspection_details.stored', [
+                'id' => (int) $safetyInspectionDetail->id,
+                'was_recently_created' => (bool) $safetyInspectionDetail->wasRecentlyCreated,
+                'site_id' => (int) $safetyInspectionDetail->site_id,
+                'inspection_id' => (int) $safetyInspectionDetail->inspection_id,
+                'category_item_id' => (int) $safetyInspectionDetail->category_item_id,
+                'category_detail_id' => (int) $safetyInspectionDetail->category_detail_id,
+            ]);
+        }
 
         return (new SafetyInspectionDetailResource($safetyInspectionDetail))
             ->response()
