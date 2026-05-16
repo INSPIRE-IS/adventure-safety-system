@@ -27,6 +27,7 @@ class ProcessUploadedFile implements ShouldQueue
 
     public function handle()
     {
+        // set env var MOBILE_UPLOAD_DEBUG=true to enable debug logging
         if (config('app.mobile_upload_debug')) {
             Log::info('mobile.files.job.start', [
                 'user_id' => $this->userId,
