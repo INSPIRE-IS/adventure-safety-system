@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\DrillMembersApiController;
 use App\Http\Controllers\Api\V1\Admin\DrillsApiController;
 use App\Http\Controllers\Api\V1\Admin\EquipmentInspectionDetailApiController;
 use App\Http\Controllers\Api\V1\Admin\FilesApiController;
+use App\Http\Controllers\Api\V1\Admin\DeletedRecordsApiController;
 use App\Http\Controllers\Api\V1\Admin\HomeApiController;
 use App\Http\Controllers\Api\V1\Admin\IncidentApiController;
 use App\Http\Controllers\Api\V1\Admin\InspectionsApiController;
@@ -124,6 +125,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'middleware' => ['auth:sanctum']
     // Type Files
     Route::apiResource('type-files', TypeFilesApiController::class)->except(['create', 'edit']);
 
+
+    // Deleted Records
+    Route::apiResource('deleted-records', DeletedRecordsApiController::class)->only(['store']);
     // Files
     Route::apiResource('files', FilesApiController::class)->except(['create', 'edit']);
 });
