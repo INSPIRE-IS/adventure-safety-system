@@ -7,21 +7,30 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 use Inertia\Inertia;
-use Response;
+
 
 class ComplaintController extends Controller
 {
     public function index(Request $request)
     {
         /** @disregard P1013 */
+        abort_if(!auth()->user()->can('complaint_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         //abort_if(!auth()->user()->can('complaint_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
+
+        $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
+
+
         $complaints = Complaint::where('name', 'like', '%' . $searchTerm . '%')
+            ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
-            ->paginate(25);
+            ->paginate(15);
         // "id" => 5
         //           "name" => "Denver Doe"
         //           "phone" => "123-456-7890"
