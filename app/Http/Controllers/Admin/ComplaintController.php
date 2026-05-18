@@ -27,22 +27,12 @@ class ComplaintController extends Controller
         $teamId = Session::get('team_id'); //setPermissionsTeamId(auth('api')->user()->getTeamIdFromToken());
 
 
-        $complaints = Complaint::where('name', 'like', '%' . $searchTerm . '%')
+        $complaints = Complaint::with(['user'])
+            ->where('name', 'like', '%' . $searchTerm . '%')
             ->where('site_id', $teamId)
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(15);
-        // "id" => 5
-        //           "name" => "Denver Doe"
-        //           "phone" => "123-456-7890"
-        //           "email" => "denver@doe.com"
-        //           "complaint_date" => "2025-03-07 05:16:31"
-        //           "complaint" => "The bedding was wet"
-        //           "resolved" => 0
-        //           "user_id" => 1
-        //           "site_id" => 3
-        //           "created_at" => "2025-03-07 05:16:31"
-        //           "updated_at" => "2025-03-07 05:16:31"
-        //           "deleted_at" => null
+
         /** @disregard P1013 */
         return Inertia::render('Complaint/Index', [
             'complaints' => $complaints,
@@ -50,10 +40,10 @@ class ComplaintController extends Controller
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
             'can' => [
-                'complaint_show' => true, //auth()->user()->can('type_complaint_show'),
-                'complaint_create' => false, //auth()->user()->can('type_complaint_create'),
-                'complaint_edit' => false, //auth()->user()->can('type_complaint_edit'),
-                'complaint_delete' => false, //auth()->user()->can('type_complaint_delete'),
+                'complaint_show' => auth()->user()->can('complaint_show'),
+                'complaint_create' => auth()->user()->can('complaint_create'),
+                'complaint_edit' => auth()->user()->can('complaint_edit'),
+                'complaint_delete' => auth()->user()->can('complaint_delete'),
 
             ],
         ]);
