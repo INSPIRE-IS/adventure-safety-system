@@ -216,6 +216,13 @@ const Sidebar = () => {
       ],
     },
     {
+      label: "Complaint",
+      icon: "fas fa-question-circle",
+      route: "complaints.index",
+      permission: null, // Visible to all admin/sidebar users
+    },
+
+    {
       label: "Site",
       icon: "fas fa-users",
       permission: "site_access",
