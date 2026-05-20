@@ -230,20 +230,30 @@ class SiteController extends Controller
 
     public function change($site_id)
     {
-
-        //$request->validate(['site_id' => 'required']);
-        //$teamId = Session::get('team_id'); 
-        //dd($site_id);
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+        if (!$user) {
+            abort(401);
+        }
 
         $site = Team::find($site_id);
-        //dd($site);
-        if ($site) {
-            session(['team_id' => $site->id]);
-            setPermissionsTeamId($site->id);
-            Log::info('site controller site id: ' . $site->id);
-        } else {
-            Log::info('site controller site: none');
+        if (!$site) {
+            return redirect()->back()->with('message', 'Site not found.');
         }
+
+        /** @disregard P1013 */
+        $canSwitchAnySite = $user->hasAnyRole(['admin', 'super', 'director']);
+
+        if (!$canSwitchAnySite) {
+            $belongsToSite = $site->users()->where('users.id', $user->id)->exists();
+            abort_if(!$belongsToSite, 403, '403 Forbidden');
+        }
+
+        session(['team_id' => $site->id]);
+        setPermissionsTeamId($site->id);
+        /** @disregard P1013 */
+        $user->unsetRelation('roles')->unsetRelation('permissions');
+
         return redirect()->back()->with('message', 'Site changed.');
     }
 

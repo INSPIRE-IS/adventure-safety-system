@@ -3,14 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Models\Team;
-use App\Models\User;
-use App\Models\UserAlert;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Inertia\Middleware;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Log;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,85 +31,59 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         // Retrieve the logged-in user
+        /** @var \App\Models\User|null $user */
         $user = $request->user();
-        Log::info('Inertia Request');
-        Log::info('Request method: ' . $request->method());
-        //$team_id = $user->currentTeam()->get();
 
-        // okay so basically we get the user and team then we set the permission based on the team
-        // or we need to check in this array if the user has permission to access the team
-        // for now we just hard coding the admin and team 
-        //$user = User::find(1);
-        //dd($request->user());
-
-        //dd($user);
-        //$permissions = $user->getAllPermissions()->pluck('name');
-        //dd($permissions);
-        //$roles = $user->getRoleNames()->pluck('name');
-        //dd($roles);
-        // Logic for filtering teams
+        $team = null;
+        $teams = [];
+        $permissions = [];
+        $roles = [];
+        $alerts = [];
         $is_admin = false;
+
         if ($user) {
-            Log::info('User: ' . $user->id);
-            //$team_id = Session::get('team_id');
-            $team_id = session()->get('team_id');
-            if ($team_id == null) {
-                // $team = Team::find($teamId);
-                Log::info('update team id inertia: ' . $team_id);
-                //$is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
-                $team_id = optional($user)->teams->first()->id ?? 0;
-                // if ($team_id == 0 && $is_admin) {
-                //     $team_id = 1;
-                // }
-                //dd($is_admin);
-                setPermissionsTeamId(1);
+            $team_id = (int) session()->get('team_id');
+
+            if ($team_id <= 0) {
+                $team_id = (int) (optional($user)->teams->first()?->id ?? 0);
+                if ($team_id > 0) {
+                    session(['team_id' => $team_id]);
+                }
             }
-            Log::info('team_id: ' . $team_id);
-            //session(['team_id' => $team_id]);
-            setPermissionsTeamId($team_id);
 
-            //$user->teams;
-            //$user->permissions;
-            // $user->roles;
-            $teams = $user->getAllTeamNames(); //->pluck('name', 'id')->toArray();
-            // $items = collect($teams)->map(function ($name, $id) {
-            //     return (object)[
-            //         'id' => $id,
-            //         'name' => $name
-            //     ];
-            // });
-            //$teams = Team::all()->pluck('id', 'name');
-            //dd($teams);
-            $permissions = $user->getAllPermissions()->pluck('name')->values()->all();
+            setPermissionsTeamId($team_id > 0 ? $team_id : null);
 
-            // getRoleNames() already returns a collection of role name strings.
-            $roles = $user->getRoleNames()->values()->all();
-            //$permissions = $user->getAllPermissionsAttribute();
-            //dd($permissions);
-            $team = Team::find($team_id); // with('type_activities')->
-            $alerts = $user->userAlerts;
-            //dd($alerts);
+            /** @disregard P1013 */
+            $user->unsetRelation('roles')->unsetRelation('permissions');
+
+            /** @disregard P1013 */
             $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
-            //dd($team);
-            if ($user->isAdminOfTeam(1) || $user->id === 2) {
-                //setPermissionsTeamId(2);
-                //setPermissionsTeamId(null);
-                // Admin of Team 1 or user ID 2: Show all teams
-                // $teams = Team::all(); // Assuming you have a Team model
-                // //$permissions = Permission::all(); // Should list your permissions
-                // //$roles = Role::all();       // Should list your roles
-                // //$teams = $user->getAllTeamNames()->pluck('name');
-                // $permissions = $user->getAllPermissions()->pluck('name');
-                // $roles = $user->getRoleNames()->pluck('name'); // Assuming you have a Team model
-            } else {
-                // Filter teams the user is linked to
-                // Log::info('User: no user');
-                // $teams = $user->teams; // Assuming a "teams" relationship exists on the User model
-                // dd($teams);
-                // //$permissions = $user->getAllPermissions()->pluck('name'); // Assuming a "teams" relationship exists on the User model
-                // $permissions = $user->getAllPermissions()->pluck('name');
-                // $roles = $user->getRoleNames()->pluck('name'); // Assuming you have a Team model
+
+            if (!$is_admin && $team_id > 0) {
+                $hasTeamAccess = Team::query()
+                    ->whereKey($team_id)
+                    ->whereHas('users', function ($q) use ($user) {
+                        $q->where('users.id', $user->id);
+                    })
+                    ->exists();
+
+                if (!$hasTeamAccess) {
+                    $team_id = (int) (optional($user)->teams->first()?->id ?? 0);
+                    session(['team_id' => $team_id]);
+
+                    setPermissionsTeamId($team_id > 0 ? $team_id : null);
+                    /** @disregard P1013 */
+                    $user->unsetRelation('roles')->unsetRelation('permissions');
+                    /** @disregard P1013 */
+                    $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
+                }
             }
+
+            $teams = $user->getAllTeamNames();
+            $permissions = $user->getAllPermissions()->pluck('name')->values()->all();
+            $roles = $user->getRoleNames()->values()->all();
+            $team = $team_id > 0 ? Team::find($team_id) : null;
+            $alerts = $user->userAlerts;
         }
         //dd(method_exists($user, 'can'));
         //dd($user->can('show_permission'));

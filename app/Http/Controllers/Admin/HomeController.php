@@ -16,11 +16,22 @@ class HomeController extends Controller
 
         // /** @disregard P1013 */
         // abort_if(!auth()->user()->can('file_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        /** @var \App\Models\User $user */
         $user = auth()->user();
-        $teamId = Session::get('team_id');
+        $teamId = (int) Session::get('team_id');
+        if ($teamId <= 0) {
+            $teamId = (int) (optional($user)->teams->first()?->id ?? 0);
+            if ($teamId > 0) {
+                Session::put('team_id', $teamId);
+            }
+        }
+
+        setPermissionsTeamId($teamId > 0 ? $teamId : null);
         /** @disregard P1013 */
-        $is_admin = $user->hasAnyRole(['admin', 'super']);
-        $searchTerm = $request->get('name', '');
+        $user->unsetRelation('roles')->unsetRelation('permissions');
+        /** @disregard P1013 */
+        $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
+        $searchTerm = $request->get('search', $request->get('name', ''));
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
         if ($is_admin) {
@@ -93,9 +104,9 @@ class HomeController extends Controller
                 'drills:id,due_date,complete_date,type_drill_id,site_id,assigned_to_id',
                 'drills.type_drill:id,name',
                 'post_incidents:id,due_date,complete_date,type_incident_id,site_id,assigned_to_id',
-                'post_incidents:type_incident:id,name', //.
+                'post_incidents.type_incident:id,name',
             ])
-                ->where('teams.id', 2)
+                ->where('teams.id', $teamId)
                 ->orderBy($sortColumn, $sortDirection)
                 ->get()
                 ->map(function ($site) {
@@ -147,6 +158,9 @@ class HomeController extends Controller
         /** @disregard P1013 */
         return Inertia::render('Dashboard', [
             'cardData' => $siteCards,
+            'searchTerm' => $searchTerm,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
         ]);
     }
 }
