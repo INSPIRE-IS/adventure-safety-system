@@ -85,6 +85,9 @@ const TypeInspectionsIndex = ({auth, typeInspections, roles, teams, can, searchT
                                 <img src="./images/left-arrow-icon.svg" alt="filter" className="w-[16px] h-[15px] rounded-full ml-4" />
                             </Link>
                             </th>
+                            <th className="px-6 py-3 table-header uppercase tracking-wider">
+                                Due Days
+                            </th>
                             <th className="px-6 py-3 uppercase tracking-wider">
                                 
                             </th>
@@ -95,6 +98,9 @@ const TypeInspectionsIndex = ({auth, typeInspections, roles, teams, can, searchT
                             <tr key={typeInspection.id} className='h-[78px]' style={{borderBottomWidth: '12px', borderBottomColor: "#F8F8F8",}}>
                                 <td className=" px-6 py-4 whitespace-nowrap items-center justify-center  table-text1 ">
                                     {typeInspection.name}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap items-center justify-center table-text1">
+                                    {typeInspection.due_days ?? 14}
                                 </td>
                                 <td className="px-6 py-4 flex flex-row items-center justify-end">
                                     {can.type_inspection_show && (

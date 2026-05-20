@@ -8,11 +8,13 @@ const TypeIncidentModal = ({ isOpen, onClose, mode, typeincident = null, roles, 
     console.log("roles", roles);
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
+        due_days: 14,
     });
     useEffect(() => {
         if (typeincident && mode !== "create") {
             setData({
                 name: typeincident.name || "",
+                due_days: typeincident.due_days ?? 14,
             });
         } else if (mode === "create") {
             reset(); // Clear form for create mode
@@ -54,6 +56,15 @@ const TypeIncidentModal = ({ isOpen, onClose, mode, typeincident = null, roles, 
                         field="name"
                         value={data.name}
                         mode={mode}
+                        handleChange={handleChange}
+                        errors={errors}
+                    />
+                    <InputText
+                        title="Due Days"
+                        field="due_days"
+                        value={data.due_days}
+                        mode={mode}
+                        type="number"
                         handleChange={handleChange}
                         errors={errors}
                     />

@@ -8,11 +8,13 @@ const TypeInspectionModal = ({ isOpen, onClose, mode, typeinspection = null, rol
     console.log("roles", roles);
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
+        due_days: 14,
     });
     useEffect(() => {
         if (typeinspection && mode !== "create") {
             setData({
                 name: typeinspection.name || "",
+                due_days: typeinspection.due_days ?? 14,
             });
         } else if (mode === "create") {
             reset(); // Clear form for create mode
@@ -54,6 +56,15 @@ const TypeInspectionModal = ({ isOpen, onClose, mode, typeinspection = null, rol
                         field="name"
                         value={data.name}
                         mode={mode}
+                        handleChange={handleChange}
+                        errors={errors}
+                    />
+                    <InputText
+                        title="Due Days"
+                        field="due_days"
+                        value={data.due_days}
+                        mode={mode}
+                        type="number"
                         handleChange={handleChange}
                         errors={errors}
                     />

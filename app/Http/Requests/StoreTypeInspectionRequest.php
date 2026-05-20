@@ -30,6 +30,12 @@ class StoreTypeInspectionRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'due_days' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:365',
+            ],
         ];
     }
 }

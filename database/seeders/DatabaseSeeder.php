@@ -357,61 +357,88 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        TypeInspection::create(['name' => 'Monthly Safety Inspection']); // safety inspection
-        TypeInspection::create(['name' => 'Annual Safety Inspection']); // safety inspection        
-        TypeInspection::create(['name' => 'PPE Inspections']); // equipment inspection
+        // Reference/lookup data (idempotent; safe to run on production).
+        TypeInspection::withTrashed()->updateOrCreate(['name' => 'Monthly Safety Inspection'], ['deleted_at' => null]); // safety inspection
+        TypeInspection::withTrashed()->updateOrCreate(['name' => 'Annual Safety Inspection'], ['deleted_at' => null]); // safety inspection
+        TypeInspection::withTrashed()->updateOrCreate(['name' => 'PPE Inspections'], ['deleted_at' => null]); // equipment inspection
 
-        TypeDrill::create(['name' => 'Fire Fighting']);
-        TypeDrill::create(['name' => 'Evacuation']);
-        TypeDrill::create(['name' => 'CPR']);
-        TypeDrill::create(['name' => 'Rescue']);
-        TypeDrill::create(['name' => 'Belay to Ground']);
+        TypeDrill::withTrashed()->updateOrCreate(['name' => 'Fire Fighting'], ['deleted_at' => null]);
+        TypeDrill::withTrashed()->updateOrCreate(['name' => 'Evacuation'], ['deleted_at' => null]);
+        TypeDrill::withTrashed()->updateOrCreate(['name' => 'CPR'], ['deleted_at' => null]);
+        TypeDrill::withTrashed()->updateOrCreate(['name' => 'Rescue'], ['deleted_at' => null]);
+        TypeDrill::withTrashed()->updateOrCreate(['name' => 'Belay to Ground'], ['deleted_at' => null]);
 
-        $type_activities1 = TypeActivity::create(['name' => 'Zipline']);
-        $type_activities2 = TypeActivity::create(['name' => 'Rope Adventure']);
+        $type_activities1 = TypeActivity::withTrashed()->updateOrCreate(['name' => 'Zipline'], ['deleted_at' => null]);
+        $type_activities2 = TypeActivity::withTrashed()->updateOrCreate(['name' => 'Rope Adventure'], ['deleted_at' => null]);
 
 
-        TypeBool::create(['name' => 'Yes']);
-        TypeBool::create(['name' => 'No']);
-        TypeBool::create(['name' => 'N/A']);
+        TypeBool::withTrashed()->updateOrCreate(['name' => 'Yes'], ['deleted_at' => null]);
+        TypeBool::withTrashed()->updateOrCreate(['name' => 'No'], ['deleted_at' => null]);
+        TypeBool::withTrashed()->updateOrCreate(['name' => 'N/A'], ['deleted_at' => null]);
 
-        TypeIncident::create(['name' => 'Near Miss']);
-        TypeIncident::create(['name' => 'Minor Injury']);
-        TypeIncident::create(['name' => 'Major Injury']);
+        TypeIncident::withTrashed()->updateOrCreate(['name' => 'Near Miss'], ['deleted_at' => null]);
+        TypeIncident::withTrashed()->updateOrCreate(['name' => 'Minor Injury'], ['deleted_at' => null]);
+        TypeIncident::withTrashed()->updateOrCreate(['name' => 'Major Injury'], ['deleted_at' => null]);
 
-        TypeDegradation::create(['name' => 'Worn but OK']);
-        TypeDegradation::create(['name' => 'Failed and Removed']);
+        TypeDegradation::withTrashed()->updateOrCreate(['name' => 'Worn but OK'], ['deleted_at' => null]);
+        TypeDegradation::withTrashed()->updateOrCreate(['name' => 'Failed and Removed'], ['deleted_at' => null]);
 
-        TypeQuestion::create(['name' => 'Why/How did we allow the accident to happen?']);
-        TypeQuestion::create(['name' => 'What lessons can be learnt?']);
-        TypeQuestion::create(['name' => 'What new protocols (if any) are to be put in place to help prevent this sort of accident happening again?']);
-        TypeQuestion::create(['name' => 'Has a proper debriefing session taken place with ALL the operational staff?']);
-        TypeQuestion::create(['name' => 'Was any additional input learnt from this?']);
+        TypeQuestion::withTrashed()->updateOrCreate(['name' => 'Why/How did we allow the accident to happen?'], ['deleted_at' => null]);
+        TypeQuestion::withTrashed()->updateOrCreate(['name' => 'What lessons can be learnt?'], ['deleted_at' => null]);
+        TypeQuestion::withTrashed()->updateOrCreate(['name' => 'What new protocols (if any) are to be put in place to help prevent this sort of accident happening again?'], ['deleted_at' => null]);
+        TypeQuestion::withTrashed()->updateOrCreate(['name' => 'Has a proper debriefing session taken place with ALL the operational staff?'], ['deleted_at' => null]);
+        TypeQuestion::withTrashed()->updateOrCreate(['name' => 'Was any additional input learnt from this?'], ['deleted_at' => null]);
 
-        TypeFile::create(['name' => 'teams']);
-        TypeFile::create(['name' => 'drill_signature']);
-        TypeFile::create(['name' => 'incident_signature']);
-        TypeFile::create(['name' => 'inspection_signature']);
-        TypeFile::create(['name' => 'incidents']);
-        TypeFile::create(['name' => 'inspections']);
-        TypeFile::create(['name' => 'drills']);
-        TypeFile::create(['name' => 'post_incidents']);
-        TypeFile::create(['name' => 'safety_inspection_details']);
-        TypeFile::create(['name' => 'equipment_inspection_details']);
-        TypeFile::create(['name' => 'certificate']);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'teams'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'drill_signature'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'incident_signature'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'inspection_signature'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'incidents'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'inspections'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'drills'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'post_incidents'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'safety_inspection_details'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'equipment_inspection_details'], ['deleted_at' => null]);
+        TypeFile::withTrashed()->updateOrCreate(['name' => 'certificate'], ['deleted_at' => null]);
 
-        $user1 = User::create(['name' => 'super user', 'email' => 'jason@whitehart.co.za', 'password' => bcrypt('P@ssw0rd1234'),]);
-        $user2 = User::create(['name' => 'admin user', 'email' => 'admin@canopytour.co.za', 'password' => bcrypt('P@ssw0rd1234'),]);
-        $user3 = User::create(['name' => 'author', 'email' => 'author@canopytour.co.za', 'password' => bcrypt('P@ssw0rd1234'),]);
-        $user4 = User::create(['name' => 'Mark Brown', 'email' => 'mark@canopytour.co.za', 'password' => bcrypt('P@ssw0rd1234'),]);
+        // Demo/sample data (never seed on production; opt-in via SEED_DEMO_DATA=true).
+        $seedDemoData = filter_var(env('SEED_DEMO_DATA', false), FILTER_VALIDATE_BOOLEAN);
+        if ($seedDemoData) {
+            if (app()->environment('production')) {
+                if ($this->command) {
+                    $this->command->warn('SEED_DEMO_DATA is enabled but APP_ENV=production; skipping demo users/teams seeding.');
+                }
+            } else {
+                $demoPassword = trim((string) env('SEED_DEMO_PASSWORD', ''));
+                if ($demoPassword === '') {
+                    if ($this->command) {
+                        $this->command->warn('SEED_DEMO_DATA is enabled but SEED_DEMO_PASSWORD is empty; skipping demo users/teams seeding.');
+                    }
+                } else {
+                    $user1 = User::updateOrCreate(
+                        ['email' => 'jason@whitehart.co.za'],
+                        ['name' => 'super user', 'password' => bcrypt($demoPassword)]
+                    );
+                    $user2 = User::updateOrCreate(
+                        ['email' => 'admin@canopytour.co.za'],
+                        ['name' => 'admin user', 'password' => bcrypt($demoPassword)]
+                    );
+                    $user3 = User::updateOrCreate(
+                        ['email' => 'author@canopytour.co.za'],
+                        ['name' => 'author', 'password' => bcrypt($demoPassword)]
+                    );
+                    $user4 = User::updateOrCreate(
+                        ['email' => 'mark@canopytour.co.za'],
+                        ['name' => 'Mark Brown', 'password' => bcrypt($demoPassword)]
+                    );
 
         $team1 = Team::create(['name' => 'uShaka', 'description' => ' uShaka Marine World’s Chimp & Zee Rope Adventure Park', 'location' => '1 King Shaka Avenue Point, Durban 4001', 'phone' => '123-456-7890', 'email' => 'ushaka@chimpandzee.co.za', 'website' => 'https://ushakamarine.com/chimpnzee/', 'image' => 'https://cdn.bitrix24.com/b14850221/landing/79b/79b5ade99934012d4fa012b663252719/uSh_Chimp_Zee_logos_v1_1x.png']);
         $team2 = Team::create(['name' => 'Sun City', 'description' => 'Chimp & Zee Rope Adventure Park Sun City Resort', 'location' => 'Kuriftu Resort Entoto Ethiopia', 'phone' => '123-456-7890', 'email' => 'chimp@chimppe.com', 'website' => 'https://www.suninternational.com/sun-city/activities/adventure/chimp-and-zee/', 'image' => 'https://www.suninternational.com/content/dam/suninternational/sun-city-resort/sport-recreation/valley-of-waves/chimp-and-zee-logo.jpg.sunimage.300.300.png']);
         // attach() – Adds new records to the pivot table without removing existing ones.
         $team1->type_activities()->attach([$type_activities1->id]); // Adds teams 1, 2, and 3// Adds teams 1, 2, and 3 // Adds team 4 without removing the previous ones
         $team2->type_activities()->attach([$type_activities2->id]); // Adds teams 1, 2, and 3// Adds teams 1, 2, and 3 // Adds team 4 without removing the previous ones
-        // sync() – Replaces existing pivot records with the given ones (removes anything not included). 
-        // Assign team to the user           
+        // sync() – Replaces existing pivot records with the given ones (removes anything not included).
+        // Assign team to the user
         $user1->teams()->sync([$team1->id, $team2->id]);
         $user2->teams()->sync([$team1->id, $team2->id]);
         $user3->teams()->sync([$team1->id, $team2->id]);
@@ -420,14 +447,17 @@ class DatabaseSeeder extends Seeder
         // Assign a role to the user for specific teams
         setPermissionsTeamId($team1->id);
         $user1->assignRole('super'); // Assign 'super' role for Team 1
-        $user2->assignRole('admin'); // Assign 'admin' role for Team 1    
-        $user3->assignRole('author'); // Assign 'admin' role for Team 1    
-        $user4->assignRole('director'); // Assign 'admin' role for Team 1    
+        $user2->assignRole('admin'); // Assign 'admin' role for Team 1
+        $user3->assignRole('author'); // Assign 'admin' role for Team 1
+        $user4->assignRole('director'); // Assign 'admin' role for Team 1
         setPermissionsTeamId($team2->id);
         $user1->assignRole('super'); // Assign 'super' role for Team 1
-        $user2->assignRole('admin'); // Assign 'admin' role for Team 1    
-        $user3->assignRole('author'); // Assign 'admin' role for Team 1    
-        $user4->assignRole('director'); // Assign 'admin' role for Team 1         
+        $user2->assignRole('admin'); // Assign 'admin' role for Team 1
+        $user3->assignRole('author'); // Assign 'admin' role for Team 1
+        $user4->assignRole('director'); // Assign 'admin' role for Team 1
+                }
+            }
+        }
 
         // //monthly
         // CategoryItem::create(['name' => 'Launch Platform 1', 'type_inspection_id' => 1, 'site_id' => 2,  'certificate_recieved_id' => 2]);
@@ -525,7 +555,7 @@ class DatabaseSeeder extends Seeder
         // CategoryDetail::create(['category_item_id' => 13, 'name' => 'Timber and Poles', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
         // CategoryDetail::create(['category_item_id' => 13, 'name' => 'Decking', 'in_use_date' => '2023-01-01', 'out_use_date' => '']);
 
-        // // period 1 none,2 3month,3 4 month,4 6 month,5 12 month 
+        // // period 1 none,2 3month,3 4 month,4 6 month,5 12 month
         // InspectionSchedule::create(['name' => 'Rock climbing', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         // // InspectionSchedule::create(['name' => 'Zipline', 'site_id' => $team2->id, 'type_inspection_id' => 1, 'type_activity_id' => 2, 'active_date' => now(), 'period_id' => 2, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);
         // InspectionSchedule::create(['name' => 'Rope climbing', 'site_id' => $team2->id, 'type_inspection_id' => 2, 'type_activity_id' => 1, 'active_date' => now(), 'period_id' => 5, 'assigned_to_id' => $user5->id, 'assigned_by_id' => $user4->id,]);

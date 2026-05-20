@@ -8,11 +8,13 @@ const TypeDrillModal = ({ isOpen, onClose, mode, typeDrill = null }) => {
 
     const { data, setData, post, put, errors, reset, processing } = useForm({
         name: "",
+        due_days: 14,
     });
     useEffect(() => {
         if (typeDrill && mode !== "create") {
             setData({
                 name: typeDrill.name || "",
+                due_days: typeDrill.due_days ?? 14,
             });
         } else if (mode === "create") {
             reset(); // Clear form for create mode
@@ -54,6 +56,15 @@ const TypeDrillModal = ({ isOpen, onClose, mode, typeDrill = null }) => {
                         field="name"
                         value={data.name}
                         mode={mode}
+                        handleChange={handleChange}
+                        errors={errors}
+                    />
+                    <InputText
+                        title="Due Days"
+                        field="due_days"
+                        value={data.due_days}
+                        mode={mode}
+                        type="number"
                         handleChange={handleChange}
                         errors={errors}
                     />

@@ -24,6 +24,7 @@ class TypeDrill extends Model
 
     protected $fillable = [
         'name',
+        'due_days',
         'frequency',
         'specific_date',
         'created_at',

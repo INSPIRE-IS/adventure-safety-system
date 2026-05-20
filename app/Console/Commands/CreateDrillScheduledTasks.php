@@ -42,21 +42,11 @@ class CreateDrillScheduledTasks extends Command
         // Get today's date for comparison
         $today = Carbon::today();
 
-        // Define the period mappings (from 'period_id' => 'description')
-        $periods = [
-            1 => 'None',
-            2 => 'Monthly',
-            3 => 'Bi-Monthly', // (every 2 months)
-            4 => 'Quarterly', // (every 3 months)
-            5 => '6 Monthly', // (every 6 months)
-            6 => 'Annually'
-        ];
-
-
         // Fetch all DrillSchedules for today with the same month and day
 
         $drillSchedules = DrillSchedule::whereDate('active_date', $today)
             ->whereNull('deleted_at')
+            ->with(['type_drill:id,due_days'])
             ->get();
 
         if ($debug == 1) Log::info("Found {$drillSchedules->count()} drill schedule(s) due today ({$today})");
@@ -65,9 +55,10 @@ class CreateDrillScheduledTasks extends Command
         foreach ($drillSchedules as $schedule) {
             $this->info("Processing DrillSchedule ID: {$schedule->id}");
             // Get the period ID and the corresponding period
-            $period = $periods[$schedule->period_id] ?? 'None';
-            $activeDate = Carbon::parse($schedule->active_date);
-            $dueDate = $activeDate->copy();
+            $period = DrillSchedule::PERIOD_SELECT[$schedule->period_id] ?? 'None';
+            $dueDays = (int) ($schedule->type_drill?->due_days ?? 14);
+            $activeDate = Carbon::parse($schedule->getRawOriginal('active_date'));
+            $dueDate = $activeDate->copy()->addDays($dueDays);
 
             // Calculate the due date based on the period
             //$dueDate = null;
@@ -101,15 +92,14 @@ class CreateDrillScheduledTasks extends Command
 
             // Check if an drill already exists for this schedule
             $drill = Drill::where('drill_schedule_id', $schedule->id)
-                ->where('due_date', $dueDate->addMonth())
-                ->where('assigned_to_id', $schedule->assigned_to_id)
+                ->whereDate('due_date', $dueDate)
                 ->first();
             //$this->info('drill: ' . $drill->id);
             // If no drill exists, create a new one
             if (!$drill) {
                 $drill = new Drill();
                 $drill->assigned_to_id = $schedule->assigned_to_id;
-                $drill->due_date = $dueDate->addMonth();
+                $drill->due_date = $dueDate;
                 $drill->site_id = $schedule->site_id;
                 $drill->drill_schedule_id = $schedule->id;
                 $drill->type_activity_id = $schedule->type_activity_id;
@@ -159,20 +149,14 @@ class CreateDrillScheduledTasks extends Command
             if ($debug == 1) Log::info('type_drill_id: ' . $drill->type_drill_id);
             $nextActiveDate = $activeDate->copy();
             switch ($period) {
-                case 'Monthly':
-                    $nextActiveDate->addMonth();
-                    break;
-                case 'Bi-Monthly':
-                    $nextActiveDate->addMonths(2);
-                    break;
-                case 'Quarterly':
+                case '3 Months':
                     $nextActiveDate->addMonths(3);
                     break;
-                case '6 Monthly':
+                case '6 Month':
                     $nextActiveDate->addMonths(6);
                     break;
-                case 'Annually':
-                    $nextActiveDate->addYear();
+                case '12 Month':
+                    $nextActiveDate->addMonths(12);
                     break;
             }
             $schedule->active_date = $nextActiveDate;

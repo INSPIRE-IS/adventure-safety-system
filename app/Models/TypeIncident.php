@@ -21,6 +21,7 @@ class TypeIncident extends Model
 
     protected $fillable = [
         'name',
+        'due_days',
         'created_at',
         'updated_at',
         'deleted_at',

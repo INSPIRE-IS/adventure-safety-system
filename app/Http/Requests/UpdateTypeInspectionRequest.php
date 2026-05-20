@@ -29,6 +29,12 @@ class UpdateTypeInspectionRequest extends FormRequest
             'name' => [
                 'required',
             ],
+            'due_days' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:365',
+            ],
         ];
     }
 }

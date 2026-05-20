@@ -30,6 +30,12 @@ class UpdateTypeDrillRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'due_days' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:365',
+            ],
             'specific_date' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',

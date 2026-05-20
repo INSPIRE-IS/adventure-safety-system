@@ -42,18 +42,10 @@ class CreateInspectionScheduledTasks extends Command
         // Get today's date for comparison
         $today = Carbon::today();
 
-        // Define the period mappings (from 'period_id' => 'description')
-        $periods = [
-            '1' => 'None',
-            '2' => 'Monthly',
-            '3' => 'Bi-Monthly', // (every 2 months)
-            '4' => 'Quarterly', // (every 3 months)
-            '5' => '6 Monthly', // (every 6 months)
-            '6' => 'Annually',
-        ];
         // Fetch all InspectionSchedules for today with the same month and day then every month same day moving forward
         $inspectionSchedules = InspectionSchedule::whereDate('active_date', $today)
             ->whereNull('deleted_at')
+            ->with(['type_inspection:id,due_days'])
             ->get();
         if ($debug == 1) Log::info("Found {$inspectionSchedules->count()} schedule(s) due today ({$today})");
 
@@ -61,9 +53,10 @@ class CreateInspectionScheduledTasks extends Command
         foreach ($inspectionSchedules as $schedule) {
             if ($debug == 1) Log::info('InspectionSchedule: ' . $schedule->id);
             // Get the period ID and the corresponding period
-            $period = $periods[$schedule->period_id] ?? 'None';
-            $activeDate = Carbon::parse($schedule->active_date);
-            $dueDate = $activeDate->copy();
+            $period = InspectionSchedule::PERIOD_SELECT[$schedule->period_id] ?? 'None';
+            $dueDays = (int) ($schedule->type_inspection?->due_days ?? 14);
+            $activeDate = Carbon::parse($schedule->getRawOriginal('active_date'));
+            $dueDate = $activeDate->copy()->addDays($dueDays);
 
             // Calculate due date based on period
             // switch ($period) {
@@ -96,9 +89,7 @@ class CreateInspectionScheduledTasks extends Command
 
             // Check if an inspection already exists for this schedule
             $inspection = Inspection::where('inspection_schedule_id', $schedule->id)
-                ->where('due_date', $dueDate->addMonth())
-                ->where('assigned_to_id', $schedule->assigned_to_id)
-                ->whereNull('deleted_at')
+                ->whereDate('due_date', $dueDate)
                 ->first();
             //$this->info('inspection: ' . $inspection->id);
             // If no inspection exists, create a new one
@@ -108,7 +99,7 @@ class CreateInspectionScheduledTasks extends Command
                 $inspection->inspection_schedule_id = $schedule->id;
                 $inspection->type_inspection_id = $schedule->type_inspection_id;
                 $inspection->assigned_to_id = $schedule->assigned_to_id;
-                $inspection->due_date = $dueDate->addMonth();
+                $inspection->due_date = $dueDate;
                 $inspection->site_id = $schedule->site_id;
                 $inspection->save();
 

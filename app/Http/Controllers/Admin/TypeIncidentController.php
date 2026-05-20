@@ -45,14 +45,14 @@ class TypeIncidentController extends Controller
     {
         $typeIncident = TypeIncident::create($request->all());
 
-        return redirect()->route('admin.type-incidents.index');
+        return redirect()->route('type-incidents.index');
     }
 
     public function update(UpdateTypeIncidentRequest $request, TypeIncident $typeIncident)
     {
         $typeIncident->update($request->all());
 
-        return redirect()->route('admin.type-incidents.index');
+        return redirect()->route('type-incidents.index');
     }
 
     public function show(TypeIncident $typeIncident)
