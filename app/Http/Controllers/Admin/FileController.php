@@ -73,7 +73,6 @@ class FileController extends Controller
         $file = File::create([
             'site_id'   => $request->site_id,
             'table_name' => $request->table_name,
-            'category_items',
             'file_name' => $fileName,
             'file_type' => $request->file_type, // certificate
             'type_file_id' => $request->type_file_id, // certificate
