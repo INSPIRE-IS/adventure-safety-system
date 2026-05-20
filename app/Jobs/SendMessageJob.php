@@ -39,17 +39,26 @@ class SendMessageJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $debug = 1;
-        Log::info("Preparing to send email---------------");
         $user = User::find($this->userId);
-        Log::info("Preparing to send email to---------------------------------------------------------: {$user}");
 
         if (!$user) {
             Log::error("User ID {$this->userId} not found. Skipping email.");
             return;
         }
 
-        Log::info("Preparing to send email to: {$user->email}");
+        $forcedRecipient = config('mail.force_to');
+        $recipientEmail = $forcedRecipient ?: $user->email;
+
+        if (!$recipientEmail) {
+            Log::error("User ID {$this->userId} has no email. Skipping email.");
+            return;
+        }
+
+        if ($forcedRecipient) {
+            Log::warning("MAIL_FORCE_TO is set; forcing email recipient to {$forcedRecipient} for user ID {$user->id}");
+        }
+
+        Log::info("Preparing to send email to: {$recipientEmail} (user ID {$user->id})");
 
         $bulk_message = BulkMessage::create([
             'subject' => $this->subject,
@@ -60,16 +69,15 @@ class SendMessageJob implements ShouldQueue
 
         $log = BulkMessageLog::create([
             'user_id' => $this->userId,
-            'email' => $user->email,
+            'email' => $recipientEmail,
             'bulk_message_id' => $bulk_message->id,
             'status' => 'pending',
         ]);
 
         try {
-            $res =  Mail::to('jasonlong.inspire@gmail.com')->send(new \App\Mail\MessageMail($this->message, $this->subject));
-            // Log::info("Email sent to: {$res}");
+            Mail::to($recipientEmail)->send(new \App\Mail\MessageMail($this->message, $this->subject));
             $log->update(['status' => 'sent']);
-            Log::info("Email sent to: {$user->email}");
+            Log::info("Email sent to: {$recipientEmail}");
         } catch (\Exception $e) {
             $log->update([
                 'status' => 'failed',

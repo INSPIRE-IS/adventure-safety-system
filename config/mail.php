@@ -131,4 +131,6 @@ return [
         ],
     ],
 
+    'force_to' => env('MAIL_FORCE_TO'),
+
 ];
