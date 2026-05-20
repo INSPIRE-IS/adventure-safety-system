@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_item_inspection_schedule_pivot');
+        Schema::dropIfExists('category_item_inspection_schedule');
     }
 };
