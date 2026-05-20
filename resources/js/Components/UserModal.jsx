@@ -15,13 +15,18 @@ const UserModal = ({ isOpen, onClose, user = null }) => {
         teams: [],
     });
     useEffect(() => {
-            setData({
-                name: user.name || "",
-                email: user.email || "",
-                password: user.password || "",
-                roles: user.roles || [],
-                teams: user.teams || [],
-            });
+        if (!user) {
+            reset();
+            return;
+        }
+
+        setData({
+            name: user.name || "",
+            email: user.email || "",
+            password: "",
+            roles: user.roles || [],
+            teams: user.teams || [],
+        });
     }, [user]);
 
     const handleChange = (target, value) => {
@@ -32,7 +37,9 @@ const UserModal = ({ isOpen, onClose, user = null }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        put(route("type-drills.update", user.id), {
+        if (!user?.id) return;
+
+        put(route("users.update", user.id), {
             onSuccess: () => {reset();onClose()},
         });
 
