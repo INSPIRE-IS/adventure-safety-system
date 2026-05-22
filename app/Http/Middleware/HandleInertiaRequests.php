@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -42,13 +43,16 @@ class HandleInertiaRequests extends Middleware
         $is_admin = false;
 
         if ($user) {
-            $team_id = (int) session()->get('team_id');
+            /** @disregard P1013 */
+            $user->loadMissing('teams');
 
-            if ($team_id <= 0) {
-                $team_id = (int) (optional($user)->teams->first()?->id ?? 0);
-                if ($team_id > 0) {
-                    session(['team_id' => $team_id]);
-                }
+            $teamIds = $user->teams->pluck('id')->values();
+
+            $team_id = (int) session()->get('team_id', 0);
+
+            // If the session team is missing/invalid for this user, choose a safe default.
+            if ($team_id <= 0 || ($teamIds->isNotEmpty() && !$teamIds->contains($team_id))) {
+                $team_id = (int) ($teamIds->first() ?? 0);
             }
 
             setPermissionsTeamId($team_id > 0 ? $team_id : null);
@@ -59,6 +63,47 @@ class HandleInertiaRequests extends Middleware
             /** @disregard P1013 */
             $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
 
+            // If the chosen team has no roles for this user, fall back to a team where they DO have roles.
+            // This prevents "no roles" logins when a user belongs to multiple sites but only has roles on some.
+            if ($team_id > 0 && $teamIds->count() > 1) {
+                $modelHasRolesTable = config('permission.table_names.model_has_roles', 'model_has_roles');
+                $modelHasPermissionsTable = config('permission.table_names.model_has_permissions', 'model_has_permissions');
+                $teamKey = config('permission.column_names.team_foreign_key', 'team_id');
+                $morphKey = config('permission.column_names.model_morph_key', 'model_id');
+
+                $hasRolesInChosenTeam = DB::table($modelHasRolesTable)
+                    ->where($morphKey, $user->getKey())
+                    ->where('model_type', $user->getMorphClass())
+                    ->where($teamKey, $team_id)
+                    ->exists();
+
+                $hasDirectPermissionsInChosenTeam = DB::table($modelHasPermissionsTable)
+                    ->where($morphKey, $user->getKey())
+                    ->where('model_type', $user->getMorphClass())
+                    ->where($teamKey, $team_id)
+                    ->exists();
+
+                if (!$hasRolesInChosenTeam && !$hasDirectPermissionsInChosenTeam) {
+                    $fallbackTeamId = DB::table($modelHasRolesTable)
+                        ->where($morphKey, $user->getKey())
+                        ->where('model_type', $user->getMorphClass())
+                        ->whereIn($teamKey, $teamIds->all())
+                        ->orderBy($teamKey)
+                        ->value($teamKey);
+
+                    if ($fallbackTeamId) {
+                        $team_id = (int) $fallbackTeamId;
+                        session(['team_id' => $team_id]);
+
+                        setPermissionsTeamId($team_id);
+                        /** @disregard P1013 */
+                        $user->unsetRelation('roles')->unsetRelation('permissions');
+                        /** @disregard P1013 */
+                        $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
+                    }
+                }
+            }
+
             if (!$is_admin && $team_id > 0) {
                 $hasTeamAccess = Team::query()
                     ->whereKey($team_id)
@@ -68,7 +113,7 @@ class HandleInertiaRequests extends Middleware
                     ->exists();
 
                 if (!$hasTeamAccess) {
-                    $team_id = (int) (optional($user)->teams->first()?->id ?? 0);
+                    $team_id = (int) ($teamIds->first() ?? 0);
                     session(['team_id' => $team_id]);
 
                     setPermissionsTeamId($team_id > 0 ? $team_id : null);
@@ -77,6 +122,10 @@ class HandleInertiaRequests extends Middleware
                     /** @disregard P1013 */
                     $is_admin = $user->hasAnyRole(['admin', 'super', 'author', 'director']);
                 }
+            }
+
+            if ($team_id > 0) {
+                session(['team_id' => $team_id]);
             }
 
             $teams = $user->getAllTeamNames();
