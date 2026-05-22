@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\InspectionScheduleController;
 use App\Http\Controllers\Admin\InspectionUserAssignedController;
 use App\Http\Controllers\Admin\EquipmentInspectionDetailController;
 use App\Http\Controllers\Admin\TypeDrillController;
+use App\Http\Controllers\Admin\TypeDrillImportController;
 use App\Http\Controllers\Admin\DrillScheduleController;
 use App\Http\Controllers\Admin\RescueDrillController;
 use App\Http\Controllers\Admin\DrillMemberController;
@@ -170,6 +171,11 @@ Route::middleware('auth')->group(function () {
     // Complaints
     Route::resource('complaints', ComplaintController::class)->except(['create', 'edit']);
     // Type Drills
+    Route::get('type-drills/import', [TypeDrillImportController::class, 'index'])->name('type-drills.import');
+    Route::get('type-drills/import/template', [TypeDrillImportController::class, 'template'])->name('type-drills.import.template');
+    Route::get('type-drills/import/export', [TypeDrillImportController::class, 'export'])->name('type-drills.import.export');
+    Route::post('type-drills/import/preview', [TypeDrillImportController::class, 'preview'])->name('type-drills.import.preview');
+    Route::post('type-drills/import/apply', [TypeDrillImportController::class, 'apply'])->name('type-drills.import.apply');
     Route::resource('type-drills', TypeDrillController::class)->except(['create', 'edit']);
 
     // Drill Schedule

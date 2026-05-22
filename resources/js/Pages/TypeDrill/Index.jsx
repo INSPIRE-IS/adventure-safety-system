@@ -66,6 +66,16 @@ const TypeDrillsIndex = ({auth,typeDrills, can, searchTerm, sortColumn, sortDire
                 <div className="flex flex-col  items-right">               
                     <h1 className="view-header">Type Drills</h1>                    
                 </div>
+                {can.type_drill_create && (
+                    <div className="flex gap-3">
+                        <Link
+                            href={route('type-drills.import')}
+                            className="bg-[#F6C546] hover:bg-[#f8bf2d] px-4 py-2 rounded-xl button-text1"
+                        >
+                            Import / Export
+                        </Link>
+                    </div>
+                )}
             </header>
 
             {/* TypeDrills Table */}

@@ -365,6 +365,36 @@ MD
             ],
             [
                 'category' => 'Rescue Drills',
+                'question' => 'How do I import/export Drill Types?',
+                'is_internal' => true,
+                'answer_md' => <<<MD
+## Where
+- Admin Panel -> **Rescue Drills** -> **Type Drills**
+- Click **Import / Export**
+
+## Workflow
+1. Download the template (CSV) or export your current list.
+2. Edit in Excel or Google Sheets.
+3. Upload the file -> preview warnings.
+4. Confirm -> apply import.
+
+## Required columns
+Your CSV header must include:
+- `name`
+
+Optional columns:
+- `due_days` (blank keeps the existing value; defaults to 14 for new rows)
+
+## Important (global)
+Drill Types are **global** (shared across all sites). Importing here affects every site.
+
+## Notes
+- Import will restore soft-deleted drill types and add missing ones.
+- Import does not delete drill types that are missing from your sheet.
+MD
+            ],
+            [
+                'category' => 'Rescue Drills',
                 'question' => 'Do we need an importer for Rescue Drills?',
                 'is_internal' => true,
                 'answer_md' => <<<MD
@@ -373,11 +403,12 @@ MD
 - Drill Schedules are per-site (they generate the drill tasks sent to mobile).
 
 ## What this means for importing
-- Importing Drill Types would change the list for **every** site, so it should be **super-only** and used carefully.
-- Importing Drill Schedules makes more sense if each site needs its own schedule plan (site-scoped).
+- Importing Drill Types changes the master list for **every** site, so it should be **super-only** and used carefully.
+- We now support a Drill Types CSV import/export workflow under **Type Drills**.
+- Importing Drill Schedules may still be needed if each site wants a site-scoped schedule plan.
 
 ## Recommendation
-If we add an importer, start with a **Drill Schedules importer** (per site).
+If we add more importers, start with a **Drill Schedules importer** (per site).
 If we ever need site-specific drill types, we must first change the data model (make Drill Types site-scoped or add a site mapping layer).
 MD
             ],

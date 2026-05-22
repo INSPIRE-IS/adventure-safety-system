@@ -5,14 +5,15 @@ namespace App\Console\Commands;
 use App\Models\CategoryDetail;
 use App\Models\CategoryItem;
 use Illuminate\Console\Command;
-use App\Models\Item; // Your Item model
-use App\Models\ItemDetail; // Your ItemDetail model
 
 class ImportItems extends Command
 {
     // Define the signature and description for the command
-    protected $signature = 'import:items';
-    protected $description = 'Import items and their details into the database';
+    protected $signature = 'import:items
+        {--site= : Team/site ID to import into (required)}
+        {--type=1 : type_inspection_id to import into}
+        {--dataset= : Legacy dataset to use (site-1|site-2). Defaults based on --site=1/2}';
+    protected $description = 'LEGACY: Import initial seed items/details (hardcoded dataset). Prefer the CSV import UI; confirm legacy data before re-using.';
 
     // The constructor for the command
     public function __construct()
@@ -23,9 +24,20 @@ class ImportItems extends Command
     // The handle method will contain the logic to perform when the command is executed
     public function handle()
     {
-        $type_inspection_id = 1;
-        $site_id = 2;
-        $certificate_recieved_id = 2;
+        $siteId = (int) ($this->option('site') ?? 0);
+        if ($siteId <= 0) {
+            $this->error('Missing required --site=ID (team/site id).');
+            return self::FAILURE;
+        }
+
+        $typeInspectionId = (int) ($this->option('type') ?? 1);
+        if ($typeInspectionId <= 0) {
+            $this->error('Invalid --type (type_inspection_id).');
+            return self::FAILURE;
+        }
+
+        $dataset = trim((string) ($this->option('dataset') ?? ''));
+        $certificateRecievedId = 2;
 
         // Define the array with item names and related details 33 194
         $itemsData1 = [
@@ -163,7 +175,7 @@ class ImportItems extends Command
             ]
         ];
         // 40 264
-        $itemsData = [
+        $itemsData2 = [
             [
                 "item_name" => "Decline catwalk",
                 "details" => [
@@ -634,27 +646,69 @@ class ImportItems extends Command
         $totalItems = 0;
         $totalDetails = 0;
 
+        $itemsData = null;
+        if ($dataset !== '') {
+            $datasetKey = strtolower($dataset);
+            if (in_array($datasetKey, ['site-1', 'site1', '1'], true)) {
+                $itemsData = $itemsData1;
+            } elseif (in_array($datasetKey, ['site-2', 'site2', '2'], true)) {
+                $itemsData = $itemsData2;
+            }
+        }
+
+        if ($itemsData === null) {
+            if ($siteId === 1) {
+                $itemsData = $itemsData1;
+            } elseif ($siteId === 2) {
+                $itemsData = $itemsData2;
+            }
+        }
+
+        if ($itemsData === null) {
+            $this->error('Unknown legacy dataset. Use --dataset=site-1 or --dataset=site-2 (or pass --site=1/2).');
+            return self::FAILURE;
+        }
+
         foreach ($itemsData as $itemData) {
             // Insert the item name
             //$item = CategoryItem::updateOrCreate(['name' => $itemData['item_name'],'type_inspection_id' => 1,'site_id' => 2],['certificate_recieved_id' => 2]);
-            $item = CategoryItem::create([
-                'name' => $itemData['item_name'],
-                'type_inspection_id' => $type_inspection_id,
-                'site_id' => $site_id,
-                'certificate_recieved_id' => $certificate_recieved_id
-            ]);
+            $item = CategoryItem::withTrashed()->firstOrCreate(
+                [
+                    'name' => $itemData['item_name'],
+                    'type_inspection_id' => $typeInspectionId,
+                    'site_id' => $siteId,
+                ],
+                [
+                    'certificate_recieved_id' => $certificateRecievedId,
+                ]
+            );
+
+            if ($item->deleted_at !== null) {
+                $item->deleted_at = null;
+            }
+            $item->certificate_recieved_id = $certificateRecievedId;
+            $item->save();
 
             $detailsCount = 0;
 
             // Loop through each of the item's details and insert them into the 'item_details' table
             foreach ($itemData['details'] as $detail) {
                 //CategoryDetail::updateOrCreate(['category_item_id' => $item->id,'name' => $detail,],['in_use_date' => now(),'out_use_date' => '']);
-                CategoryDetail::create([
-                    'category_item_id' => $item->id,
-                    'name' => $detail,
-                    'in_use_date' => now(),
-                    'out_use_date' => ''
-                ]);
+                $detailModel = CategoryDetail::withTrashed()->firstOrCreate(
+                    [
+                        'category_item_id' => $item->id,
+                        'name' => $detail,
+                    ],
+                    [
+                        'in_use_date' => now()->toDateTimeString(),
+                        'out_use_date' => null,
+                    ]
+                );
+
+                if ($detailModel->deleted_at !== null) {
+                    $detailModel->deleted_at = null;
+                    $detailModel->save();
+                }
                 $detailsCount++;
                 $totalDetails++;
             }
