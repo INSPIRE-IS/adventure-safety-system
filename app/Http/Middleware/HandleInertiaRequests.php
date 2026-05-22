@@ -76,7 +76,7 @@ class HandleInertiaRequests extends Middleware
                     ->join($rolesTable, "{$rolesTable}.id", '=', "{$modelHasRolesTable}.role_id")
                     ->where($morphKey, $user->getKey())
                     ->where('model_type', $user->getMorphClass())
-                    ->where($teamKey, $team_id)
+                    ->where("{$modelHasRolesTable}.{$teamKey}", $team_id)
                     ->where(function ($q) use ($rolesTable, $teamKey, $team_id) {
                         $q->whereNull("{$rolesTable}.{$teamKey}")
                             ->orWhere("{$rolesTable}.{$teamKey}", $team_id);

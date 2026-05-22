@@ -37,7 +37,7 @@ class TeamsPermission
                     ->join($rolesTable, "{$rolesTable}.id", '=', "{$modelHasRolesTable}.role_id")
                     ->where($morphKey, $webUser->getKey())
                     ->where('model_type', $webUser->getMorphClass())
-                    ->where($teamKey, $teamId)
+                    ->where("{$modelHasRolesTable}.{$teamKey}", $teamId)
                     ->where(function ($q) use ($rolesTable, $teamKey, $teamId) {
                         $q->whereNull("{$rolesTable}.{$teamKey}")
                             ->orWhere("{$rolesTable}.{$teamKey}", $teamId);
