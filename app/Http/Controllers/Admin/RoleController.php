@@ -23,7 +23,9 @@ class RoleController extends Controller
         $searchTerm = $request->get('search', '');
         $sortColumn = $request->get('sort', 'name'); // Default to 'name' if no sort is provided
         $sortDirection = $request->get('direction', 'asc');
+        // We treat roles as global definitions (team_id NULL) and scope assignments via model_has_roles.team_id.
         $roles = Role::with(['permissions'])
+            ->whereNull(config('permission.column_names.team_foreign_key', 'team_id'))
             ->where('name', 'like', '%' . $searchTerm . '%')
             ->orderBy($sortColumn, $sortDirection)
             ->paginate(25);
@@ -60,8 +62,17 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request)
     {
-        $role = Role::create($request->all());
-        $role->permissions()->sync($request->input('permissions', []));
+        $validated = $request->validated();
+
+        // In Spatie "teams" mode, creating a role without `team_id` will default it to the
+        // current permissions team context. In this app we want roles to be global
+        // (team_id = NULL) and only the *assignments* to be team-scoped.
+        $role = Role::create([
+            'name' => $validated['name'],
+            'team_id' => null,
+        ]);
+
+        $role->permissions()->sync($validated['permissions'] ?? []);
 
         return redirect()->route('roles.index');
     }
@@ -79,9 +90,14 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        //dd($role);
-        $role->update($request->all());
-        $role->permissions()->sync($request->input('permissions', []));
+        $validated = $request->validated();
+
+        // Only update explicit columns; never mass-assign request payload onto the model.
+        $role->update([
+            'name' => $validated['name'],
+        ]);
+
+        $role->permissions()->sync($validated['permissions'] ?? []);
 
         return redirect()->route('roles.index');
     }

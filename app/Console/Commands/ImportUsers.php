@@ -63,7 +63,11 @@ class ImportUsers extends Command
 
         // Ensure roles exist in the system
         foreach ($roles as $roleName) {
-            Role::firstOrCreate(['name' => $roleName]);
+            Role::firstOrCreate([
+                'name' => $roleName,
+                // Keep role definitions global; assignments are team-scoped in model_has_roles.
+                config('permission.column_names.team_foreign_key', 'team_id') => null,
+            ]);
         }
 
         foreach (array_slice($csvData, 1) as $row) {

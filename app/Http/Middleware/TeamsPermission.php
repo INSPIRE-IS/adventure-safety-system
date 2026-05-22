@@ -32,10 +32,16 @@ class TeamsPermission
                 $teamKey = config('permission.column_names.team_foreign_key', 'team_id');
                 $morphKey = config('permission.column_names.model_morph_key', 'model_id');
 
+                $rolesTable = config('permission.table_names.roles', 'roles');
                 $hasRolesInChosenTeam = DB::table($modelHasRolesTable)
+                    ->join($rolesTable, "{$rolesTable}.id", '=', "{$modelHasRolesTable}.role_id")
                     ->where($morphKey, $webUser->getKey())
                     ->where('model_type', $webUser->getMorphClass())
                     ->where($teamKey, $teamId)
+                    ->where(function ($q) use ($rolesTable, $teamKey, $teamId) {
+                        $q->whereNull("{$rolesTable}.{$teamKey}")
+                            ->orWhere("{$rolesTable}.{$teamKey}", $teamId);
+                    })
                     ->exists();
 
                 $hasDirectPermissionsInChosenTeam = DB::table($modelHasPermissionsTable)
@@ -46,11 +52,25 @@ class TeamsPermission
 
                 if (!$hasRolesInChosenTeam && !$hasDirectPermissionsInChosenTeam) {
                     $fallbackTeamId = DB::table($modelHasRolesTable)
-                        ->where($morphKey, $webUser->getKey())
-                        ->where('model_type', $webUser->getMorphClass())
-                        ->whereIn($teamKey, $teamIds->all())
-                        ->orderBy($teamKey)
-                        ->value($teamKey);
+                        ->join($rolesTable, "{$rolesTable}.id", '=', "{$modelHasRolesTable}.role_id")
+                        ->where("{$modelHasRolesTable}.{$morphKey}", $webUser->getKey())
+                        ->where("{$modelHasRolesTable}.model_type", $webUser->getMorphClass())
+                        ->whereIn("{$modelHasRolesTable}.{$teamKey}", $teamIds->all())
+                        ->where(function ($q) use ($rolesTable, $teamKey, $modelHasRolesTable) {
+                            $q->whereNull("{$rolesTable}.{$teamKey}")
+                                ->orWhereColumn("{$rolesTable}.{$teamKey}", "{$modelHasRolesTable}.{$teamKey}");
+                        })
+                        ->orderBy("{$modelHasRolesTable}.{$teamKey}")
+                        ->value("{$modelHasRolesTable}.{$teamKey}");
+
+                    if (!$fallbackTeamId) {
+                        $fallbackTeamId = DB::table($modelHasPermissionsTable)
+                            ->where("{$modelHasPermissionsTable}.{$morphKey}", $webUser->getKey())
+                            ->where("{$modelHasPermissionsTable}.model_type", $webUser->getMorphClass())
+                            ->whereIn("{$modelHasPermissionsTable}.{$teamKey}", $teamIds->all())
+                            ->orderBy("{$modelHasPermissionsTable}.{$teamKey}")
+                            ->value("{$modelHasPermissionsTable}.{$teamKey}");
+                    }
 
                     if ($fallbackTeamId) {
                         $teamId = (int) $fallbackTeamId;
