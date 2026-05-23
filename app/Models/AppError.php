@@ -17,4 +17,8 @@ class AppError extends Model
         'type',
         'error',
     ];
+
+    protected $casts = [
+        'error' => 'array',
+    ];
 }

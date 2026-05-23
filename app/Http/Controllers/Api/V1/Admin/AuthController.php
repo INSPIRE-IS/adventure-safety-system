@@ -24,6 +24,7 @@ class AuthController extends Controller
         // Simulating login logic
         $credentials = $request->only('email', 'password');
         Log::info('credentials: ', $credentials);
+        Log::info('API login attempt', ['email' => $credentials['email'] ?? null]);
 
         if (Auth::attempt($credentials)) { // $credentials['email'] === 'super@super.com' && $credentials['password'] === 'password'
 
