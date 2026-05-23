@@ -14,7 +14,7 @@ class TeamsPermission
         // WEB: scope permissions by the current session site/team.
         /** @var \App\Models\User|null $webUser */
         $webUser = auth()->user();
-        if ($webUser) {
+        if ($webUser && $request->hasSession()) {
             /** @disregard P1013 */
             $webUser->loadMissing('teams');
 
