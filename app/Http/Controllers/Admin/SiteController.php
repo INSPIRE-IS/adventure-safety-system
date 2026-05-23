@@ -254,7 +254,7 @@ class SiteController extends Controller
         /** @disregard P1013 */
         $user->unsetRelation('roles')->unsetRelation('permissions');
 
-        return redirect()->back()->with('message', 'Site changed.');
+        return redirect()->route('dashboard')->with('message', 'Site changed.');
     }
 
     public function invite(Request $request)
